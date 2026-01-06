@@ -70,12 +70,13 @@ export function LineItemRow({
 
   // Always keep editingState initialized - prevents flash when opening popover
   const [editingState, setEditingState] = useState<SerializedEditorState>(
-    () => currentState || createEmptyEditorState()
+    () => currentState || createEmptyEditorState(),
   );
 
   // Sync editingState when currentState changes and popover is closed
   useEffect(() => {
     if (!namePopoverOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEditingState(currentState || createEmptyEditorState());
     }
   }, [currentState, namePopoverOpen]);
@@ -91,6 +92,7 @@ export function LineItemRow({
   // Auto-open when autoOpen prop becomes true
   useEffect(() => {
     if (autoOpen && !namePopoverOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNamePopoverOpen(true);
     }
   }, [autoOpen, namePopoverOpen]);
@@ -198,6 +200,10 @@ export function LineItemRow({
             align="start"
             sideOffset={4}
             className="w-96 p-0"
+            onOpenAutoFocus={(e) => {
+              // Prevent Radix from stealing focus - let Lexical's AutoFocusPlugin handle it
+              e.preventDefault();
+            }}
           >
             <LineItemEditor
               value={editingState}
