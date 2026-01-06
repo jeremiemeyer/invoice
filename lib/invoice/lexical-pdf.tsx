@@ -11,11 +11,12 @@ interface SerializedNode {
   type: string;
   children?: SerializedNode[];
   text?: string;
-  format?: number;
+  format?: number | string; // number for text nodes (bitmask), string for element nodes (ElementFormatType)
   listType?: string;
   tag?: string;
   value?: number;
   indent?: number;
+  direction?: "ltr" | "rtl" | null;
 }
 
 // Text format flags from Lexical
@@ -49,7 +50,7 @@ function getTextStyle(format: number): Style {
 }
 
 function renderTextNode(node: SerializedNode, key: string): React.ReactNode {
-  const style = getTextStyle(node.format || 0);
+  const style = getTextStyle((node.format as number) || 0);
   return (
     <Text key={key} style={style}>
       {node.text || ""}
@@ -240,10 +241,7 @@ export function LexicalPdf({ children, style }: LexicalPdfProps) {
 
   return (
     <View style={style}>
-      {renderChildren(
-        (state.root as unknown as SerializedNode).children,
-        "lexical",
-      )}
+      {renderChildren((state.root as SerializedNode).children, "lexical")}
     </View>
   );
 }

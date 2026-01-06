@@ -299,7 +299,7 @@ export function createEmptyEditorState(): SerializedEditorState {
       type: "root",
       version: 1,
     },
-  } as unknown as SerializedEditorState;
+  } as unknown as SerializedEditorState; // Lexical's generic SerializedEditorState requires 'unknown' cast for literal objects
 }
 
 // Helper to check if state is empty

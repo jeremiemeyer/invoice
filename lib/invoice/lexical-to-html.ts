@@ -1,13 +1,13 @@
-import type { SerializedEditorState } from "lexical";
+import type { SerializedEditorState, SerializedRootNode } from "lexical";
 
 interface SerializedNode {
   type: string;
   children?: SerializedNode[];
   text?: string;
-  format?: number;
+  format?: number | string; // number for text nodes (bitmask), string for element nodes (ElementFormatType)
   listType?: string;
   tag?: string;
-  direction?: string | null;
+  direction?: "ltr" | "rtl" | null;
   indent?: number;
   value?: number;
 }
@@ -148,7 +148,10 @@ function renderNode(node: SerializedNode): string {
     }
 
     case "text":
-      return renderTextWithFormat(node.text || "", node.format || 0);
+      return renderTextWithFormat(
+        node.text || "",
+        (node.format as number) || 0,
+      );
 
     case "linebreak":
       return "<br/>";
@@ -189,7 +192,7 @@ export function lexicalToHtml(state: SerializedEditorState | null): string {
   if (!state || !state.root) {
     return "";
   }
-  return renderNode(state.root as unknown as SerializedNode);
+  return renderNode(state.root as SerializedNode);
 }
 
 /**
@@ -231,7 +234,7 @@ export function lexicalToPlainText(
     return "";
   }
 
-  return extractText(state.root as unknown as SerializedNode);
+  return extractText(state.root as SerializedNode);
 }
 
 /**
