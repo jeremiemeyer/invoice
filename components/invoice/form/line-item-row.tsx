@@ -200,10 +200,6 @@ export function LineItemRow({
             align="start"
             sideOffset={4}
             className="w-96 p-0"
-            onOpenAutoFocus={(e) => {
-              // Prevent Radix from stealing focus - let Lexical's AutoFocusPlugin handle it
-              e.preventDefault();
-            }}
           >
             <LineItemEditor
               value={editingState}

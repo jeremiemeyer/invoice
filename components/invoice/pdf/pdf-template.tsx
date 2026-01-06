@@ -194,9 +194,9 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
               {/* Avatar / Logo - only show if showFromLogo is true */}
               {invoice.showFromLogo &&
                 (invoice.fromLogoUrl ? (
+                  // eslint-disable-next-line jsx-a11y/alt-text
                   <Image
                     src={invoice.fromLogoUrl}
-                    alt={invoice.fromName || "Company logo"}
                     style={{
                       width: 36,
                       height: 36,
@@ -320,9 +320,9 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
               {/* Avatar / Logo - only show if showCustomerLogo is true */}
               {invoice.showCustomerLogo &&
                 (invoice.customerLogoUrl ? (
+                  // eslint-disable-next-line jsx-a11y/alt-text
                   <Image
                     src={invoice.customerLogoUrl}
-                    alt={invoice.customerName || "Customer logo"}
                     style={{
                       width: 36,
                       height: 36,
