@@ -1,6 +1,5 @@
 import { Text, View } from "@react-pdf/renderer";
 import type { Style } from "@react-pdf/types";
-import type { SerializedEditorState } from "lexical";
 import { parseLexicalState } from "./lexical-to-html";
 
 interface LexicalPdfProps {
@@ -60,7 +59,7 @@ function renderTextNode(node: SerializedNode, key: string): React.ReactNode {
 
 function renderChildren(
   children: SerializedNode[] | undefined,
-  keyPrefix: string
+  keyPrefix: string,
 ): React.ReactNode[] {
   if (!children) return [];
   return children.map((child, i) => renderNode(child, `${keyPrefix}-${i}`));
@@ -69,9 +68,7 @@ function renderChildren(
 function renderNode(node: SerializedNode, key: string): React.ReactNode {
   switch (node.type) {
     case "root":
-      return (
-        <View key={key}>{renderChildren(node.children, key)}</View>
-      );
+      return <View key={key}>{renderChildren(node.children, key)}</View>;
 
     case "paragraph": {
       const children = renderChildren(node.children, key);
@@ -110,7 +107,9 @@ function renderNode(node: SerializedNode, key: string): React.ReactNode {
                   paddingLeft: indentPadding,
                 }}
               >
-                <Text style={{ width: item.isOrdered ? 16 : 12 }}>{bullet}</Text>
+                <Text style={{ width: item.isOrdered ? 16 : 12 }}>
+                  {bullet}
+                </Text>
                 <Text style={{ flex: 1 }}>
                   {renderListItemContent(item.content, `${key}-item-${i}`)}
                 </Text>
@@ -125,13 +124,9 @@ function renderNode(node: SerializedNode, key: string): React.ReactNode {
       return renderChildren(node.children, key);
 
     case "heading": {
-      const fontSize =
-        node.tag === "h1" ? 14 : node.tag === "h2" ? 12 : 10;
+      const fontSize = node.tag === "h1" ? 14 : node.tag === "h2" ? 12 : 10;
       return (
-        <Text
-          key={key}
-          style={{ fontSize, fontWeight: 600, marginBottom: 4 }}
-        >
+        <Text key={key} style={{ fontSize, fontWeight: 600, marginBottom: 4 }}>
           {renderChildren(node.children, key)}
         </Text>
       );
@@ -174,7 +169,7 @@ function collectPdfListItems(
   node: SerializedNode,
   baseIndent: number,
   isOrdered: boolean,
-  items: FlatListItem[]
+  items: FlatListItem[],
 ): void {
   if (node.type === "list") {
     const listIsOrdered = node.listType === "number";
@@ -197,9 +192,9 @@ function collectPdfListItems(
     }
 
     // Check if there's actual text content (not just empty paragraphs)
-    const hasContent = contentChildren.some(child => {
+    const hasContent = contentChildren.some((child) => {
       if (child.type === "paragraph" && child.children) {
-        return child.children.some(c => c.type === "text" && c.text?.trim());
+        return child.children.some((c) => c.type === "text" && c.text?.trim());
       }
       return child.type === "text" && child.text?.trim();
     });
@@ -223,7 +218,7 @@ function collectPdfListItems(
 
 function renderListItemContent(
   contentChildren: SerializedNode[],
-  keyPrefix: string
+  keyPrefix: string,
 ): React.ReactNode[] {
   const result: React.ReactNode[] = [];
   for (const child of contentChildren) {
@@ -240,16 +235,14 @@ export function LexicalPdf({ children, style }: LexicalPdfProps) {
   const state = parseLexicalState(children);
 
   if (!state || !state.root) {
-    return (
-      <Text style={style}>-</Text>
-    );
+    return <Text style={style}>-</Text>;
   }
 
   return (
     <View style={style}>
       {renderChildren(
-        (state.root as SerializedNode).children,
-        "lexical"
+        (state.root as unknown as SerializedNode).children,
+        "lexical",
       )}
     </View>
   );

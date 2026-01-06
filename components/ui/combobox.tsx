@@ -90,7 +90,7 @@ function ComboboxInput({
           className,
         )}
         data-slot="combobox-input"
-        render={<Input className="has-disabled:opacity-100" size={sizeValue} />}
+        render={<Input className="has-disabled:opacity-100" />}
         {...props}
       />
       {showTrigger && (
@@ -391,6 +391,7 @@ export {
   ComboboxInput,
   ComboboxTrigger,
   ComboboxPopup,
+  ComboboxPopup as ComboboxContent,
   ComboboxItem,
   ComboboxSeparator,
   ComboboxGroup,

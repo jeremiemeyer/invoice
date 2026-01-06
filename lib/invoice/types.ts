@@ -3,6 +3,7 @@ import type { InvoiceLocale, PageSize } from "./translations";
 export interface LineItem {
   id: string;
   name: string;
+  description?: string;
   quantity: number;
   price: number;
 }

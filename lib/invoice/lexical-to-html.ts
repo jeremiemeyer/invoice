@@ -55,7 +55,12 @@ function collectListItems(
   node: SerializedNode,
   baseIndent: number,
   isOrdered: boolean,
-  items: Array<{ indent: number; content: string; isOrdered: boolean; value?: number }>
+  items: Array<{
+    indent: number;
+    content: string;
+    isOrdered: boolean;
+    value?: number;
+  }>,
 ): void {
   if (node.type === "list") {
     const listIsOrdered = node.listType === "number";
@@ -81,7 +86,8 @@ function collectListItems(
     const itemContent = contentChildren.map(renderNode).join("");
 
     // Only add item if it has actual content (not just a container for nested lists)
-    const hasContent = itemContent.replace(/<p><br\/><\/p>/g, "").trim().length > 0;
+    const hasContent =
+      itemContent.replace(/<p><br\/><\/p>/g, "").trim().length > 0;
     if (hasContent || nestedLists.length === 0) {
       items.push({
         indent: itemIndent,
@@ -100,7 +106,12 @@ function collectListItems(
 
 // Render a list with flat structure and inline styles for indentation
 function renderList(node: SerializedNode): string {
-  const items: Array<{ indent: number; content: string; isOrdered: boolean; value?: number }> = [];
+  const items: Array<{
+    indent: number;
+    content: string;
+    isOrdered: boolean;
+    value?: number;
+  }> = [];
   const isOrdered = node.listType === "number";
 
   collectListItems(node, 0, isOrdered, items);
@@ -131,9 +142,10 @@ function renderNode(node: SerializedNode): string {
     case "root":
       return (node.children || []).map(renderNode).join("");
 
-    case "paragraph":
+    case "paragraph": {
       const pContent = (node.children || []).map(renderNode).join("");
       return pContent ? `<p>${pContent}</p>` : "<p><br/></p>";
+    }
 
     case "text":
       return renderTextWithFormat(node.text || "", node.format || 0);
@@ -144,19 +156,22 @@ function renderNode(node: SerializedNode): string {
     case "list":
       return renderList(node);
 
-    case "listitem":
+    case "listitem": {
       // Handled by renderList/collectListItems
       const liContent = (node.children || []).map(renderNode).join("");
       return liContent;
+    }
 
-    case "heading":
+    case "heading": {
       const headingTag = node.tag || "h1";
       const headingContent = (node.children || []).map(renderNode).join("");
       return `<${headingTag}>${headingContent}</${headingTag}>`;
+    }
 
-    case "quote":
+    case "quote": {
       const quoteContent = (node.children || []).map(renderNode).join("");
       return `<blockquote>${quoteContent}</blockquote>`;
+    }
 
     default:
       // For unknown nodes, try to render children
@@ -174,13 +189,15 @@ export function lexicalToHtml(state: SerializedEditorState | null): string {
   if (!state || !state.root) {
     return "";
   }
-  return renderNode(state.root as SerializedNode);
+  return renderNode(state.root as unknown as SerializedNode);
 }
 
 /**
  * Convert Lexical serialized state to plain text (for first line display)
  */
-export function lexicalToPlainText(state: SerializedEditorState | null): string {
+export function lexicalToPlainText(
+  state: SerializedEditorState | null,
+): string {
   if (!state || !state.root) {
     return "";
   }
@@ -195,15 +212,18 @@ export function lexicalToPlainText(state: SerializedEditorState | null): string 
     if (node.type === "paragraph") {
       // Extract text from children and add newline at end
       const content = node.children?.map(extractText).join("") || "";
-      return content + "\n";
+      return `${content}\n`;
     }
     if (node.type === "listitem") {
       const content = node.children?.map(extractText).join("") || "";
-      return content + "\n";
+      return `${content}\n`;
     }
     if (node.type === "root") {
       // Join children but trim trailing newline
-      return (node.children?.map(extractText).join("") || "").replace(/\n$/, "");
+      return (node.children?.map(extractText).join("") || "").replace(
+        /\n$/,
+        "",
+      );
     }
     if (node.children) {
       return node.children.map(extractText).join("");
@@ -211,13 +231,15 @@ export function lexicalToPlainText(state: SerializedEditorState | null): string 
     return "";
   }
 
-  return extractText(state.root as SerializedNode);
+  return extractText(state.root as unknown as SerializedNode);
 }
 
 /**
  * Get first line of plain text (for truncated display)
  */
-export function lexicalToFirstLine(state: SerializedEditorState | null): string {
+export function lexicalToFirstLine(
+  state: SerializedEditorState | null,
+): string {
   const text = lexicalToPlainText(state);
   const firstLine = text.split("\n")[0] || "";
   return firstLine.trim();
@@ -248,7 +270,7 @@ export function hasMultipleLines(state: SerializedEditorState | null): boolean {
 export function parseLexicalState(json: string): SerializedEditorState | null {
   try {
     const parsed = JSON.parse(json);
-    if (parsed && parsed.root) {
+    if (parsed?.root) {
       return parsed as SerializedEditorState;
     }
     return null;

@@ -1,60 +1,57 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
-import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
-import {
-  BOLD_ITALIC_STAR,
-  BOLD_ITALIC_UNDERSCORE,
-  BOLD_STAR,
-  BOLD_UNDERSCORE,
-  ITALIC_STAR,
-  ITALIC_UNDERSCORE,
-  STRIKETHROUGH,
-  UNORDERED_LIST,
-  ORDERED_LIST,
-  INLINE_CODE,
-} from "@lexical/markdown";
 import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
 } from "@lexical/list";
 import {
-  InitialConfigType,
+  BOLD_ITALIC_STAR,
+  BOLD_ITALIC_UNDERSCORE,
+  BOLD_STAR,
+  BOLD_UNDERSCORE,
+  INLINE_CODE,
+  ITALIC_STAR,
+  ITALIC_UNDERSCORE,
+  ORDERED_LIST,
+  STRIKETHROUGH,
+  UNORDERED_LIST,
+} from "@lexical/markdown";
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import {
+  type InitialConfigType,
   LexicalComposer,
 } from "@lexical/react/LexicalComposer";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { ContentEditable as LexicalContentEditable } from "@lexical/react/LexicalContentEditable";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import type { EditorThemeClasses } from "lexical";
 import {
-  FORMAT_TEXT_COMMAND,
   COMMAND_PRIORITY_HIGH,
+  FORMAT_TEXT_COMMAND,
   KEY_ENTER_COMMAND,
   KEY_ESCAPE_COMMAND,
-  SerializedEditorState,
-  $getSelection,
-  $isRangeSelection,
+  type SerializedEditorState,
 } from "lexical";
 import {
   BoldIcon,
+  CodeIcon,
   ItalicIcon,
-  UnderlineIcon,
-  StrikethroughIcon,
   ListIcon,
   ListOrderedIcon,
-  CodeIcon,
+  StrikethroughIcon,
+  UnderlineIcon,
 } from "lucide-react";
-
-import { ContentEditable as LexicalContentEditable } from "@lexical/react/LexicalContentEditable";
-import { editorTheme } from "@/components/editor/themes/editor-theme";
+import { useCallback, useEffect } from "react";
 import { nodes } from "@/components/blocks/editor-00/nodes";
-import { Toggle } from "@/components/ui/toggle";
+import { editorTheme } from "@/components/editor/themes/editor-theme";
 import { Separator } from "@/components/ui/separator";
-import type { EditorThemeClasses } from "lexical";
+import { Toggle } from "@/components/ui/toggle";
 
 // Custom theme for line item editor - no margin between paragraphs
 const lineItemTheme: EditorThemeClasses = {
@@ -100,7 +97,7 @@ function KeyboardShortcutsPlugin({
         }
         return false;
       },
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     // Escape to cancel
@@ -111,7 +108,7 @@ function KeyboardShortcutsPlugin({
         onCancel();
         return true;
       },
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     return () => {
@@ -131,7 +128,7 @@ function CompactToolbar() {
     (format: "bold" | "italic" | "underline" | "strikethrough" | "code") => {
       editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
     },
-    [editor]
+    [editor],
   );
 
   const formatList = useCallback(
@@ -142,7 +139,7 @@ function CompactToolbar() {
         editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
       }
     },
-    [editor]
+    [editor],
   );
 
   return (
@@ -302,17 +299,25 @@ export function createEmptyEditorState(): SerializedEditorState {
       type: "root",
       version: 1,
     },
-  } as SerializedEditorState;
+  } as unknown as SerializedEditorState;
 }
 
 // Helper to check if state is empty
-export function isEditorStateEmpty(state: SerializedEditorState | null): boolean {
+export function isEditorStateEmpty(
+  state: SerializedEditorState | null,
+): boolean {
   if (!state) return true;
   const root = state.root;
   if (!root || !root.children || root.children.length === 0) return true;
   if (root.children.length === 1) {
-    const firstChild = root.children[0] as { children?: unknown[]; type?: string };
-    if (firstChild.type === "paragraph" && (!firstChild.children || firstChild.children.length === 0)) {
+    const firstChild = root.children[0] as {
+      children?: unknown[];
+      type?: string;
+    };
+    if (
+      firstChild.type === "paragraph" &&
+      (!firstChild.children || firstChild.children.length === 0)
+    ) {
       return true;
     }
   }
