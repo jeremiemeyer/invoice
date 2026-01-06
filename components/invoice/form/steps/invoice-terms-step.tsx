@@ -1,0 +1,45 @@
+"use client";
+
+import { InlineDatePicker } from "@/components/ui/date-picker";
+import { InlineField } from "@/components/ui/inline-field";
+import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
+
+interface InvoiceTermsStepProps {
+  state: UseInvoiceReturn["state"];
+  setField: UseInvoiceReturn["setField"];
+}
+
+export function InvoiceTermsStep({ state, setField }: InvoiceTermsStepProps) {
+  return (
+    <div>
+      <h2 className="pb-3 text-2xl font-semibold">Invoice terms</h2>
+
+      <InlineField
+        label="Invoice number"
+        value={state.invoiceNumber}
+        onChange={(value) => setField("invoiceNumber", value)}
+        placeholder="INV-001"
+      />
+
+      <InlineDatePicker
+        label="Issue date"
+        value={state.issueDate}
+        onChange={(value) => setField("issueDate", value)}
+        placeholder="Select date"
+      />
+
+      <InlineDatePicker
+        label="Due date"
+        value={state.dueDate}
+        onChange={(value) => setField("dueDate", value)}
+        placeholder="Select date"
+        presets={[
+          { label: "7 days", days: 7 },
+          { label: "14 days", days: 14 },
+          { label: "1 mo", months: 1 },
+        ]}
+        presetsRelativeTo={state.issueDate}
+      />
+    </div>
+  );
+}
