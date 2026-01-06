@@ -31,6 +31,7 @@ function generateInvoiceNumber(): string {
 export const defaultInvoiceState: InvoiceFormState = {
   // Locale & format
   locale: "en-US",
+  numberLocale: "en-US",
   pageSize: "LETTER",
 
   // From details

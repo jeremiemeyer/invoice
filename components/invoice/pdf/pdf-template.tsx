@@ -104,7 +104,9 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                 {invoice.invoiceNumber || "-"}
               </Text>
             </View>
-            <View style={{ width: "50%", flexDirection: "row", paddingLeft: 32 }}>
+            <View
+              style={{ width: "50%", flexDirection: "row", paddingLeft: 32 }}
+            >
               <View style={{ minWidth: 60 }}>
                 <Text
                   style={{
@@ -170,8 +172,8 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                 {t.from}
               </Text>
               {/* Avatar / Logo - only show if showFromLogo is true */}
-              {invoice.showFromLogo && (
-                invoice.fromLogoUrl ? (
+              {invoice.showFromLogo &&
+                (invoice.fromLogoUrl ? (
                   <Image
                     src={invoice.fromLogoUrl}
                     style={{
@@ -198,8 +200,7 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                       {getInitial(invoice.fromName)}
                     </Text>
                   </View>
-                )
-              )}
+                ))}
               {/* Name */}
               <Text
                 style={{
@@ -277,7 +278,13 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
             </View>
 
             {/* To - Right */}
-            <View style={{ width: "50%", paddingVertical: 24, paddingHorizontal: 32 }}>
+            <View
+              style={{
+                width: "50%",
+                paddingVertical: 24,
+                paddingHorizontal: 32,
+              }}
+            >
               <Text
                 style={{
                   fontSize: 8,
@@ -290,8 +297,8 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                 {t.to}
               </Text>
               {/* Avatar / Logo - only show if showCustomerLogo is true */}
-              {invoice.showCustomerLogo && (
-                invoice.customerLogoUrl ? (
+              {invoice.showCustomerLogo &&
+                (invoice.customerLogoUrl ? (
                   <Image
                     src={invoice.customerLogoUrl}
                     style={{
@@ -318,8 +325,7 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                       {getInitial(invoice.customerName)}
                     </Text>
                   </View>
-                )
-              )}
+                ))}
               {/* Name */}
               <Text
                 style={{
@@ -413,7 +419,9 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                   {t.description}
                 </Text>
               </View>
-              <View style={{ width: "50%", flexDirection: "row", paddingLeft: 32 }}>
+              <View
+                style={{ width: "50%", flexDirection: "row", paddingLeft: 32 }}
+              >
                 <Text
                   style={{
                     width: 60,
@@ -465,19 +473,19 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
               >
                 <View style={{ width: "50%" }}>
                   {item.name ? (
-                    <LexicalPdf
-                      style={{ fontSize: 10, fontWeight: 500 }}
-                    >
+                    <LexicalPdf style={{ fontSize: 10, fontWeight: 500 }}>
                       {item.name}
                     </LexicalPdf>
                   ) : (
-                    <Text style={{ fontSize: 10, fontWeight: 500 }}>
-                      -
-                    </Text>
+                    <Text style={{ fontSize: 10, fontWeight: 500 }}>-</Text>
                   )}
                 </View>
                 <View
-                  style={{ width: "50%", flexDirection: "row", paddingLeft: 32 }}
+                  style={{
+                    width: "50%",
+                    flexDirection: "row",
+                    paddingLeft: 32,
+                  }}
                 >
                   <Text
                     style={{
@@ -497,7 +505,11 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                       color: colors.gray600,
                     }}
                   >
-                    {formatCurrency(item.price, invoice.currency)}
+                    {formatCurrency(
+                      item.price,
+                      invoice.currency,
+                      invoice.numberLocale,
+                    )}
                   </Text>
                   <Text
                     style={{
@@ -514,6 +526,7 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                         quantity: item.quantity,
                       }),
                       invoice.currency,
+                      invoice.numberLocale,
                     )}
                   </Text>
                 </View>
@@ -583,7 +596,11 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                       color: colors.gray600,
                     }}
                   >
-                    {formatCurrency(totals.subTotal, invoice.currency)}
+                    {formatCurrency(
+                      totals.subTotal,
+                      invoice.currency,
+                      invoice.numberLocale,
+                    )}
                   </Text>
                 </View>
 
@@ -615,7 +632,12 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                         color: colors.gray600,
                       }}
                     >
-                      -{formatCurrency(invoice.discount, invoice.currency)}
+                      -
+                      {formatCurrency(
+                        invoice.discount,
+                        invoice.currency,
+                        invoice.numberLocale,
+                      )}
                     </Text>
                   </View>
                 )}
@@ -649,7 +671,11 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                         color: colors.gray600,
                       }}
                     >
-                      {formatCurrency(totals.tax, invoice.currency)}
+                      {formatCurrency(
+                        totals.tax,
+                        invoice.currency,
+                        invoice.numberLocale,
+                      )}
                     </Text>
                   </View>
                 )}
@@ -673,7 +699,11 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                     {t.total}
                   </Text>
                   <Text style={{ fontSize: 14, fontWeight: 500 }}>
-                    {formatCurrency(totals.total, invoice.currency)}
+                    {formatCurrency(
+                      totals.total,
+                      invoice.currency,
+                      invoice.numberLocale,
+                    )}
                   </Text>
                 </View>
               </View>

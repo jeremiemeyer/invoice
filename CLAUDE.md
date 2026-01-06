@@ -45,8 +45,18 @@ InvoicePage
 ### Core Types (lib/invoice/types.ts)
 
 - `LineItem`: { id, name (Lexical JSON), quantity, price }
-- `InvoiceFormState`: Full form state including locale, currency, lineItems, dates
+- `InvoiceFormState`: Full form state including locale, numberLocale, currency, lineItems, dates
 - `InvoiceTotals`: { subTotal, tax, total }
+
+### Localization (lib/invoice/translations.ts)
+
+- `locale`: Text language (en-US, fr-FR) - controls labels like "Invoice", "Facture"
+- `numberLocale`: Number formatting - controls decimal/thousand separators:
+  - `en-US`: 1,234.56
+  - `fr-FR`: 1 234,56
+  - `de-DE`: 1.234,56
+  - `de-CH`: 1'234.56 (also displays currency codes like "EUR" instead of "€")
+- Currency formatting uses `Intl.NumberFormat` with the `numberLocale` parameter
 
 ### Rich Text Editor
 

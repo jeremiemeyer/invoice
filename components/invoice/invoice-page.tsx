@@ -62,6 +62,9 @@ export function InvoicePage() {
           currentStep={currentStep}
           onStepClick={setCurrentStep}
           onLocaleChange={(locale) => setField("locale", locale)}
+          onNumberLocaleChange={(numberLocale) =>
+            setField("numberLocale", numberLocale)
+          }
           onCurrencyChange={(currency) => setField("currency", currency)}
           onPageSizeChange={(pageSize) => setField("pageSize", pageSize)}
         />

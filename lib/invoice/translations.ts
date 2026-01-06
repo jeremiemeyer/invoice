@@ -1,4 +1,5 @@
 export type InvoiceLocale = "en-US" | "fr-FR";
+export type NumberLocale = "en-US" | "fr-FR" | "de-DE" | "de-CH";
 export type PageSize = "A4" | "LETTER";
 
 // Preset combining all settings
@@ -6,6 +7,7 @@ export interface InvoicePreset {
   id: string;
   label: string;
   locale: InvoiceLocale;
+  numberLocale: NumberLocale;
   currency: string;
   pageSize: PageSize;
   countryCode: string;
@@ -16,6 +18,7 @@ export const INVOICE_PRESETS: InvoicePreset[] = [
     id: "us",
     label: "United States",
     locale: "en-US",
+    numberLocale: "en-US",
     currency: "USD",
     pageSize: "LETTER",
     countryCode: "us",
@@ -24,6 +27,7 @@ export const INVOICE_PRESETS: InvoicePreset[] = [
     id: "fr",
     label: "France",
     locale: "fr-FR",
+    numberLocale: "fr-FR",
     currency: "EUR",
     pageSize: "A4",
     countryCode: "fr",
@@ -32,6 +36,7 @@ export const INVOICE_PRESETS: InvoicePreset[] = [
 
 export function getPresetFromSettings(
   locale: InvoiceLocale,
+  numberLocale: NumberLocale,
   currency: string,
   pageSize: PageSize,
 ): InvoicePreset | null {
@@ -39,6 +44,7 @@ export function getPresetFromSettings(
     INVOICE_PRESETS.find(
       (p) =>
         p.locale === locale &&
+        p.numberLocale === numberLocale &&
         p.currency === currency &&
         p.pageSize === pageSize,
     ) || null
@@ -84,6 +90,20 @@ export interface PaperSizeOption {
 export const PAPER_SIZES: PaperSizeOption[] = [
   { value: "LETTER", label: "Letter", dimensions: "8.5 × 11 in" },
   { value: "A4", label: "A4", dimensions: "210 × 297 mm" },
+];
+
+// Number formats (decimal/thousand separators)
+export interface NumberFormatOption {
+  value: NumberLocale;
+  label: string;
+  example: string;
+}
+
+export const NUMBER_FORMATS: NumberFormatOption[] = [
+  { value: "en-US", label: "1,234.56", example: "US/UK" },
+  { value: "fr-FR", label: "1 234,56", example: "France" },
+  { value: "de-DE", label: "1.234,56", example: "Germany" },
+  { value: "de-CH", label: "1'234.56", example: "Switzerland" },
 ];
 
 export interface InvoiceTranslations {

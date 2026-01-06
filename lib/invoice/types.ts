@@ -1,4 +1,4 @@
-import type { InvoiceLocale, PageSize } from "./translations";
+import type { InvoiceLocale, NumberLocale, PageSize } from "./translations";
 
 export interface LineItem {
   id: string;
@@ -11,6 +11,7 @@ export interface LineItem {
 export interface InvoiceFormState {
   // Locale & format
   locale: InvoiceLocale;
+  numberLocale: NumberLocale;
   pageSize: PageSize;
 
   // From details

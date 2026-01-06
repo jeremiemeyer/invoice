@@ -27,6 +27,8 @@ import {
   INVOICE_PRESETS,
   type InvoiceLocale,
   LANGUAGES,
+  NUMBER_FORMATS,
+  type NumberLocale,
   PAPER_SIZES,
   type PageSize,
 } from "@/lib/invoice/translations";
@@ -45,6 +47,7 @@ interface InvoiceHtmlPreviewProps {
   currentStep: number;
   onStepClick: (step: number) => void;
   onLocaleChange: (locale: InvoiceLocale) => void;
+  onNumberLocaleChange: (numberLocale: NumberLocale) => void;
   onCurrencyChange: (currency: string) => void;
   onPageSizeChange: (pageSize: PageSize) => void;
 }
@@ -83,6 +86,9 @@ function PreviewSection({
   const isActive = stepIndex === currentStep;
 
   return (
+    // biome-ignore lint/a11y/useKeyWithClickEvents: Preview sections are clickable areas, not primary actions
+    // biome-ignore lint/a11y/useFocusableInteractive: Preview sections are visual feedback, keyboard nav not needed
+    // biome-ignore lint/a11y/useSemanticElements: Using div for complex layout with corner brackets
     <div
       onClick={() => onStepClick(stepIndex)}
       data-active={isActive}
@@ -138,6 +144,7 @@ export function InvoiceHtmlPreview({
   currentStep,
   onStepClick,
   onLocaleChange,
+  onNumberLocaleChange,
   onCurrencyChange,
   onPageSizeChange,
 }: InvoiceHtmlPreviewProps) {
@@ -146,11 +153,15 @@ export function InvoiceHtmlPreview({
   const pageSizeConfig = getPageSizeConfig(invoice.pageSize);
   const currentPreset = getPresetFromSettings(
     invoice.locale,
+    invoice.numberLocale,
     invoice.currency,
     invoice.pageSize,
   );
   const currentCurrency = CURRENCIES.find((c) => c.value === invoice.currency);
   const currentLanguage = LANGUAGES.find((l) => l.value === invoice.locale);
+  const currentNumberFormat = NUMBER_FORMATS.find(
+    (n) => n.value === invoice.numberLocale,
+  );
   const currentPaperSize = PAPER_SIZES.find(
     (p) => p.value === invoice.pageSize,
   );
@@ -189,6 +200,7 @@ export function InvoiceHtmlPreview({
                   const preset = INVOICE_PRESETS.find((p) => p.id === presetId);
                   if (preset) {
                     onLocaleChange(preset.locale);
+                    onNumberLocaleChange(preset.numberLocale);
                     onCurrencyChange(preset.currency);
                     onPageSizeChange(preset.pageSize);
                   }
@@ -318,6 +330,39 @@ export function InvoiceHtmlPreview({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        {/* Number Format */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">Number Format</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              <span>{currentNumberFormat?.label ?? invoice.numberLocale}</span>
+              <span className="text-muted-foreground text-xs">
+                {currentNumberFormat?.example}
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={invoice.numberLocale}
+                onValueChange={(value) =>
+                  onNumberLocaleChange(value as NumberLocale)
+                }
+              >
+                {NUMBER_FORMATS.map((format) => (
+                  <DropdownMenuRadioItem
+                    key={format.value}
+                    value={format.value}
+                  >
+                    <span>{format.label}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {format.example}
+                    </span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Invoice container - no rounded corners (it's paper) */}
@@ -383,6 +428,7 @@ export function InvoiceHtmlPreview({
               {invoice.showFromLogo && (
                 <div className="mb-3 flex w-fit flex-1">
                   {invoice.fromLogoUrl ? (
+                    // biome-ignore lint/performance/noImgElement: Using img for base64/external URLs in preview
                     <img
                       src={invoice.fromLogoUrl}
                       alt={invoice.fromName}
@@ -445,6 +491,7 @@ export function InvoiceHtmlPreview({
               {invoice.showCustomerLogo && (
                 <div className="mb-3 flex w-fit flex-1">
                   {invoice.customerLogoUrl ? (
+                    // biome-ignore lint/performance/noImgElement: Using img for base64/external URLs in preview
                     <img
                       src={invoice.customerLogoUrl}
                       alt={invoice.customerName}
@@ -541,16 +588,21 @@ export function InvoiceHtmlPreview({
                   <p className="truncate font-medium text-gray-600">
                     {item.quantity}
                   </p>
-                  <p className="truncate font-medium text-gray-600">
-                    {formatCurrency(item.price, invoice.currency)}
+                  <p className="font-medium text-gray-600 whitespace-nowrap">
+                    {formatCurrency(
+                      item.price,
+                      invoice.currency,
+                      invoice.numberLocale,
+                    )}
                   </p>
-                  <p className="truncate text-right font-medium text-gray-600">
+                  <p className="text-right font-medium text-gray-600 whitespace-nowrap">
                     {formatCurrency(
                       calculateLineItemTotal({
                         price: item.price,
                         quantity: item.quantity,
                       }),
                       invoice.currency,
+                      invoice.numberLocale,
                     )}
                   </p>
                 </div>
@@ -575,7 +627,11 @@ export function InvoiceHtmlPreview({
                     {t.subtotal}
                   </div>
                   <p className="text-right text-xs font-medium text-gray-600">
-                    {formatCurrency(totals.subTotal, invoice.currency)}
+                    {formatCurrency(
+                      totals.subTotal,
+                      invoice.currency,
+                      invoice.numberLocale,
+                    )}
                   </p>
                 </div>
 
@@ -586,7 +642,12 @@ export function InvoiceHtmlPreview({
                       {t.discount}
                     </div>
                     <p className="text-right text-xs font-medium text-gray-600">
-                      -{formatCurrency(invoice.discount, invoice.currency)}
+                      -
+                      {formatCurrency(
+                        invoice.discount,
+                        invoice.currency,
+                        invoice.numberLocale,
+                      )}
                     </p>
                   </div>
                 )}
@@ -599,7 +660,11 @@ export function InvoiceHtmlPreview({
                       {t.tax} ({invoice.taxRate}%)
                     </div>
                     <p className="text-right text-xs font-medium text-gray-600">
-                      {formatCurrency(totals.tax, invoice.currency)}
+                      {formatCurrency(
+                        totals.tax,
+                        invoice.currency,
+                        invoice.numberLocale,
+                      )}
                     </p>
                   </div>
                 )}
@@ -610,7 +675,11 @@ export function InvoiceHtmlPreview({
                     {t.total}
                   </div>
                   <p className="text-right font-medium">
-                    {formatCurrency(totals.total, invoice.currency)}
+                    {formatCurrency(
+                      totals.total,
+                      invoice.currency,
+                      invoice.numberLocale,
+                    )}
                   </p>
                 </div>
               </div>

@@ -171,25 +171,33 @@ export function TotalsSection({ state, setField, totals }: TotalsSectionProps) {
       <div className="border-t pt-4 space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Subtotal</span>
-          <span>{formatCurrency(totals.subTotal, currency)}</span>
+          <span>
+            {formatCurrency(totals.subTotal, currency, state.numberLocale)}
+          </span>
         </div>
         {state.includeTax && state.taxRate > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">
               Tax ({state.taxRate}%)
             </span>
-            <span>{formatCurrency(totals.tax, currency)}</span>
+            <span>
+              {formatCurrency(totals.tax, currency, state.numberLocale)}
+            </span>
           </div>
         )}
         {state.includeDiscount && state.discount > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Discount</span>
-            <span>-{formatCurrency(state.discount, currency)}</span>
+            <span>
+              -{formatCurrency(state.discount, currency, state.numberLocale)}
+            </span>
           </div>
         )}
         <div className="flex justify-between font-semibold text-lg pt-2 border-t">
           <span>Total</span>
-          <span>{formatCurrency(totals.total, currency)}</span>
+          <span>
+            {formatCurrency(totals.total, currency, state.numberLocale)}
+          </span>
         </div>
       </div>
     </div>
