@@ -13,7 +13,13 @@ pnpm dev        # Start dev server at http://localhost:3000
 pnpm build      # Production build
 pnpm start      # Run production server
 pnpm lint       # Run ESLint + Biome
+pnpm check      # TypeScript type checking (tsc --noEmit)
 ```
+
+## Git Hooks (Husky)
+
+- **pre-commit**: Runs `lint-staged` (Biome + ESLint on staged files)
+- **pre-push**: Runs `pnpm check` and `pnpm build`
 
 ## Architecture
 
