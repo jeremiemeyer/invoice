@@ -20,6 +20,7 @@ import {
 } from "@/lib/invoice/lexical-to-html";
 import {
   CURRENCIES,
+  getDocumentTypeLabels,
   getLocaleConfig,
   getPageSizeConfig,
   getPresetFromSettings,
@@ -46,10 +47,12 @@ interface InvoiceHtmlPreviewProps {
   totals: InvoiceTotals;
   currentStep: number;
   onStepClick: (step: number) => void;
-  onLocaleChange: (locale: InvoiceLocale) => void;
-  onNumberLocaleChange: (numberLocale: NumberLocale) => void;
-  onCurrencyChange: (currency: string) => void;
-  onPageSizeChange: (pageSize: PageSize) => void;
+  onLocaleChange?: (locale: InvoiceLocale) => void;
+  onNumberLocaleChange?: (numberLocale: NumberLocale) => void;
+  onCurrencyChange?: (currency: string) => void;
+  onPageSizeChange?: (pageSize: PageSize) => void;
+  showSettings?: boolean;
+  className?: string;
 }
 
 function formatDate(dateStr: string, locale: string): string {
@@ -147,8 +150,11 @@ export function InvoiceHtmlPreview({
   onNumberLocaleChange,
   onCurrencyChange,
   onPageSizeChange,
+  showSettings = true,
+  className,
 }: InvoiceHtmlPreviewProps) {
   const t = getTranslations(invoice.locale);
+  const docLabels = getDocumentTypeLabels(invoice.locale, invoice.documentType);
   const localeConfig = getLocaleConfig(invoice.locale);
   const pageSizeConfig = getPageSizeConfig(invoice.pageSize);
   const currentPreset = getPresetFromSettings(
@@ -167,14 +173,20 @@ export function InvoiceHtmlPreview({
   );
 
   return (
-    <div className="relative flex h-full items-center justify-center overflow-auto bg-muted/30 p-6">
+    <div
+      className={cn(
+        "relative flex h-full items-center justify-center overflow-auto bg-muted/30 p-6",
+        className,
+      )}
+    >
       {/* Floating controls */}
-      <div className="absolute top-4 right-4 z-10 flex w-52 flex-col gap-3">
-        {/* Invoice Preset */}
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs text-muted-foreground">
-            Invoice Preset
-          </Label>
+      {showSettings && onLocaleChange && onNumberLocaleChange && onCurrencyChange && onPageSizeChange && (
+        <div className="absolute top-4 right-4 z-10 flex w-52 flex-col gap-3">
+          {/* Invoice Preset */}
+          <div className="flex flex-col gap-1">
+            <Label className="text-xs text-muted-foreground">
+              Invoice Preset
+            </Label>
           <DropdownMenu>
             <DropdownMenuTrigger className={dropdownTriggerClasses}>
               {currentPreset ? (
@@ -364,6 +376,7 @@ export function InvoiceHtmlPreview({
           </DropdownMenu>
         </div>
       </div>
+      )}
 
       {/* Invoice container - no rounded corners (it's paper) */}
       <div
@@ -384,7 +397,7 @@ export function InvoiceHtmlPreview({
           <div className="grid h-14 grid-cols-2 items-center px-8">
             <div>
               <p className="text-[10px] font-semibold uppercase text-gray-400">
-                {t.invoiceNo}
+                {docLabels.documentNo}
               </p>
               <p className="text-xs font-medium">
                 {invoice.invoiceNumber || "-"}
@@ -401,7 +414,7 @@ export function InvoiceHtmlPreview({
               </div>
               <div className="ml-6">
                 <p className="pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
-                  {t.dueDate}
+                  {docLabels.dateLabel}
                 </p>
                 <p className="text-xs font-medium">
                   {formatDate(invoice.dueDate, localeConfig.dateLocale)}

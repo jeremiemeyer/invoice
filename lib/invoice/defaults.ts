@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
-import type { InvoiceFormState, LineItem } from "./types";
+import type { InvoiceLocale } from "./translations";
+import type { DocumentType, InvoiceFormState, LineItem } from "./types";
 
 export function createLineItem(): LineItem {
   return {
@@ -20,15 +21,33 @@ function getDueDate(daysFromNow = 30): string {
   return date.toISOString().split("T")[0];
 }
 
-function generateInvoiceNumber(): string {
+function getDocumentPrefix(
+  documentType: DocumentType,
+  locale: InvoiceLocale,
+): string {
+  const prefixes = {
+    invoice: { "en-US": "INV", "fr-FR": "FA" },
+    quote: { "en-US": "QUO", "fr-FR": "DEV" },
+  };
+  return prefixes[documentType][locale];
+}
+
+export function generateDocumentNumber(
+  documentType: DocumentType,
+  locale: InvoiceLocale,
+): string {
   const year = new Date().getFullYear();
   const random = Math.floor(Math.random() * 10000)
     .toString()
     .padStart(4, "0");
-  return `INV-${year}-${random}`;
+  const prefix = getDocumentPrefix(documentType, locale);
+  return `${prefix}-${year}-${random}`;
 }
 
 export const defaultInvoiceState: InvoiceFormState = {
+  // Document type
+  documentType: "invoice",
+
   // Locale & format
   locale: "en-US",
   numberLocale: "en-US",
@@ -79,7 +98,10 @@ export const defaultInvoiceState: InvoiceFormState = {
 export function getDefaultState(): InvoiceFormState {
   return {
     ...defaultInvoiceState,
-    invoiceNumber: generateInvoiceNumber(),
+    invoiceNumber: generateDocumentNumber(
+      defaultInvoiceState.documentType,
+      defaultInvoiceState.locale,
+    ),
     issueDate: getToday(),
     dueDate: getDueDate(30),
     lineItems: [createLineItem()],

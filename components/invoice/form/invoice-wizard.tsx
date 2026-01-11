@@ -9,6 +9,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { pdf } from "@react-pdf/renderer";
 import { Button } from "@/components/ui/button";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
+import { DocumentTypeSelector } from "./document-type-selector";
 import { PdfTemplate } from "../pdf/pdf-template";
 import { InvoiceDetailsStep } from "./steps/invoice-details-step";
 import { InvoiceTermsStep } from "./steps/invoice-terms-step";
@@ -33,6 +34,7 @@ interface InvoiceWizardProps {
   totals: UseInvoiceReturn["totals"];
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  compact?: boolean;
 }
 
 export function InvoiceWizard({
@@ -44,6 +46,7 @@ export function InvoiceWizard({
   totals,
   currentStep,
   setCurrentStep,
+  compact = false,
 }: InvoiceWizardProps) {
   const previousStepLabel =
     currentStep > 0 ? STEPS[currentStep - 1].label : null;
@@ -58,7 +61,8 @@ export function InvoiceWizard({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${state.invoiceNumber || "invoice"}.pdf`;
+    const filePrefix = state.documentType === "quote" ? "quote" : "invoice";
+    link.download = `${filePrefix}-${state.invoiceNumber || "document"}.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -80,20 +84,30 @@ export function InvoiceWizard({
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === STEPS.length - 1;
 
+  const contentWrapper = compact ? "mx-auto max-w-sm" : "";
+
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between border-b px-6 py-4 pl-20">
-        <h1 className="text-xl font-semibold">New Invoice</h1>
-        <Button type="button" onClick={handleDownload}>
-          <HugeiconsIcon icon={Download04Icon} size={16} strokeWidth={2} />
-          Download PDF
-        </Button>
+      <header
+        className={`border-b px-6 py-4 ${compact ? "" : "pl-20"}`}
+      >
+        <div className={`flex items-center justify-between ${contentWrapper}`}>
+          <DocumentTypeSelector
+            documentType={state.documentType}
+            onDocumentTypeChange={(type) => setField("documentType", type)}
+          />
+          <Button type="button" onClick={handleDownload}>
+            <HugeiconsIcon icon={Download04Icon} size={16} strokeWidth={2} />
+            Download PDF
+          </Button>
+        </div>
       </header>
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Step content */}
-        <div className="flex-1 overflow-y-auto p-6 pl-20">
+        <div className={`flex-1 overflow-y-auto p-6 ${compact ? "" : "pl-20"}`}>
+          <div className={contentWrapper}>
           {currentStep === 0 && (
             <YourCompanyStep state={state} setField={setField} />
           )}
@@ -115,50 +129,55 @@ export function InvoiceWizard({
           {currentStep === 4 && (
             <InvoiceTermsStep state={state} setField={setField} />
           )}
+          </div>
         </div>
 
         {/* Navigation buttons */}
-        <footer className="flex items-center justify-between border-t px-6 py-4 pl-20">
-          <div className="flex-1 w-full gap-2">
-            {!isFirstStep && (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={goToPreviousStep}
-                className="h-auto flex-col items-start gap-0.5 px-4 py-2 w-full"
-              >
-                <span className="flex items-center text-xs gap-1.5 text-muted-foreground">
-                  <HugeiconsIcon
-                    icon={ArrowLeft02Icon}
-                    size={16}
-                    strokeWidth={2}
-                  />
-                  Previous
-                </span>
-                <span className="text-sm font-medium">{previousStepLabel}</span>
-              </Button>
-            )}
-          </div>
+        <footer
+          className={`border-t px-6 py-4 ${compact ? "" : "pl-20"}`}
+        >
+          <div className={`flex items-center justify-between ${contentWrapper}`}>
+            <div className="flex-1 w-full gap-2">
+              {!isFirstStep && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={goToPreviousStep}
+                  className="h-auto flex-col items-start gap-0.5 px-4 py-2 w-full"
+                >
+                  <span className="flex items-center text-xs gap-1.5 text-muted-foreground">
+                    <HugeiconsIcon
+                      icon={ArrowLeft02Icon}
+                      size={16}
+                      strokeWidth={2}
+                    />
+                    Previous
+                  </span>
+                  <span className="text-sm font-medium">{previousStepLabel}</span>
+                </Button>
+              )}
+            </div>
 
-          <div className="flex-1 w-full gap-2">
-            {!isLastStep && (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={goToNextStep}
-                className="h-auto flex-col items-end gap-0.5 px-4 py-2 w-full"
-              >
-                <span className="flex items-center text-xs gap-1.5 text-muted-foreground">
-                  Next
-                  <HugeiconsIcon
-                    icon={ArrowRight02Icon}
-                    size={16}
-                    strokeWidth={2}
-                  />
-                </span>
-                <span className="text-sm font-medium">{nextStepLabel}</span>
-              </Button>
-            )}
+            <div className="flex-1 w-full gap-2">
+              {!isLastStep && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={goToNextStep}
+                  className="h-auto flex-col items-end gap-0.5 px-4 py-2 w-full"
+                >
+                  <span className="flex items-center text-xs gap-1.5 text-muted-foreground">
+                    Next
+                    <HugeiconsIcon
+                      icon={ArrowRight02Icon}
+                      size={16}
+                      strokeWidth={2}
+                    />
+                  </span>
+                  <span className="text-sm font-medium">{nextStepLabel}</span>
+                </Button>
+              )}
+            </div>
           </div>
         </footer>
       </div>

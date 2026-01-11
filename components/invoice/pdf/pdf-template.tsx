@@ -2,7 +2,11 @@ import { Document, Font, Image, Page, Text, View } from "@react-pdf/renderer";
 import { calculateLineItemTotal } from "@/lib/invoice/calculate";
 import { formatCurrency } from "@/lib/invoice/format-currency";
 import { LexicalPdf } from "@/lib/invoice/lexical-pdf";
-import { getLocaleConfig, getTranslations } from "@/lib/invoice/translations";
+import {
+  getDocumentTypeLabels,
+  getLocaleConfig,
+  getTranslations,
+} from "@/lib/invoice/translations";
 import type { InvoiceFormState, InvoiceTotals } from "@/lib/invoice/types";
 
 // Register Inter font
@@ -79,6 +83,7 @@ const colors = {
 
 export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
   const t = getTranslations(invoice.locale);
+  const docLabels = getDocumentTypeLabels(invoice.locale, invoice.documentType);
   const localeConfig = getLocaleConfig(invoice.locale);
 
   return (
@@ -118,7 +123,7 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                   marginBottom: 2,
                 }}
               >
-                {t.invoiceNo}
+                {docLabels.documentNo}
               </Text>
               <Text style={{ fontSize: 10, fontWeight: 500 }}>
                 {invoice.invoiceNumber || "-"}
@@ -153,7 +158,7 @@ export function PdfTemplate({ invoice, totals }: PdfTemplateProps) {
                     marginBottom: 2,
                   }}
                 >
-                  {t.dueDate}
+                  {docLabels.dateLabel}
                 </Text>
                 <Text style={{ fontSize: 10, fontWeight: 500 }}>
                   {formatDate(invoice.dueDate, localeConfig.dateLocale)}

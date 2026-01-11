@@ -1,5 +1,7 @@
 import type { InvoiceLocale, NumberLocale, PageSize } from "./translations";
 
+export type DocumentType = "invoice" | "quote";
+
 export interface LineItem {
   id: string;
   name: string;
@@ -9,6 +11,9 @@ export interface LineItem {
 }
 
 export interface InvoiceFormState {
+  // Document type
+  documentType: DocumentType;
+
   // Locale & format
   locale: InvoiceLocale;
   numberLocale: NumberLocale;

@@ -1,3 +1,5 @@
+import type { DocumentType } from "./types";
+
 export type InvoiceLocale = "en-US" | "fr-FR";
 export type NumberLocale = "en-US" | "fr-FR" | "de-DE" | "de-CH";
 export type PageSize = "A4" | "LETTER";
@@ -195,4 +197,48 @@ export function getLocaleConfig(locale: InvoiceLocale) {
 
 export function getPageSizeConfig(pageSize: PageSize) {
   return pageSizeConfig[pageSize];
+}
+
+// Document type specific labels
+export interface DocumentTypeLabels {
+  documentNo: string;
+  dateLabel: string;
+  newDocument: string;
+}
+
+export const documentTypeLabels: Record<
+  InvoiceLocale,
+  Record<DocumentType, DocumentTypeLabels>
+> = {
+  "en-US": {
+    invoice: {
+      documentNo: "Invoice No",
+      dateLabel: "Due date",
+      newDocument: "New Invoice",
+    },
+    quote: {
+      documentNo: "Quote No",
+      dateLabel: "Valid until",
+      newDocument: "New Quote",
+    },
+  },
+  "fr-FR": {
+    invoice: {
+      documentNo: "Facture N°",
+      dateLabel: "Echéance",
+      newDocument: "Nouvelle Facture",
+    },
+    quote: {
+      documentNo: "Devis N°",
+      dateLabel: "Validité",
+      newDocument: "Nouveau Devis",
+    },
+  },
+};
+
+export function getDocumentTypeLabels(
+  locale: InvoiceLocale,
+  documentType: DocumentType,
+): DocumentTypeLabels {
+  return documentTypeLabels[locale][documentType];
 }
