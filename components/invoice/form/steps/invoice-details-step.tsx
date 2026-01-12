@@ -1,20 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import { Add01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  InlineField,
-  LabelAboveTextarea,
-} from "@/components/ui/inline-field";
-import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
+import { InlineField, LabelAboveTextarea } from "@/components/ui/inline-field";
 import { createLineItem } from "@/lib/invoice/defaults";
+import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 import { LineItemRow } from "../line-item-row";
 
 interface InvoiceDetailsStepProps {
@@ -33,7 +30,7 @@ export function InvoiceDetailsStep({
   reorderLineItems,
 }: InvoiceDetailsStepProps) {
   const [moreOptionsOpen, setMoreOptionsOpen] = useState(
-    state.includeTax || state.includeDiscount
+    state.includeTax || state.includeDiscount,
   );
   const [newlyAddedItemId, setNewlyAddedItemId] = useState<string | null>(null);
 
@@ -71,7 +68,9 @@ export function InvoiceDetailsStep({
               canMoveUp={index > 0}
               canMoveDown={index < state.lineItems.length - 1}
               autoOpen={item.id === newlyAddedItemId}
-              onPopoverOpenChange={(isOpen) => handlePopoverOpenChange(item.id, isOpen)}
+              onPopoverOpenChange={(isOpen) =>
+                handlePopoverOpenChange(item.id, isOpen)
+              }
             />
           ))}
         </div>

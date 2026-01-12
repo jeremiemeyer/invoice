@@ -22,6 +22,13 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         autoComplete="section-customer organization"
       />
 
+      <InlineField
+        label="Subtitle"
+        value={state.customerSubtitle}
+        onChange={(value) => setField("customerSubtitle", value)}
+        placeholder="Department or project"
+      />
+
       <InlineImageField
         label="Logo"
         value={state.customerLogoUrl}

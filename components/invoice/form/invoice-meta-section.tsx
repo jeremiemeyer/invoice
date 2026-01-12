@@ -1,6 +1,6 @@
 "use client";
 
-import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
@@ -9,7 +9,10 @@ interface InvoiceMetaSectionProps {
   setField: UseInvoiceReturn["setField"];
 }
 
-export function InvoiceMetaSection({ state, setField }: InvoiceMetaSectionProps) {
+export function InvoiceMetaSection({
+  state,
+  setField,
+}: InvoiceMetaSectionProps) {
   return (
     <FieldGroup>
       <Field>

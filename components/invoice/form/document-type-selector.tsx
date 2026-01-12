@@ -39,16 +39,12 @@ export function DocumentTypeSelector({
       <DropdownMenuContent align="start" className="w-48">
         <DropdownMenuRadioGroup
           value={documentType}
-          onValueChange={(value) =>
-            onDocumentTypeChange(value as DocumentType)
-          }
+          onValueChange={(value) => onDocumentTypeChange(value as DocumentType)}
         >
           <DropdownMenuRadioItem value="invoice">
             New Invoice
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="quote">
-            New Quote
-          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="quote">New Quote</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

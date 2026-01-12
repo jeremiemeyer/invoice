@@ -5,6 +5,7 @@ import {
   INSERT_UNORDERED_LIST_COMMAND,
 } from "@lexical/list";
 import {
+  $convertFromMarkdownString,
   BOLD_ITALIC_STAR,
   BOLD_ITALIC_UNDERSCORE,
   BOLD_STAR,
@@ -32,10 +33,13 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import type { EditorThemeClasses } from "lexical";
 import {
+  $getRoot,
   COMMAND_PRIORITY_HIGH,
+  COMMAND_PRIORITY_LOW,
   FORMAT_TEXT_COMMAND,
   KEY_ENTER_COMMAND,
   KEY_ESCAPE_COMMAND,
+  PASTE_COMMAND,
   type SerializedEditorState,
 } from "lexical";
 import {
@@ -44,14 +48,117 @@ import {
   ItalicIcon,
   ListIcon,
   ListOrderedIcon,
+  SparklesIcon,
   StrikethroughIcon,
   UnderlineIcon,
 } from "lucide-react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { nodes } from "@/components/blocks/editor-00/nodes";
 import { editorTheme } from "@/components/editor/themes/editor-theme";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
+
+// Transformers used in the editor
+const MARKDOWN_TRANSFORMERS = [
+  BOLD_STAR,
+  BOLD_UNDERSCORE,
+  ITALIC_STAR,
+  ITALIC_UNDERSCORE,
+  BOLD_ITALIC_STAR,
+  BOLD_ITALIC_UNDERSCORE,
+  STRIKETHROUGH,
+  INLINE_CODE,
+  UNORDERED_LIST,
+  ORDERED_LIST,
+];
+
+function MarkdownPastePlugin() {
+  const [editor] = useLexicalComposerContext();
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    return editor.registerCommand(
+      PASTE_COMMAND,
+      (event: ClipboardEvent) => {
+        const text = event.clipboardData?.getData("text/plain");
+        if (!text) return false;
+
+        // Simple markdown detection
+        const hasMarkdown =
+          /^#+\s/m.test(text) || // Headers
+          /^[-*]\s/m.test(text) || // Unordered lists
+          /^\d+\.\s/m.test(text) || // Ordered lists
+          /^>\s/m.test(text) || // Blockquotes
+          /`[^`]+`/.test(text) || // Inline code
+          /(\*\*|__|\*|_|~~)/.test(text); // Bold/Italic/Strikethrough
+
+        if (hasMarkdown) {
+          // Show toast after a short delay to allow paste to complete
+          setTimeout(() => setShowToast(true), 100);
+        }
+        return false;
+      },
+      COMMAND_PRIORITY_LOW,
+    );
+  }, [editor]);
+
+  const handleApply = () => {
+    editor.update(() => {
+      const root = $getRoot();
+      const textContent = root.getTextContent();
+      $convertFromMarkdownString(textContent, MARKDOWN_TRANSFORMERS);
+    });
+    setShowToast(false);
+  };
+
+  const handleDismiss = () => {
+    setShowToast(false);
+  };
+
+  return (
+    <Popover open={showToast} onOpenChange={setShowToast}>
+      <PopoverTrigger className="absolute bottom-4 left-1/2 h-px w-px -translate-x-1/2 opacity-0 pointer-events-none">
+        <span className="sr-only">Open formatting options</span>
+      </PopoverTrigger>
+      <PopoverContent
+        side="top"
+        sideOffset={12}
+        className="flex flex-row w-auto items-center gap-2 border-none bg-zinc-900 px-3 py-1.5 text-zinc-50 shadow-2xl shadow-black/50 rounded-full ring-0"
+      >
+        <div className="flex items-center gap-2 px-1">
+          <SparklesIcon className="h-3.5 w-3.5 text-amber-400 fill-amber-400/20" />
+          <span className="text-xs font-medium tracking-tight">
+            Markdown detected
+          </span>
+        </div>
+
+        <Button
+          size="xs"
+          variant="secondary"
+          className="h-6 rounded-full px-3 text-[11px] font-semibold text-zinc-900 hover:bg-white transition-colors"
+          onClick={handleApply}
+        >
+          Apply
+        </Button>
+
+        <Button
+          size="xs"
+          variant="ghost"
+          onClick={handleDismiss}
+          className="h-6 rounded-full px-3 text-[11px] font-semibold hover:bg-white transition-colors"
+        >
+          Dismiss
+        </Button>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 // Custom theme for line item editor - no margin between paragraphs
 const lineItemTheme: EditorThemeClasses = {
@@ -244,26 +351,14 @@ export function LineItemEditor({
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
+          <MarkdownPastePlugin />
         </div>
 
         <ListPlugin />
         <HistoryPlugin />
         <TabIndentationPlugin />
         <AutoFocusPlugin />
-        <MarkdownShortcutPlugin
-          transformers={[
-            BOLD_STAR,
-            BOLD_UNDERSCORE,
-            ITALIC_STAR,
-            ITALIC_UNDERSCORE,
-            BOLD_ITALIC_STAR,
-            BOLD_ITALIC_UNDERSCORE,
-            STRIKETHROUGH,
-            INLINE_CODE,
-            UNORDERED_LIST,
-            ORDERED_LIST,
-          ]}
-        />
+        <MarkdownShortcutPlugin transformers={MARKDOWN_TRANSFORMERS} />
         <KeyboardShortcutsPlugin onSave={onSave} onCancel={onCancel} />
 
         <OnChangePlugin

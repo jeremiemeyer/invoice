@@ -4,13 +4,13 @@ import {
   ArrowLeft02Icon,
   ArrowRight02Icon,
   Download04Icon,
+  Loading03Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { pdf } from "@react-pdf/renderer";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 import { DocumentTypeSelector } from "./document-type-selector";
-import { PdfTemplate } from "../pdf/pdf-template";
 import { InvoiceDetailsStep } from "./steps/invoice-details-step";
 import { InvoiceTermsStep } from "./steps/invoice-terms-step";
 import { PaymentMethodStep } from "./steps/payment-method-step";
@@ -48,25 +48,49 @@ export function InvoiceWizard({
   setCurrentStep,
   compact = false,
 }: InvoiceWizardProps) {
+  const [isGenerating, setIsGenerating] = useState(false);
+
   const previousStepLabel =
     currentStep > 0 ? STEPS[currentStep - 1].label : null;
   const nextStepLabel =
     currentStep < STEPS.length - 1 ? STEPS[currentStep + 1].label : null;
 
   const handleDownload = async () => {
-    const blob = await pdf(
-      <PdfTemplate invoice={state} totals={totals} />,
-    ).toBlob();
+    if (isGenerating) return;
 
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    const filePrefix = state.documentType === "quote" ? "quote" : "invoice";
-    link.download = `${filePrefix}-${state.invoiceNumber || "document"}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    setIsGenerating(true);
+    try {
+      const response = await fetch("/api/generate-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          invoice: state,
+          totals,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const filePrefix = state.documentType === "quote" ? "quote" : "invoice";
+      link.download = `${filePrefix}-${state.invoiceNumber || "document"}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      // TODO: Show user-friendly error notification
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const goToNextStep = () => {
@@ -89,17 +113,37 @@ export function InvoiceWizard({
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <header
-        className={`border-b px-6 py-4 ${compact ? "" : "pl-20"}`}
-      >
+      <header className={`border-b px-6 py-4 ${compact ? "" : "pl-20"}`}>
         <div className={`flex items-center justify-between ${contentWrapper}`}>
           <DocumentTypeSelector
             documentType={state.documentType}
             onDocumentTypeChange={(type) => setField("documentType", type)}
           />
-          <Button type="button" onClick={handleDownload}>
-            <HugeiconsIcon icon={Download04Icon} size={16} strokeWidth={2} />
-            Download PDF
+          <Button
+            type="button"
+            onClick={handleDownload}
+            disabled={isGenerating}
+          >
+            {isGenerating ? (
+              <>
+                <HugeiconsIcon
+                  icon={Loading03Icon}
+                  size={16}
+                  strokeWidth={2}
+                  className="animate-spin"
+                />
+                Generating...
+              </>
+            ) : (
+              <>
+                <HugeiconsIcon
+                  icon={Download04Icon}
+                  size={16}
+                  strokeWidth={2}
+                />
+                Download PDF
+              </>
+            )}
           </Button>
         </div>
       </header>
@@ -108,35 +152,35 @@ export function InvoiceWizard({
         {/* Step content */}
         <div className={`flex-1 overflow-y-auto p-6 ${compact ? "" : "pl-20"}`}>
           <div className={contentWrapper}>
-          {currentStep === 0 && (
-            <YourCompanyStep state={state} setField={setField} />
-          )}
-          {currentStep === 1 && (
-            <YourClientStep state={state} setField={setField} />
-          )}
-          {currentStep === 2 && (
-            <InvoiceDetailsStep
-              state={state}
-              setField={setField}
-              updateLineItem={updateLineItem}
-              removeLineItem={removeLineItem}
-              reorderLineItems={reorderLineItems}
-            />
-          )}
-          {currentStep === 3 && (
-            <PaymentMethodStep state={state} setField={setField} />
-          )}
-          {currentStep === 4 && (
-            <InvoiceTermsStep state={state} setField={setField} />
-          )}
+            {currentStep === 0 && (
+              <YourCompanyStep state={state} setField={setField} />
+            )}
+            {currentStep === 1 && (
+              <YourClientStep state={state} setField={setField} />
+            )}
+            {currentStep === 2 && (
+              <InvoiceDetailsStep
+                state={state}
+                setField={setField}
+                updateLineItem={updateLineItem}
+                removeLineItem={removeLineItem}
+                reorderLineItems={reorderLineItems}
+              />
+            )}
+            {currentStep === 3 && (
+              <PaymentMethodStep state={state} setField={setField} />
+            )}
+            {currentStep === 4 && (
+              <InvoiceTermsStep state={state} setField={setField} />
+            )}
           </div>
         </div>
 
         {/* Navigation buttons */}
-        <footer
-          className={`border-t px-6 py-4 ${compact ? "" : "pl-20"}`}
-        >
-          <div className={`flex items-center justify-between ${contentWrapper}`}>
+        <footer className={`border-t px-6 py-4 ${compact ? "" : "pl-20"}`}>
+          <div
+            className={`flex items-center justify-between ${contentWrapper}`}
+          >
             <div className="flex-1 w-full gap-2">
               {!isFirstStep && (
                 <Button
@@ -153,7 +197,9 @@ export function InvoiceWizard({
                     />
                     Previous
                   </span>
-                  <span className="text-sm font-medium">{previousStepLabel}</span>
+                  <span className="text-sm font-medium">
+                    {previousStepLabel}
+                  </span>
                 </Button>
               )}
             </div>

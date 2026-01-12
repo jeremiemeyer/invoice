@@ -105,24 +105,23 @@
   --custom-idea: oklch(0.779 0.1141 279.55);
 
   --shadow-custom-xs:
-  0 0 0 1px rgba(0, 0, 0, 0.07), 0px 2px 4px -2px rgba(0, 0, 0, 0.04), 0px 4px
-  8px -4px rgba(0, 0, 0, 0.03);
+    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 2px 4px -2px rgba(0, 0, 0, 0.04),
+    0px 4px 8px -4px rgba(0, 0, 0, 0.03);
   --shadow-custom-sm:
-    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 0px 4px -2px rgba(0, 0, 0, 0.04), 0px 4px
-    8px -4px rgba(0, 0, 0, 0.06);
+    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 0px 4px -2px rgba(0, 0, 0, 0.04),
+    0px 4px 8px -4px rgba(0, 0, 0, 0.06);
   --shadow-custom-md:
-    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 2px 4px -2px rgba(0, 0, 0, 0.04), 0px 8px
-    16px -4px rgba(0, 0, 0, 0.06);
+    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 2px 4px -2px rgba(0, 0, 0, 0.04),
+    0px 8px 16px -4px rgba(0, 0, 0, 0.06);
   --shadow-custom-lg:
-    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 4px 8px -4px rgba(0, 0, 0, 0.06), 0px 8px
-    24px -8px rgba(0, 0, 0, 0.1);
+    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 4px 8px -4px rgba(0, 0, 0, 0.06),
+    0px 8px 24px -8px rgba(0, 0, 0, 0.1);
   --shadow-custom-xl:
-    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 4px 8px -4px rgba(0, 0, 0, 0.06), 0px 8px
-    32px -8px rgba(0, 0, 0, 0.2);
+    0 0 0 1px rgba(0, 0, 0, 0.07), 0px 4px 8px -4px rgba(0, 0, 0, 0.06),
+    0px 8px 32px -8px rgba(0, 0, 0, 0.2);
   --shadow-custom-input:
-    0 0 0 1px rgba(0, 0, 0, 0.1), 0px 2px 4px -2px rgba(0, 0, 0, 0.04), 0px 4px
-    8px -4px rgba(0, 0, 0, 0.3);
-
+    0 0 0 1px rgba(0, 0, 0, 0.1), 0px 2px 4px -2px rgba(0, 0, 0, 0.04),
+    0px 4px 8px -4px rgba(0, 0, 0, 0.3);
 }
 
 .dark {
@@ -132,7 +131,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.87 0.00 0);
+  --primary: oklch(0.87 0 0);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -293,4 +292,51 @@
 .fade-in-stagger[data-animate="true"] {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Invoice document typography */
+.invoice-document {
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+  font-feature-settings:
+    "kern" 1,
+    "liga" 1,
+    "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.4;
+}
+
+/* Tabular figures for number columns - quantities, prices, amounts */
+.invoice-document .tabular-nums {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Apply tabular figures to all numeric data in invoice */
+.invoice-document [data-numeric="true"] {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Print styles for PDF generation */
+@media print {
+  /* Hide interactive elements */
+  [data-interactive="true"],
+  [data-print-hide="true"] {
+    display: none !important;
+  }
+
+  /* Ensure colors print correctly */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Remove shadows and effects that don't print well */
+  .invoice-document {
+    box-shadow: none !important;
+  }
+
+  /* Page setup */
+  @page {
+    margin: 0;
+  }
 }

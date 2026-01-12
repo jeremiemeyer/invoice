@@ -22,6 +22,13 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         autoComplete="organization"
       />
 
+      <InlineField
+        label="Subtitle"
+        value={state.fromSubtitle}
+        onChange={(value) => setField("fromSubtitle", value)}
+        placeholder="Web Design & Development"
+      />
+
       <InlineImageField
         label="Logo"
         value={state.fromLogoUrl}

@@ -1,4 +1,4 @@
-import type { SerializedEditorState, SerializedRootNode } from "lexical";
+import type { SerializedEditorState } from "lexical";
 
 interface SerializedNode {
   type: string;

@@ -176,12 +176,12 @@ export const pageSizeConfig: Record<
   { previewWidth: number; previewHeight: number }
 > = {
   LETTER: {
-    // Letter: 8.5 x 11 inches (ratio 1:1.294)
+    // Letter: 8.5 x 11 inches in PDF points
     previewWidth: 612,
     previewHeight: 792,
   },
   A4: {
-    // A4: 210 x 297 mm (ratio 1:1.414)
+    // A4: 210 x 297 mm in PDF points
     previewWidth: 595,
     previewHeight: 842,
   },

@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+import { DEFAULT_TEMPLATE_ID } from "./templates";
 import type { InvoiceLocale } from "./translations";
 import type { DocumentType, InvoiceFormState, LineItem } from "./types";
 
@@ -45,8 +46,9 @@ export function generateDocumentNumber(
 }
 
 export const defaultInvoiceState: InvoiceFormState = {
-  // Document type
+  // Document type & template
   documentType: "invoice",
+  templateId: DEFAULT_TEMPLATE_ID,
 
   // Locale & format
   locale: "en-US",
@@ -55,6 +57,7 @@ export const defaultInvoiceState: InvoiceFormState = {
 
   // From details
   fromName: "",
+  fromSubtitle: "",
   fromAddress: "",
   fromCity: "",
   fromCountry: "",
@@ -66,6 +69,7 @@ export const defaultInvoiceState: InvoiceFormState = {
 
   // Customer details
   customerName: "",
+  customerSubtitle: "",
   customerAddress: "",
   customerCity: "",
   customerCountry: "",

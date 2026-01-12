@@ -63,6 +63,9 @@ export function InvoicePage() {
           {/* Fixed settings */}
           <InvoiceSettings
             invoice={state}
+            onTemplateChange={(templateId) =>
+              setField("templateId", templateId)
+            }
             onLocaleChange={(locale) => setField("locale", locale)}
             onNumberLocaleChange={(numberLocale) =>
               setField("numberLocale", numberLocale)
@@ -77,7 +80,6 @@ export function InvoicePage() {
             totals={totals}
             currentStep={currentStep}
             onStepClick={setCurrentStep}
-            showSettings={false}
           />
         </main>
       </div>

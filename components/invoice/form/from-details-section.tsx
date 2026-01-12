@@ -1,6 +1,6 @@
 "use client";
 
-import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
@@ -9,7 +9,10 @@ interface FromDetailsSectionProps {
   setField: UseInvoiceReturn["setField"];
 }
 
-export function FromDetailsSection({ state, setField }: FromDetailsSectionProps) {
+export function FromDetailsSection({
+  state,
+  setField,
+}: FromDetailsSectionProps) {
   return (
     <FieldGroup>
       <Field>
@@ -19,6 +22,16 @@ export function FromDetailsSection({ state, setField }: FromDetailsSectionProps)
           value={state.fromName}
           onChange={(e) => setField("fromName", e.target.value)}
           placeholder="Your name or company"
+        />
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="fromSubtitle">Subtitle</FieldLabel>
+        <Input
+          id="fromSubtitle"
+          value={state.fromSubtitle}
+          onChange={(e) => setField("fromSubtitle", e.target.value)}
+          placeholder="Web Design & Development"
         />
       </Field>
 

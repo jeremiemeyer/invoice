@@ -11,8 +11,9 @@ export interface LineItem {
 }
 
 export interface InvoiceFormState {
-  // Document type
+  // Document type & template
   documentType: DocumentType;
+  templateId: string;
 
   // Locale & format
   locale: InvoiceLocale;
@@ -21,6 +22,7 @@ export interface InvoiceFormState {
 
   // From details
   fromName: string;
+  fromSubtitle: string;
   fromAddress: string;
   fromCity: string;
   fromCountry: string;
@@ -32,6 +34,7 @@ export interface InvoiceFormState {
 
   // Customer details
   customerName: string;
+  customerSubtitle: string;
   customerAddress: string;
   customerCity: string;
   customerCountry: string;

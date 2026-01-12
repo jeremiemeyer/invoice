@@ -156,11 +156,7 @@ export function InlineImageField({
             className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-md border border-black/10 transition-all hover:border-black/20"
           >
             {/* biome-ignore lint: Using native img for data URLs */}
-            <img
-              src={value}
-              alt=""
-              className="h-full w-full object-cover"
-            />
+            <img src={value} alt="" className="h-full w-full object-cover" />
           </button>
           <button
             type="button"

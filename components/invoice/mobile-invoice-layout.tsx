@@ -87,7 +87,6 @@ export function MobileInvoiceLayout({
             totals={totals}
             currentStep={currentStep}
             onStepClick={setCurrentStep}
-            showSettings={false}
             className="pointer-events-auto !p-0 !overflow-visible !bg-transparent"
           />
         </div>
@@ -102,6 +101,7 @@ export function MobileInvoiceLayout({
       {/* Settings button - z-30 */}
       <InvoiceSettings
         invoice={state}
+        onTemplateChange={(templateId) => setField("templateId", templateId)}
         onLocaleChange={(locale) => setField("locale", locale)}
         onNumberLocaleChange={(numberLocale) =>
           setField("numberLocale", numberLocale)

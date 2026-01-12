@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { getTemplate, TEMPLATES } from "@/lib/invoice/templates";
 import {
   CURRENCIES,
   getPresetFromSettings,
@@ -38,6 +39,7 @@ const dropdownTriggerClasses = cn(
 
 interface InvoiceSettingsProps {
   invoice: InvoiceFormState;
+  onTemplateChange: (templateId: string) => void;
   onLocaleChange: (locale: InvoiceLocale) => void;
   onNumberLocaleChange: (numberLocale: NumberLocale) => void;
   onCurrencyChange: (currency: string) => void;
@@ -48,11 +50,13 @@ interface InvoiceSettingsProps {
 
 function SettingsContent({
   invoice,
+  onTemplateChange,
   onLocaleChange,
   onNumberLocaleChange,
   onCurrencyChange,
   onPageSizeChange,
 }: Omit<InvoiceSettingsProps, "collapsed" | "className">) {
+  const currentTemplate = getTemplate(invoice.templateId);
   const currentPreset = getPresetFromSettings(
     invoice.locale,
     invoice.numberLocale,
@@ -70,9 +74,43 @@ function SettingsContent({
 
   return (
     <div className="flex w-52 flex-col gap-3">
-      {/* Invoice Preset */}
+      {/* Template */}
       <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Invoice Preset</Label>
+        <Label className="text-xs text-muted-foreground">Template</Label>
+        <DropdownMenu>
+          <DropdownMenuTrigger className={dropdownTriggerClasses}>
+            <div
+              className={cn(
+                "h-3 w-3 rounded-full",
+                currentTemplate.previewColor,
+              )}
+            />
+            <span>{currentTemplate.name}</span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuRadioGroup
+              value={invoice.templateId}
+              onValueChange={onTemplateChange}
+            >
+              {TEMPLATES.map((template) => (
+                <DropdownMenuRadioItem key={template.id} value={template.id}>
+                  <div
+                    className={cn(
+                      "h-3 w-3 rounded-full",
+                      template.previewColor,
+                    )}
+                  />
+                  <span>{template.name}</span>
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Settings Preset */}
+      <div className="flex flex-col gap-1">
+        <Label className="text-xs text-muted-foreground">Settings Preset</Label>
         <DropdownMenu>
           <DropdownMenuTrigger className={dropdownTriggerClasses}>
             {currentPreset ? (
@@ -155,7 +193,9 @@ function SettingsContent({
                     width={16}
                   />
                   <span>{currency.value}</span>
-                  <span className="text-muted-foreground">{currency.label}</span>
+                  <span className="text-muted-foreground">
+                    {currency.label}
+                  </span>
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -260,6 +300,7 @@ function SettingsContent({
 
 export function InvoiceSettings({
   invoice,
+  onTemplateChange,
   onLocaleChange,
   onNumberLocaleChange,
   onCurrencyChange,
@@ -283,6 +324,7 @@ export function InvoiceSettings({
         <PopoverContent align="end" className="w-auto p-4">
           <SettingsContent
             invoice={invoice}
+            onTemplateChange={onTemplateChange}
             onLocaleChange={onLocaleChange}
             onNumberLocaleChange={onNumberLocaleChange}
             onCurrencyChange={onCurrencyChange}
@@ -297,6 +339,7 @@ export function InvoiceSettings({
     <div className={className}>
       <SettingsContent
         invoice={invoice}
+        onTemplateChange={onTemplateChange}
         onLocaleChange={onLocaleChange}
         onNumberLocaleChange={onNumberLocaleChange}
         onCurrencyChange={onCurrencyChange}

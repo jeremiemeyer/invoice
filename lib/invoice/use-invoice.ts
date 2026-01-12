@@ -2,10 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useLocalStorage from "@/hooks/use-local-storage";
-import type { InvoiceFormState, InvoiceTotals, LineItem } from "./types";
-import { createLineItem, defaultInvoiceState, getDefaultState } from "./defaults";
 import { calculateTotal } from "./calculate";
+import {
+  createLineItem,
+  defaultInvoiceState,
+  getDefaultState,
+} from "./defaults";
 import { parseLexicalState, plainTextToLexical } from "./lexical-to-html";
+import type { InvoiceFormState, InvoiceTotals, LineItem } from "./types";
 
 // Migrate plain text name to Lexical JSON format
 function migrateLineItemName(name: string): string {
@@ -31,7 +35,7 @@ const STORAGE_KEY = "invoice-draft";
 export function useInvoice() {
   const [state, setState, resetStorage] = useLocalStorage<InvoiceFormState>(
     STORAGE_KEY,
-    defaultInvoiceState
+    defaultInvoiceState,
   );
 
   const [isHydrated, setIsHydrated] = useState(false);
@@ -42,9 +46,10 @@ export function useInvoice() {
     // Read from localStorage and set defaults if needed
     const defaults = getDefaultState();
     setState((prev) => {
-      const lineItems = prev.lineItems.length === 0
-        ? defaults.lineItems
-        : migrateLineItems(prev.lineItems);
+      const lineItems =
+        prev.lineItems.length === 0
+          ? defaults.lineItems
+          : migrateLineItems(prev.lineItems);
       return {
         ...prev,
         invoiceNumber: prev.invoiceNumber || defaults.invoiceNumber,
@@ -53,6 +58,7 @@ export function useInvoice() {
         lineItems,
       };
     });
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsHydrated(true);
   }, [setState]);
 
@@ -71,14 +77,17 @@ export function useInvoice() {
       state.discount,
       state.includeTax,
       state.includeDiscount,
-    ]
+    ],
   );
 
   const setField = useCallback(
-    <K extends keyof InvoiceFormState>(field: K, value: InvoiceFormState[K]) => {
+    <K extends keyof InvoiceFormState>(
+      field: K,
+      value: InvoiceFormState[K],
+    ) => {
       setState((prev) => ({ ...prev, [field]: value }));
     },
-    [setState]
+    [setState],
   );
 
   const addLineItem = useCallback(() => {
@@ -93,11 +102,11 @@ export function useInvoice() {
       setState((prev) => ({
         ...prev,
         lineItems: prev.lineItems.map((item) =>
-          item.id === id ? { ...item, [field]: value } : item
+          item.id === id ? { ...item, [field]: value } : item,
         ),
       }));
     },
-    [setState]
+    [setState],
   );
 
   const removeLineItem = useCallback(
@@ -112,7 +121,7 @@ export function useInvoice() {
         };
       });
     },
-    [setState]
+    [setState],
   );
 
   const replaceLineItem = useCallback(
@@ -120,11 +129,11 @@ export function useInvoice() {
       setState((prev) => ({
         ...prev,
         lineItems: prev.lineItems.map((item) =>
-          item.id === id ? { ...item, ...data } : item
+          item.id === id ? { ...item, ...data } : item,
         ),
       }));
     },
-    [setState]
+    [setState],
   );
 
   const reorderLineItems = useCallback(
@@ -136,7 +145,7 @@ export function useInvoice() {
         return { ...prev, lineItems: items };
       });
     },
-    [setState]
+    [setState],
   );
 
   const reset = useCallback(() => {

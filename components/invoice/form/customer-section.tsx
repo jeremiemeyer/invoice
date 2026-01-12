@@ -1,6 +1,6 @@
 "use client";
 
-import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
@@ -19,6 +19,16 @@ export function CustomerSection({ state, setField }: CustomerSectionProps) {
           value={state.customerName}
           onChange={(e) => setField("customerName", e.target.value)}
           placeholder="Customer name or company"
+        />
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="customerSubtitle">Subtitle</FieldLabel>
+        <Input
+          id="customerSubtitle"
+          value={state.customerSubtitle}
+          onChange={(e) => setField("customerSubtitle", e.target.value)}
+          placeholder="Department or project"
         />
       </Field>
 
