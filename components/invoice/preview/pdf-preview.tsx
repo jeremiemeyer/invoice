@@ -218,8 +218,8 @@ export function PdfPreview({
       {/* Hidden measurement container */}
       {measurementContent}
 
-      {/* Centering wrapper with padding */}
-      <div className="flex flex-col items-center py-8 px-4 min-h-full gap-4">
+      {/* Centering wrapper - offset left to account for settings panel on right */}
+      <div className="flex min-h-full flex-col items-center justify-center gap-4 py-8 pl-4 pr-32">
         {/* Main preview - active page */}
         <PageView
           pageIndex={activePage}
