@@ -6,7 +6,7 @@ import useLocalStorage from "@/hooks/use-local-storage";
 import { useInvoice } from "@/lib/invoice/use-invoice";
 import { InvoiceWizard } from "./form/invoice-wizard";
 import { MobileInvoiceLayout } from "./mobile-invoice-layout";
-import { InvoiceHtmlPreview } from "./preview/invoice-html-preview";
+import { PdfPreview } from "./preview/pdf-preview";
 import { InvoiceSettings } from "./preview/invoice-settings";
 
 const STEP_STORAGE_KEY = "invoice-wizard-step";
@@ -16,10 +16,12 @@ export function InvoicePage() {
     state,
     totals,
     isHydrated,
+    isBlank,
     setField,
     updateLineItem,
     removeLineItem,
     reorderLineItems,
+    loadState,
   } = useInvoice();
 
   // Step state is now managed at page level to share between wizard and preview
@@ -55,6 +57,8 @@ export function InvoicePage() {
             totals={totals}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
+            isBlank={isBlank}
+            loadState={loadState}
           />
         </aside>
 
@@ -66,6 +70,7 @@ export function InvoicePage() {
             onTemplateChange={(templateId) =>
               setField("templateId", templateId)
             }
+            onStyleChange={(styleId) => setField("styleId", styleId)}
             onLocaleChange={(locale) => setField("locale", locale)}
             onNumberLocaleChange={(numberLocale) =>
               setField("numberLocale", numberLocale)
@@ -75,9 +80,10 @@ export function InvoicePage() {
             className="fixed top-4 right-4 z-10"
           />
 
-          <InvoiceHtmlPreview
+          <PdfPreview
             invoice={state}
             totals={totals}
+            styleId={state.styleId || "classic"}
             currentStep={currentStep}
             onStepClick={setCurrentStep}
           />
@@ -95,6 +101,8 @@ export function InvoicePage() {
           totals={totals}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
+          isBlank={isBlank}
+          loadState={loadState}
         />
       </div>
     </div>

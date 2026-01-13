@@ -16,6 +16,8 @@ interface MobileInvoiceLayoutProps {
   totals: UseInvoiceReturn["totals"];
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  isBlank: boolean;
+  loadState: UseInvoiceReturn["loadState"];
 }
 
 export function MobileInvoiceLayout({
@@ -27,6 +29,8 @@ export function MobileInvoiceLayout({
   totals,
   currentStep,
   setCurrentStep,
+  isBlank,
+  loadState,
 }: MobileInvoiceLayoutProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [previewScale, setPreviewScale] = useState(0.5);
@@ -102,6 +106,7 @@ export function MobileInvoiceLayout({
       <InvoiceSettings
         invoice={state}
         onTemplateChange={(templateId) => setField("templateId", templateId)}
+        onStyleChange={(styleId) => setField("styleId", styleId)}
         onLocaleChange={(locale) => setField("locale", locale)}
         onNumberLocaleChange={(numberLocale) =>
           setField("numberLocale", numberLocale)
@@ -132,6 +137,8 @@ export function MobileInvoiceLayout({
               totals={totals}
               currentStep={currentStep}
               setCurrentStep={setCurrentStep}
+              isBlank={isBlank}
+              loadState={loadState}
               compact
             />
 

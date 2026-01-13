@@ -49,6 +49,7 @@ export const defaultInvoiceState: InvoiceFormState = {
   // Document type & template
   documentType: "invoice",
   templateId: DEFAULT_TEMPLATE_ID,
+  styleId: "classic",
 
   // Locale & format
   locale: "en-US",

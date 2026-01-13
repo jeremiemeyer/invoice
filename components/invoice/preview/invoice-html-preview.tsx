@@ -35,16 +35,14 @@ function PreviewSection({
   const isActive = stepIndex === currentStep;
 
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: Preview sections are clickable areas, not primary actions
-    // biome-ignore lint/a11y/useFocusableInteractive: Preview sections are visual feedback, keyboard nav not needed
-    // biome-ignore lint/a11y/useSemanticElements: Using div for complex layout with corner brackets
+    // biome-ignore lint/a11y/useFocusableInteractive: Preview click
     <div
       onClick={() => onStepClick?.(stepIndex)}
       data-active={isActive}
       data-interactive="true"
       className={cn(
         "group relative w-full cursor-pointer transition-all duration-300",
-        "hover:data-[active=false]:bg-black/[0.02]",
+        "hover:data-[active=false]:bg-neutral-100/80",
         className,
       )}
       role="button"

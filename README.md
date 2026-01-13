@@ -6,8 +6,9 @@ A simple invoice generator inspired by [Midday](https://midday.ai) and [cryptoin
 
 - **Multi-step wizard** - Guided form to create invoices step by step
 - **Rich text descriptions** - Full markdown support for line item descriptions using [Lexical](https://lexical.dev/) and [shadcn-editor](https://shadcn-editor.vercel.app/)
-- **Server-side PDF generation** - Generate pixel-perfect PDFs via Playwright/Chromium, matching the HTML preview exactly
+- **Client-side PDF generation** - Generate pixel-perfect PDFs directly in the browser using React-PDF with dual-rendering (same component for preview and PDF)
 - **Markdown paste detection** - Paste markdown into line items and apply formatting with one click
+- **Layouts & Styles** - Customizable invoice appearance (see Architecture below)
 - **Presets & settings** - Configure currency, language, number format, and paper size
   - Currencies: USD, EUR, GBP, CAD, AUD, JPY, CHF
   - Languages: English, French
@@ -22,8 +23,51 @@ A simple invoice generator inspired by [Midday](https://midday.ai) and [cryptoin
 - React 19
 - Tailwind CSS 4
 - Lexical (rich text editor)
-- Playwright + @sparticuz/chromium (PDF generation)
+- React-PDF (client-side PDF generation)
 - shadcn/ui components
+
+## Architecture
+
+### Dual-Rendering System
+
+The app uses a local fork of `react-pdf-html` for dual-rendering:
+
+```
+React-PDF Components (View, Text, Page)
+              ↓
+    ┌─────────┴─────────┐
+    ↓                   ↓
+HTML Preview       PDF Download
+(isHtml=true)      (isHtml=false)
+```
+
+Same components render as HTML divs for preview and native PDF for download.
+
+### Layouts vs Styles
+
+The invoice appearance is split into two concepts:
+
+| Concept | Description | Location |
+|---------|-------------|----------|
+| **Layout** | Structure and positioning of elements (where things go) | `lib/invoice/layouts/` |
+| **Style** | Visual tokens: colors, fonts, spacing (how things look) | `lib/invoice/styles/` |
+
+**Available Layouts:**
+- Classic (default)
+
+**Available Styles:**
+- Classic - Clean grayscale
+- Classic Mono - Monospace labels and numbers
+- Elegant - Serif headings with warm accents
+
+### Key Files
+
+| File | Description |
+|------|-------------|
+| `lib/invoice/pdf/invoice-pdf-document.tsx` | Main document component |
+| `components/invoice/preview/pdf-preview.tsx` | HTML preview with multi-page carousel |
+| `lib/invoice/layouts/` | Layout components (structure) |
+| `lib/invoice/styles/` | Style configurations (colors, fonts) |
 
 ## Getting Started
 
@@ -33,6 +77,10 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to start creating invoices.
+
+## Known Limitations
+
+See `TODO.md` for the current task list and `PAGE_BREAKS.md` for details on the multi-page synchronization challenge.
 
 ## License
 

@@ -152,10 +152,31 @@ export function useInvoice() {
     resetStorage();
   }, [resetStorage]);
 
+  const loadState = useCallback(
+    (newState: InvoiceFormState) => {
+      setState(newState);
+    },
+    [setState],
+  );
+
+  // Check if the invoice is essentially blank (no meaningful user input)
+  const isBlank = useMemo(() => {
+    const hasContent =
+      state.fromName.trim() !== "" ||
+      state.customerName.trim() !== "" ||
+      state.lineItems.some(
+        (item) => item.name.trim() !== "" || item.price !== 0,
+      ) ||
+      state.paymentDetails.trim() !== "" ||
+      state.notes.trim() !== "";
+    return !hasContent;
+  }, [state]);
+
   return {
     state,
     totals,
     isHydrated,
+    isBlank,
     setField,
     addLineItem,
     updateLineItem,
@@ -163,6 +184,7 @@ export function useInvoice() {
     replaceLineItem,
     reorderLineItems,
     reset,
+    loadState,
   };
 }
 

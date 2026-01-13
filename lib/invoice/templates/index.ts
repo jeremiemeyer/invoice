@@ -1,5 +1,4 @@
 import { classicTemplate } from "./classic";
-import { classicMonoTemplate } from "./classic-mono";
 import type { InvoiceTemplateConfig } from "./types";
 
 export type { InvoiceTemplateConfig };
@@ -10,7 +9,6 @@ export const DEFAULT_TEMPLATE_ID = "classic";
 /** All available invoice templates */
 export const TEMPLATES: InvoiceTemplateConfig[] = [
   classicTemplate,
-  classicMonoTemplate,
 ];
 
 /**

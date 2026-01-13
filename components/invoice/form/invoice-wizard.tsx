@@ -9,8 +9,11 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { downloadInvoicePdf } from "@/lib/invoice/pdf/generate-pdf";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
+import type { InvoiceFormState } from "@/lib/invoice/types";
 import { DocumentTypeSelector } from "./document-type-selector";
+import { FileMenu } from "./file-menu";
 import { InvoiceDetailsStep } from "./steps/invoice-details-step";
 import { InvoiceTermsStep } from "./steps/invoice-terms-step";
 import { PaymentMethodStep } from "./steps/payment-method-step";
@@ -34,6 +37,8 @@ interface InvoiceWizardProps {
   totals: UseInvoiceReturn["totals"];
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  isBlank: boolean;
+  loadState: (state: InvoiceFormState) => void;
   compact?: boolean;
 }
 
@@ -46,6 +51,8 @@ export function InvoiceWizard({
   totals,
   currentStep,
   setCurrentStep,
+  isBlank,
+  loadState,
   compact = false,
 }: InvoiceWizardProps) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -60,31 +67,12 @@ export function InvoiceWizard({
 
     setIsGenerating(true);
     try {
-      const response = await fetch("/api/generate-pdf", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          invoice: state,
-          totals,
-        }),
+      await downloadInvoicePdf({
+        invoice: state,
+        totals,
+        layoutId: "classic",
+        styleId: state.styleId || "classic",
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate PDF");
-      }
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      const filePrefix = state.documentType === "quote" ? "quote" : "invoice";
-      link.download = `${filePrefix}-${state.invoiceNumber || "document"}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading PDF:", error);
       // TODO: Show user-friendly error notification
@@ -115,10 +103,13 @@ export function InvoiceWizard({
       {/* Header */}
       <header className={`border-b px-6 py-4 ${compact ? "" : "pl-20"}`}>
         <div className={`flex items-center justify-between ${contentWrapper}`}>
-          <DocumentTypeSelector
-            documentType={state.documentType}
-            onDocumentTypeChange={(type) => setField("documentType", type)}
-          />
+          <div className="flex items-center gap-2">
+            <FileMenu state={state} onLoadState={loadState} isBlank={isBlank} />
+            <DocumentTypeSelector
+              documentType={state.documentType}
+              onDocumentTypeChange={(type) => setField("documentType", type)}
+            />
+          </div>
           <Button
             type="button"
             onClick={handleDownload}

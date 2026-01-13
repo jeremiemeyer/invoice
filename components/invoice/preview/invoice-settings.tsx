@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getTemplate, TEMPLATES } from "@/lib/invoice/templates";
+import { getAllStyles, getStyle } from "@/lib/invoice/styles";
 import {
   CURRENCIES,
   getPresetFromSettings,
@@ -40,6 +41,7 @@ const dropdownTriggerClasses = cn(
 interface InvoiceSettingsProps {
   invoice: InvoiceFormState;
   onTemplateChange: (templateId: string) => void;
+  onStyleChange: (styleId: string) => void;
   onLocaleChange: (locale: InvoiceLocale) => void;
   onNumberLocaleChange: (numberLocale: NumberLocale) => void;
   onCurrencyChange: (currency: string) => void;
@@ -51,12 +53,15 @@ interface InvoiceSettingsProps {
 function SettingsContent({
   invoice,
   onTemplateChange,
+  onStyleChange,
   onLocaleChange,
   onNumberLocaleChange,
   onCurrencyChange,
   onPageSizeChange,
 }: Omit<InvoiceSettingsProps, "collapsed" | "className">) {
   const currentTemplate = getTemplate(invoice.templateId);
+  const currentStyle = getStyle(invoice.styleId || "classic");
+  const allStyles = getAllStyles();
   const currentPreset = getPresetFromSettings(
     invoice.locale,
     invoice.numberLocale,
@@ -101,6 +106,36 @@ function SettingsContent({
                     )}
                   />
                   <span>{template.name}</span>
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Style */}
+      <div className="flex flex-col gap-1">
+        <Label className="text-xs text-muted-foreground">Style</Label>
+        <DropdownMenu>
+          <DropdownMenuTrigger className={dropdownTriggerClasses}>
+            <div
+              className="h-3 w-3 rounded-full"
+              style={{ backgroundColor: currentStyle.colors.accent }}
+            />
+            <span>{currentStyle.name}</span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuRadioGroup
+              value={invoice.styleId || "classic"}
+              onValueChange={onStyleChange}
+            >
+              {allStyles.map((style) => (
+                <DropdownMenuRadioItem key={style.id} value={style.id}>
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: style.colors.accent }}
+                  />
+                  <span>{style.name}</span>
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -301,6 +336,7 @@ function SettingsContent({
 export function InvoiceSettings({
   invoice,
   onTemplateChange,
+  onStyleChange,
   onLocaleChange,
   onNumberLocaleChange,
   onCurrencyChange,
@@ -325,6 +361,7 @@ export function InvoiceSettings({
           <SettingsContent
             invoice={invoice}
             onTemplateChange={onTemplateChange}
+            onStyleChange={onStyleChange}
             onLocaleChange={onLocaleChange}
             onNumberLocaleChange={onNumberLocaleChange}
             onCurrencyChange={onCurrencyChange}
@@ -340,6 +377,7 @@ export function InvoiceSettings({
       <SettingsContent
         invoice={invoice}
         onTemplateChange={onTemplateChange}
+        onStyleChange={onStyleChange}
         onLocaleChange={onLocaleChange}
         onNumberLocaleChange={onNumberLocaleChange}
         onCurrencyChange={onCurrencyChange}

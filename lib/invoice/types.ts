@@ -14,6 +14,8 @@ export interface InvoiceFormState {
   // Document type & template
   documentType: DocumentType;
   templateId: string;
+  /** Style ID for PDF styling (classic, ocean, forest, mono, royal) */
+  styleId: string;
 
   // Locale & format
   locale: InvoiceLocale;
