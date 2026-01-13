@@ -98,30 +98,43 @@ function createStyles(style: InvoiceStyle) {
       textTransform: "uppercase",
       fontFamily: labelFont,
       letterSpacing: fontStyle.monoLabels ? 0.5 : 0,
+      lineHeight: 1.25,
     } as Style,
     text: {
       fontSize: 10,
       fontWeight: 500,
       color: colors.secondary,
       fontFamily: fonts.body,
+      lineHeight: 1.25,
+    } as Style,
+    // For important values like invoice number (uses mono in mono style)
+    value: {
+      fontSize: 10,
+      fontWeight: 500,
+      color: colors.primary,
+      fontFamily: numberFont,
+      lineHeight: 1.25,
     } as Style,
     number: {
       fontSize: 10,
       fontWeight: 500,
       color: colors.secondary,
       fontFamily: numberFont,
+      lineHeight: 1.25,
     } as Style,
     mutedText: {
       fontSize: 10,
       fontWeight: 500,
       color: colors.muted,
       fontFamily: fonts.body,
+      lineHeight: 1.25,
     } as Style,
     heading: {
       fontSize: 18,
       fontWeight: 500,
       color: colors.primary,
       fontFamily: fonts.heading,
+      lineHeight: 1.15,
     } as Style,
     avatar: {
       width: 36,
@@ -130,6 +143,20 @@ function createStyles(style: InvoiceStyle) {
       backgroundColor: colors.avatarBg,
       alignItems: "center",
       justifyContent: "center",
+    } as Style,
+    avatarText: {
+      fontSize: 16,
+      fontWeight: 500,
+      color: colors.primary,
+      fontFamily: fonts.heading,
+    } as Style,
+    // For line item descriptions (body font)
+    itemText: {
+      fontSize: 10,
+      fontWeight: 500,
+      color: colors.primary,
+      fontFamily: fonts.body,
+      lineHeight: 1.25,
     } as Style,
   };
 }
@@ -318,7 +345,7 @@ export function InvoicePdfDocument({
       <Page
         size={invoice.pageSize}
         style={{
-          fontFamily: "Inter",
+          fontFamily: style.fonts.body,
           backgroundColor: colors.background,
           display: "flex",
           flexDirection: "column",
@@ -343,16 +370,7 @@ export function InvoicePdfDocument({
             {/* Left column: Invoice Number */}
             <View style={{ flex: 1, paddingHorizontal: LAYOUT.sectionPadding }}>
               <Text style={styles.label}>{documentTypeLabels.documentNo}</Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  fontWeight: 500,
-                  color: colors.primary,
-                  fontFamily: "Inter",
-                }}
-              >
-                {invoice.invoiceNumber || "-"}
-              </Text>
+              <Text style={styles.value}>{invoice.invoiceNumber || "-"}</Text>
             </View>
 
             {/* Right column: Dates - aligned with To section */}
@@ -366,13 +384,13 @@ export function InvoicePdfDocument({
             >
               <View style={{ width: LAYOUT.qtyColumnWidth }}>
                 <Text style={styles.label}>{translations.issued}</Text>
-                <Text style={styles.text}>
+                <Text style={styles.value}>
                   {formatDate(invoice.issueDate, localeConfig.dateLocale)}
                 </Text>
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.label}>{documentTypeLabels.dateLabel}</Text>
-                <Text style={styles.text}>
+                <Text style={styles.value}>
                   {formatDate(invoice.dueDate, localeConfig.dateLocale)}
                 </Text>
               </View>
@@ -416,14 +434,7 @@ export function InvoicePdfDocument({
                     />
                   ) : (
                     <View style={styles.avatar}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: 500,
-                          color: colors.primary,
-                          fontFamily: "Inter",
-                        }}
-                      >
+                      <Text style={styles.avatarText}>
                         {getInitial(invoice.fromName)}
                       </Text>
                     </View>
@@ -491,14 +502,7 @@ export function InvoicePdfDocument({
                     />
                   ) : (
                     <View style={styles.avatar}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: 500,
-                          color: colors.primary,
-                          fontFamily: "Inter",
-                        }}
-                      >
+                      <Text style={styles.avatarText}>
                         {getInitial(invoice.customerName)}
                       </Text>
                     </View>
@@ -559,7 +563,9 @@ export function InvoicePdfDocument({
               }}
             >
               {/* Left: Description label */}
-              <View style={{ flex: 1, paddingHorizontal: LAYOUT.sectionPadding }}>
+              <View
+                style={{ flex: 1, paddingHorizontal: LAYOUT.sectionPadding }}
+              >
                 <Text style={styles.label}>{translations.description}</Text>
               </View>
               {/* Right: Qty, Price, Amount labels */}
@@ -602,23 +608,12 @@ export function InvoicePdfDocument({
                     }}
                   >
                     {item.name ? (
-                      lexicalToPdf(parseLexicalState(item.name), {
-                        fontSize: 10,
-                        fontWeight: 500,
-                        color: colors.primary,
-                        fontFamily: "Inter",
-                      })
+                      lexicalToPdf(
+                        parseLexicalState(item.name),
+                        styles.itemText,
+                      )
                     ) : (
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          fontWeight: 500,
-                          color: colors.primary,
-                          fontFamily: "Inter",
-                        }}
-                      >
-                        -
-                      </Text>
+                      <Text style={styles.itemText}>-</Text>
                     )}
                   </View>
                   {/* Right: Qty, Price, Amount values */}
@@ -689,10 +684,8 @@ export function InvoicePdfDocument({
                 {/* Note content */}
                 <Text
                   style={{
+                    ...styles.mutedText,
                     fontSize: 8,
-                    fontWeight: 500,
-                    color: colors.muted,
-                    fontFamily: "Inter",
                   }}
                 >
                   {invoice.notes || "-"}
