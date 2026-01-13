@@ -17,5 +17,6 @@ export const classicMonoTemplate: InvoiceTemplateConfig = {
   fonts: {
     numbers: "font-mono",
     labels: "font-mono",
+    labelWeight: "font-light",
   },
 };

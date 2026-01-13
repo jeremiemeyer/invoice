@@ -82,6 +82,7 @@ export function InvoiceDocument({
   const avatarBgClass = template.colors.avatarBg;
   const numberClass = cn("tabular-nums", template.fonts.numbers);
   const labelFontClass = template.fonts.labels;
+  const labelWeightClass = template.fonts.labelWeight || "font-semibold";
 
   return (
     <>
@@ -96,7 +97,8 @@ export function InvoiceDocument({
           <div>
             <p
               className={cn(
-                "text-[8px] font-semibold uppercase",
+                "text-[8px] uppercase",
+                labelWeightClass,
                 labelClass,
                 labelFontClass,
               )}
@@ -111,7 +113,8 @@ export function InvoiceDocument({
             <div className="min-w-[60px]">
               <p
                 className={cn(
-                  "pb-0.5 text-[8px] font-semibold uppercase tracking-wider",
+                  "text-[8px] uppercase",
+                  labelWeightClass,
                   labelClass,
                   labelFontClass,
                 )}
@@ -125,7 +128,8 @@ export function InvoiceDocument({
             <div className="ml-6">
               <p
                 className={cn(
-                  "pb-0.5 text-[8px] font-semibold uppercase tracking-wider",
+                  "text-[8px] uppercase",
+                  labelWeightClass,
                   labelClass,
                   labelFontClass,
                 )}
@@ -157,7 +161,8 @@ export function InvoiceDocument({
           <div className="px-8 py-6">
             <p
               className={cn(
-                "pb-2 text-[8px] font-semibold uppercase",
+                "pb-2 text-[8px] uppercase",
+                labelWeightClass,
                 labelClass,
                 labelFontClass,
               )}
@@ -203,50 +208,35 @@ export function InvoiceDocument({
               </div>
               {invoice.fromEmail && (
                 <p
-                  className={cn(
-                    "mb-1 truncate text-[10px] font-medium",
-                    textClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", textClass)}
                 >
                   {invoice.fromEmail}
                 </p>
               )}
               {invoice.fromAddress && (
                 <p
-                  className={cn(
-                    "mb-0.5 truncate text-[10px] font-medium",
-                    labelClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
                   {invoice.fromAddress}
                 </p>
               )}
               {invoice.fromCity && (
                 <p
-                  className={cn(
-                    "mb-0.5 truncate text-[10px] font-medium",
-                    labelClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
                   {invoice.fromCity}
                 </p>
               )}
               {invoice.fromCountry && (
                 <p
-                  className={cn(
-                    "mb-0.5 truncate text-[10px] font-medium",
-                    labelClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
                   {invoice.fromCountry}
                 </p>
               )}
               {invoice.fromPhone && (
                 <p
-                  className={cn(
-                    "mb-0.5 truncate text-[10px] font-medium",
-                    labelClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
                   {invoice.fromPhone}
                 </p>
@@ -272,7 +262,8 @@ export function InvoiceDocument({
           <div className="px-8 py-6">
             <p
               className={cn(
-                "pb-2 text-[8px] font-semibold uppercase",
+                "pb-2 text-[8px] uppercase",
+                labelWeightClass,
                 labelClass,
                 labelFontClass,
               )}
@@ -318,50 +309,35 @@ export function InvoiceDocument({
               </div>
               {invoice.customerEmail && (
                 <p
-                  className={cn(
-                    "mb-1 truncate text-[10px] font-medium",
-                    textClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", textClass)}
                 >
                   {invoice.customerEmail}
                 </p>
               )}
               {invoice.customerAddress && (
                 <p
-                  className={cn(
-                    "mb-0.5 truncate text-[10px] font-medium",
-                    labelClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
                   {invoice.customerAddress}
                 </p>
               )}
               {invoice.customerCity && (
                 <p
-                  className={cn(
-                    "mb-0.5 truncate text-[10px] font-medium",
-                    labelClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
                   {invoice.customerCity}
                 </p>
               )}
               {invoice.customerCountry && (
                 <p
-                  className={cn(
-                    "mb-0.5 truncate text-[10px] font-medium",
-                    labelClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
                   {invoice.customerCountry}
                 </p>
               )}
               {invoice.customerPhone && (
                 <p
-                  className={cn(
-                    "mb-0.5 truncate text-[10px] font-medium",
-                    labelClass,
-                  )}
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
                   {invoice.customerPhone}
                 </p>
@@ -389,7 +365,8 @@ export function InvoiceDocument({
           {/* Header */}
           <div
             className={cn(
-              "grid grid-cols-2 text-[8px] font-semibold uppercase tracking-wider",
+              "grid grid-cols-2 text-[8px] uppercase",
+              labelWeightClass,
               labelClass,
               labelFontClass,
             )}
@@ -473,10 +450,11 @@ export function InvoiceDocument({
           <div className="grid grid-cols-2 py-3">
             {/* Note */}
             <div className="pr-6">
-              <div className="flex pb-1 pt-4">
+              <div className="flex min-h-[40px] items-center py-2">
                 <p
                   className={cn(
-                    "text-[10px] font-medium",
+                    "text-[10px]",
+                    labelWeightClass,
                     labelClass,
                     labelFontClass,
                   )}
@@ -635,7 +613,8 @@ export function InvoiceDocument({
         <div className="px-8 py-6">
           <p
             className={cn(
-              "text-[8px] font-semibold uppercase tracking-wider",
+              "text-[8px] uppercase",
+              labelWeightClass,
               labelClass,
               labelFontClass,
             )}

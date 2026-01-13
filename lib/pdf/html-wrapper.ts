@@ -32,7 +32,7 @@ export function wrapWithDocument(
   <!-- Inter font from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
   <style>
     /* Reset and base styles */
@@ -102,6 +102,7 @@ export function wrapWithDocument(
     .pr-4 { padding-right: ${s(16)}px; }
     .pr-6 { padding-right: ${s(24)}px; }
     .pb-0\\.5 { padding-bottom: ${s(2)}px; }
+    .pb-1 { padding-bottom: ${s(4)}px; }
     .pb-2 { padding-bottom: ${s(8)}px; }
     .pb-2\\.5 { padding-bottom: ${s(10)}px; }
     .pb-3 { padding-bottom: ${s(12)}px; }
@@ -147,9 +148,13 @@ export function wrapWithDocument(
     .text-lg { font-size: ${s(18)}px; line-height: 1.556; }
     .text-xl { font-size: ${s(20)}px; line-height: 1.4; }
     .text-2xl { font-size: ${s(24)}px; line-height: 1.333; }
+    .font-light { font-weight: 300; }
+    .font-normal { font-weight: 400; }
     .font-medium { font-weight: 500; }
     .font-semibold { font-weight: 600; }
     .font-mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; }
+    .leading-tight { line-height: 1.25; }
+    .leading-relaxed { line-height: 1.625; }
     .uppercase { text-transform: uppercase; }
     .tracking-wider { letter-spacing: 0.05em; }
     .text-right { text-align: right; }

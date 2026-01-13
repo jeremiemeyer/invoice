@@ -1,12 +1,17 @@
-import chromium from "@sparticuz/chromium";
+import chromium from "@sparticuz/chromium-min";
 import { type NextRequest, NextResponse } from "next/server";
-import { chromium as playwright } from "playwright-core";
+import puppeteer from "puppeteer-core";
 import type { InvoiceFormState, InvoiceTotals } from "@/lib/invoice/types";
 import { wrapWithDocument } from "@/lib/pdf/html-wrapper";
 import { renderInvoiceToHtml } from "@/lib/pdf/render-to-html";
 
 // Vercel serverless function config
-export const maxDuration = 30;
+export const maxDuration = 60;
+
+// Remote chromium binary for Vercel deployment
+// Must match the @sparticuz/chromium-min version - check https://github.com/Sparticuz/chromium/releases
+const CHROMIUM_REMOTE_URL =
+  "https://github.com/Sparticuz/chromium/releases/download/v131.0.0/chromium-v131.0.0-pack.tar";
 
 interface GeneratePdfRequest {
   invoice: InvoiceFormState;
@@ -33,11 +38,15 @@ export async function POST(request: NextRequest) {
 
     // Launch browser
     const isProduction = process.env.NODE_ENV === "production";
-    const browser = await playwright.launch({
-      args: isProduction ? chromium.args : [],
+    const browser = await puppeteer.launch({
+      args: isProduction ? chromium.args : ["--no-sandbox"],
       executablePath: isProduction
-        ? await chromium.executablePath()
-        : undefined,
+        ? await chromium.executablePath(CHROMIUM_REMOTE_URL)
+        : process.platform === "darwin"
+          ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+          : process.platform === "win32"
+            ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+            : "/usr/bin/google-chrome",
       headless: true,
     });
 
@@ -51,19 +60,19 @@ export async function POST(request: NextRequest) {
           ? { width: Math.round(595 * scale), height: Math.round(842 * scale) }
           : { width: Math.round(612 * scale), height: Math.round(792 * scale) };
 
-      await page.setViewportSize(viewportSize);
+      await page.setViewport(viewportSize);
 
       // Load the HTML content
       await page.setContent(fullHtml, {
-        waitUntil: "networkidle",
+        waitUntil: "networkidle0",
       });
 
       // Wait for fonts to load
-      await page.waitForFunction(() => document.fonts.ready);
+      await page.evaluateHandle(() => document.fonts.ready);
 
       // Generate PDF - no scaling needed, HTML is pre-scaled
       const pdf = await page.pdf({
-        format: invoice.pageSize,
+        format: invoice.pageSize === "A4" ? "A4" : "Letter",
         printBackground: true,
         margin: {
           top: "0",

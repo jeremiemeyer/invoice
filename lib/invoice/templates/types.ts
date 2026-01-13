@@ -30,5 +30,7 @@ export interface InvoiceTemplateConfig {
     numbers?: string;
     /** Font class for section labels - FROM, TO, DESCRIPTION, etc. (e.g., "font-mono") */
     labels?: string;
+    /** Font weight for labels (e.g., "font-light", "font-normal"). Defaults to "font-semibold" */
+    labelWeight?: string;
   };
 }
