@@ -29,10 +29,10 @@ export function wrapWithDocument(
   <meta name="viewport" content="width=${size.width}, height=${size.height}">
   <title>Invoice</title>
 
-  <!-- Inter font from Google Fonts -->
+  <!-- Fonts from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     /* Reset and base styles */
@@ -152,7 +152,7 @@ export function wrapWithDocument(
     .font-normal { font-weight: 400; }
     .font-medium { font-weight: 500; }
     .font-semibold { font-weight: 600; }
-    .font-mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; }
+    .font-mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; }
     .leading-tight { line-height: 1.25; }
     .leading-relaxed { line-height: 1.625; }
     .uppercase { text-transform: uppercase; }
