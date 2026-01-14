@@ -50,12 +50,16 @@ export function useInvoice() {
         prev.lineItems.length === 0
           ? defaults.lineItems
           : migrateLineItems(prev.lineItems);
+      // Migrate pageMargin: old boolean or missing value -> "none"
+      const pageMargin =
+        typeof prev.pageMargin === "string" ? prev.pageMargin : "none";
       return {
         ...prev,
         invoiceNumber: prev.invoiceNumber || defaults.invoiceNumber,
         issueDate: prev.issueDate || defaults.issueDate,
         dueDate: prev.dueDate || defaults.dueDate,
         lineItems,
+        pageMargin,
       };
     });
     // eslint-disable-next-line react-hooks/set-state-in-effect
