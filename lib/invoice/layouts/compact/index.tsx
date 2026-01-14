@@ -141,7 +141,7 @@ export function CompactLayout({
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: "flex-start",
+          alignItems: "stretch",
           borderBottomWidth: 1,
           borderBottomColor: colors.border,
         }}
@@ -192,20 +192,28 @@ export function CompactLayout({
 
           {/* Company Details */}
           <View style={{ flex: 1 }}>
-            <Text style={{ ...headingStyle, marginBottom: 2 }}>
-              {invoice.fromName || "-"}
-            </Text>
-            {invoice.fromSubtitle && (
-              <Text style={mutedTextStyle}>{invoice.fromSubtitle}</Text>
-            )}
+            {/* Name section */}
+            <View style={{ marginBottom: 6 }}>
+              <Text style={headingStyle}>{invoice.fromName || "-"}</Text>
+              {invoice.fromSubtitle && (
+                <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
+                  {invoice.fromSubtitle}
+                </Text>
+              )}
+            </View>
+            {/* Contact details */}
             {invoice.fromEmail && (
               <Text style={textStyle}>{invoice.fromEmail}</Text>
             )}
-            <Text style={mutedTextStyle}>
-              {[invoice.fromAddress, invoice.fromCity, invoice.fromCountry]
-                .filter(Boolean)
-                .join(", ")}
-            </Text>
+            {invoice.fromAddress && (
+              <Text style={mutedTextStyle}>{invoice.fromAddress}</Text>
+            )}
+            {invoice.fromCity && (
+              <Text style={mutedTextStyle}>{invoice.fromCity}</Text>
+            )}
+            {invoice.fromCountry && (
+              <Text style={mutedTextStyle}>{invoice.fromCountry}</Text>
+            )}
             {invoice.fromTaxId && (
               <Text style={mutedTextStyle}>
                 {t.taxId}: {invoice.fromTaxId}
@@ -254,18 +262,36 @@ export function CompactLayout({
           >
             {invoice.invoiceNumber || "-"}
           </Text>
-          <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-            <Text style={{ ...labelStyle, marginRight: 4 }}>{t.issued}</Text>
-            <Text style={mutedTextStyle}>
-              {formatDate(invoice.issueDate, dateLocale)}
-            </Text>
-            <Text style={{ ...mutedTextStyle, marginHorizontal: 6 }}>→</Text>
-            <Text style={{ ...labelStyle, marginRight: 4 }}>
-              {docLabels.dateLabel}
-            </Text>
-            <Text style={mutedTextStyle}>
-              {formatDate(invoice.dueDate, dateLocale)}
-            </Text>
+          <View style={{ alignItems: "flex-end" }}>
+            <View style={{ flexDirection: "row", alignItems: "baseline" }}>
+              <Text style={{ ...labelStyle, marginRight: 4 }}>{t.issued}</Text>
+              <Text style={mutedTextStyle}>
+                {formatDate(invoice.issueDate, dateLocale)}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "baseline",
+                position: "relative",
+              }}
+            >
+              <Text
+                style={{
+                  ...mutedTextStyle,
+                  position: "absolute",
+                  left: -14,
+                }}
+              >
+                →
+              </Text>
+              <Text style={{ ...labelStyle, marginRight: 4 }}>
+                {docLabels.dateLabel}
+              </Text>
+              <Text style={mutedTextStyle}>
+                {formatDate(invoice.dueDate, dateLocale)}
+              </Text>
+            </View>
           </View>
         </Section>
       </View>
@@ -316,24 +342,28 @@ export function CompactLayout({
 
           {/* Client Details */}
           <View style={{ flex: 1 }}>
-            <Text style={{ ...headingStyle, marginBottom: 2 }}>
-              {invoice.customerName || "-"}
-            </Text>
-            {invoice.customerSubtitle && (
-              <Text style={mutedTextStyle}>{invoice.customerSubtitle}</Text>
-            )}
+            {/* Name section */}
+            <View style={{ marginBottom: 6 }}>
+              <Text style={headingStyle}>{invoice.customerName || "-"}</Text>
+              {invoice.customerSubtitle && (
+                <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
+                  {invoice.customerSubtitle}
+                </Text>
+              )}
+            </View>
+            {/* Contact details */}
             {invoice.customerEmail && (
               <Text style={textStyle}>{invoice.customerEmail}</Text>
             )}
-            <Text style={mutedTextStyle}>
-              {[
-                invoice.customerAddress,
-                invoice.customerCity,
-                invoice.customerCountry,
-              ]
-                .filter(Boolean)
-                .join(", ")}
-            </Text>
+            {invoice.customerAddress && (
+              <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
+            )}
+            {invoice.customerCity && (
+              <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
+            )}
+            {invoice.customerCountry && (
+              <Text style={mutedTextStyle}>{invoice.customerCountry}</Text>
+            )}
             {invoice.customerTaxId && (
               <Text style={mutedTextStyle}>
                 {t.taxId}: {invoice.customerTaxId}

@@ -8,16 +8,6 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { downloadInvoicePdf } from "@/lib/invoice/pdf/generate-pdf";
 import type { InvoiceFormState } from "@/lib/invoice/types";
@@ -70,14 +60,6 @@ export function InvoiceWizard({
   onExitPreviewMode,
 }: InvoiceWizardProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showExitPreviewDialog, setShowExitPreviewDialog] = useState(false);
-
-  // Handle click on form when in preview mode
-  const handlePreviewModeClick = () => {
-    if (previewMode && onExitPreviewMode) {
-      setShowExitPreviewDialog(true);
-    }
-  };
 
   const previousStepLabel =
     currentStep > 0 ? STEPS[currentStep - 1].label : null;
@@ -127,42 +109,22 @@ export function InvoiceWizard({
         <div
           role="button"
           tabIndex={0}
-          className="absolute inset-0 z-50 cursor-pointer"
-          onClick={handlePreviewModeClick}
+          className="group absolute inset-0 z-50 cursor-pointer bg-background/60 backdrop-blur-[1px] flex items-center justify-center overflow-hidden"
+          onClick={() => onExitPreviewMode?.()}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
-              handlePreviewModeClick();
+              onExitPreviewMode?.();
             }
           }}
-        />
+        >
+          <span className="text-6xl font-black text-muted-foreground/20 tracking-widest -rotate-45 select-none whitespace-nowrap group-hover:hidden">
+            PREVIEW MODE
+          </span>
+          <span className="text-sm font-medium text-muted-foreground hidden group-hover:flex items-center gap-1 animate-pulse">
+            Click to exit preview mode
+          </span>
+        </div>
       )}
-
-      {/* Exit preview mode dialog */}
-      <AlertDialog
-        open={showExitPreviewDialog}
-        onOpenChange={setShowExitPreviewDialog}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Exit preview mode?</AlertDialogTitle>
-            <AlertDialogDescription>
-              You&apos;re currently viewing mock data. Exit preview mode to edit
-              your invoice.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                onExitPreviewMode?.();
-                setShowExitPreviewDialog(false);
-              }}
-            >
-              Exit preview mode
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* Header */}
       <header className={`border-b px-6 py-4 ${compact ? "" : "pl-20"}`}>

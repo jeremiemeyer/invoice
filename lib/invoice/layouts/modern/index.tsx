@@ -108,6 +108,13 @@ export function ModernLayout({
 
   // Consistent horizontal padding for all sections
   const sectionPadding = spacing.page;
+  // Column widths for the line items table
+  const QTY_WIDTH = 50;
+  const PRICE_WIDTH = 80;
+  const AMOUNT_WIDTH = 90;
+  const COLUMN_GAP = 24;
+  const RIGHT_COLUMNS_WIDTH =
+    QTY_WIDTH + PRICE_WIDTH + AMOUNT_WIDTH + COLUMN_GAP;
   // Page margin adds outer padding around all content
   const pageMarginSize =
     invoice.pageMargin === "none"
@@ -165,7 +172,7 @@ export function ModernLayout({
           <View
             style={{
               flexDirection: "row",
-              alignItems: "baseline",
+              alignItems: "center",
               marginBottom: 4,
             }}
           >
@@ -186,7 +193,7 @@ export function ModernLayout({
           <View
             style={{
               flexDirection: "row",
-              alignItems: "baseline",
+              alignItems: "center",
               marginBottom: 2,
             }}
           >
@@ -204,7 +211,7 @@ export function ModernLayout({
               {formatDate(invoice.issueDate, dateLocale)}
             </Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "baseline" }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text
               style={{
                 ...mutedTextStyle,
@@ -222,12 +229,13 @@ export function ModernLayout({
         </View>
       </Section>
 
-      {/* From / To Section */}
+      {/* From / To Section - uses same paddingHorizontal as table for alignment */}
       <View
         style={{
           flexDirection: "row",
           borderBottomWidth: 1,
           borderBottomColor: colors.border,
+          paddingHorizontal: sectionPadding,
         }}
       >
         {/* From - left column (Step 0: Your company) */}
@@ -238,8 +246,8 @@ export function ModernLayout({
           onStepClick={onStepClick}
           style={{
             flex: 1,
+            marginLeft: -sectionPadding,
             paddingLeft: sectionPadding,
-            paddingRight: 16,
             paddingVertical: 24,
           }}
         >
@@ -277,24 +285,27 @@ export function ModernLayout({
 
             {/* Details */}
             <View style={{ flex: 1 }}>
-              <Text style={headingStyle}>{invoice.fromName || "-"}</Text>
-              {invoice.fromSubtitle && (
-                <Text style={{ ...mutedTextStyle, marginBottom: 4 }}>
-                  {invoice.fromSubtitle}
-                </Text>
-              )}
+              {/* Name section */}
+              <View style={{ marginBottom: 8 }}>
+                <Text style={headingStyle}>{invoice.fromName || "-"}</Text>
+                {invoice.fromSubtitle && (
+                  <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
+                    {invoice.fromSubtitle}
+                  </Text>
+                )}
+              </View>
+              {/* Contact details */}
               {invoice.fromEmail && (
                 <Text style={textStyle}>{invoice.fromEmail}</Text>
               )}
               {invoice.fromAddress && (
                 <Text style={mutedTextStyle}>{invoice.fromAddress}</Text>
               )}
-              {(invoice.fromCity || invoice.fromCountry) && (
-                <Text style={mutedTextStyle}>
-                  {[invoice.fromCity, invoice.fromCountry]
-                    .filter(Boolean)
-                    .join(", ")}
-                </Text>
+              {invoice.fromCity && (
+                <Text style={mutedTextStyle}>{invoice.fromCity}</Text>
+              )}
+              {invoice.fromCountry && (
+                <Text style={mutedTextStyle}>{invoice.fromCountry}</Text>
               )}
               {invoice.fromPhone && (
                 <Text style={mutedTextStyle}>{invoice.fromPhone}</Text>
@@ -315,9 +326,10 @@ export function ModernLayout({
           currentStep={currentStep}
           onStepClick={onStepClick}
           style={{
-            width: 220 + sectionPadding,
-            paddingLeft: 0,
+            width: RIGHT_COLUMNS_WIDTH + sectionPadding,
+            marginRight: -sectionPadding,
             paddingRight: sectionPadding,
+            paddingLeft: COLUMN_GAP,
             paddingVertical: 24,
           }}
         >
@@ -355,24 +367,27 @@ export function ModernLayout({
 
             {/* Details */}
             <View style={{ flex: 1 }}>
-              <Text style={headingStyle}>{invoice.customerName || "-"}</Text>
-              {invoice.customerSubtitle && (
-                <Text style={{ ...mutedTextStyle, marginBottom: 4 }}>
-                  {invoice.customerSubtitle}
-                </Text>
-              )}
+              {/* Name section */}
+              <View style={{ marginBottom: 8 }}>
+                <Text style={headingStyle}>{invoice.customerName || "-"}</Text>
+                {invoice.customerSubtitle && (
+                  <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
+                    {invoice.customerSubtitle}
+                  </Text>
+                )}
+              </View>
+              {/* Contact details */}
               {invoice.customerEmail && (
                 <Text style={textStyle}>{invoice.customerEmail}</Text>
               )}
               {invoice.customerAddress && (
                 <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
               )}
-              {(invoice.customerCity || invoice.customerCountry) && (
-                <Text style={mutedTextStyle}>
-                  {[invoice.customerCity, invoice.customerCountry]
-                    .filter(Boolean)
-                    .join(", ")}
-                </Text>
+              {invoice.customerCity && (
+                <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
+              )}
+              {invoice.customerCountry && (
+                <Text style={mutedTextStyle}>{invoice.customerCountry}</Text>
               )}
               {invoice.customerPhone && (
                 <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
@@ -409,12 +424,13 @@ export function ModernLayout({
               {t.description}
             </Text>
           </View>
+          <View style={{ width: COLUMN_GAP }} />
           <Text
             style={{
               ...labelStyle,
               color: colors.primary,
-              width: 50,
-              textAlign: "center",
+              width: QTY_WIDTH,
+              textAlign: "left",
             }}
           >
             {t.qty}
@@ -423,7 +439,7 @@ export function ModernLayout({
             style={{
               ...labelStyle,
               color: colors.primary,
-              width: 80,
+              width: PRICE_WIDTH,
               textAlign: "right",
             }}
           >
@@ -433,7 +449,7 @@ export function ModernLayout({
             style={{
               ...labelStyle,
               color: colors.primary,
-              width: 90,
+              width: AMOUNT_WIDTH,
               textAlign: "right",
             }}
           >
@@ -470,17 +486,36 @@ export function ModernLayout({
                   <Text style={itemTextStyle}>-</Text>
                 )}
               </View>
-              <Text style={{ ...numberStyle, width: 50, textAlign: "center" }}>
+              <View style={{ width: COLUMN_GAP }} />
+              <Text
+                style={{
+                  ...numberStyle,
+                  width: QTY_WIDTH,
+                  textAlign: "left",
+                }}
+              >
                 {item.quantity}
               </Text>
-              <Text style={{ ...numberStyle, width: 80, textAlign: "right" }}>
+              <Text
+                style={{
+                  ...numberStyle,
+                  width: PRICE_WIDTH,
+                  textAlign: "right",
+                }}
+              >
                 {formatCurrency(
                   item.price,
                   invoice.currency,
                   invoice.numberLocale,
                 )}
               </Text>
-              <Text style={{ ...numberStyle, width: 90, textAlign: "right" }}>
+              <Text
+                style={{
+                  ...numberStyle,
+                  width: AMOUNT_WIDTH,
+                  textAlign: "right",
+                }}
+              >
                 {formatCurrency(
                   calculateLineItemTotal({
                     price: item.price,
@@ -521,12 +556,13 @@ export function ModernLayout({
             </Text>
           </View>
 
-          {/* Totals - right columns (50 + 80 + 90 = 220) */}
-          {/* Qty column (50px) - empty spacer */}
-          <View style={{ width: 50 }} />
+          {/* Totals - right columns */}
+          {/* Qty column - empty spacer */}
+          <View style={{ width: COLUMN_GAP }} />
+          <View style={{ width: QTY_WIDTH }} />
 
-          {/* Price column (80px) - Labels */}
-          <View style={{ width: 80 }}>
+          {/* Price column - Labels */}
+          <View style={{ width: PRICE_WIDTH }}>
             {/* Subtotal label */}
             <View style={{ height: 24, justifyContent: "center" }}>
               <Text style={{ ...textStyle, color: colors.muted }}>
@@ -577,8 +613,8 @@ export function ModernLayout({
             </View>
           </View>
 
-          {/* Amount column (90px) - Values */}
-          <View style={{ width: 90 }}>
+          {/* Amount column - Values */}
+          <View style={{ width: AMOUNT_WIDTH }}>
             {/* Subtotal value */}
             <View style={{ height: 24, justifyContent: "center" }}>
               <Text style={{ ...numberStyle, textAlign: "right" }}>

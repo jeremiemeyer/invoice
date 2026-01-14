@@ -198,7 +198,7 @@ function DropdownMenuRadioGroup({ ...props }: MenuPrimitive.RadioGroup.Props) {
 function DropdownMenuRadioItem({
   className,
   children,
-  closeOnClick = true,
+  closeOnClick = false,
   ...props
 }: MenuPrimitive.RadioItem.Props & { closeOnClick?: boolean }) {
   return (

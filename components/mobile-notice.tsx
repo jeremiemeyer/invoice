@@ -18,7 +18,7 @@ const MobileNotice = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle> Important Notice</DialogTitle>
+            <DialogTitle>Developer Notice</DialogTitle>
             <DialogDescription>
               You should use a desktop computer. <br /> This is not really
               responsive yet.
