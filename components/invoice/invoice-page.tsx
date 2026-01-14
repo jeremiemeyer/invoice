@@ -6,8 +6,8 @@ import useLocalStorage from "@/hooks/use-local-storage";
 import { useInvoice } from "@/lib/invoice/use-invoice";
 import { InvoiceWizard } from "./form/invoice-wizard";
 import { MobileInvoiceLayout } from "./mobile-invoice-layout";
-import { PdfPreview } from "./preview/pdf-preview";
 import { InvoiceSettings } from "./preview/invoice-settings";
+import { PdfPreview } from "./preview/pdf-preview";
 
 const STEP_STORAGE_KEY = "invoice-wizard-step";
 
@@ -67,9 +67,7 @@ export function InvoicePage() {
           {/* Fixed settings */}
           <InvoiceSettings
             invoice={state}
-            onTemplateChange={(templateId) =>
-              setField("templateId", templateId)
-            }
+            onLayoutChange={(layoutId) => setField("layoutId", layoutId)}
             onStyleChange={(styleId) => setField("styleId", styleId)}
             onLocaleChange={(locale) => setField("locale", locale)}
             onNumberLocaleChange={(numberLocale) =>
@@ -77,12 +75,16 @@ export function InvoicePage() {
             }
             onCurrencyChange={(currency) => setField("currency", currency)}
             onPageSizeChange={(pageSize) => setField("pageSize", pageSize)}
+            onPageMarginChange={(pageMargin) =>
+              setField("pageMargin", pageMargin)
+            }
             className="fixed top-4 right-4 z-10"
           />
 
           <PdfPreview
             invoice={state}
             totals={totals}
+            layoutId={state.layoutId || "classic"}
             styleId={state.styleId || "classic"}
             currentStep={currentStep}
             onStepClick={setCurrentStep}

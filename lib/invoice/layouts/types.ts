@@ -1,7 +1,7 @@
 import type { InvoiceStyle } from "../styles";
 import type {
-  InvoiceTranslations,
   DocumentTypeLabels,
+  InvoiceTranslations,
   PageSize,
 } from "../translations";
 import type { InvoiceFormState, InvoiceTotals } from "../types";
@@ -23,6 +23,10 @@ export interface LayoutProps {
   documentTypeLabels: DocumentTypeLabels;
   /** Date locale for formatting */
   dateLocale: string;
+  /** Current wizard step (for highlighting in HTML preview) */
+  currentStep?: number;
+  /** Callback when a section is clicked (HTML preview only) */
+  onStepClick?: (step: number) => void;
 }
 
 /**

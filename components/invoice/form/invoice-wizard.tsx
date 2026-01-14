@@ -10,8 +10,8 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { downloadInvoicePdf } from "@/lib/invoice/pdf/generate-pdf";
-import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 import type { InvoiceFormState } from "@/lib/invoice/types";
+import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 import { DocumentTypeSelector } from "./document-type-selector";
 import { FileMenu } from "./file-menu";
 import { InvoiceDetailsStep } from "./steps/invoice-details-step";
@@ -70,7 +70,7 @@ export function InvoiceWizard({
       await downloadInvoicePdf({
         invoice: state,
         totals,
-        layoutId: "classic",
+        layoutId: state.layoutId || "classic",
         styleId: state.styleId || "classic",
       });
     } catch (error) {

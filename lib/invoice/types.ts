@@ -1,6 +1,7 @@
 import type { InvoiceLocale, NumberLocale, PageSize } from "./translations";
 
 export type DocumentType = "invoice" | "quote";
+export type PageMargin = "none" | "small" | "normal";
 
 export interface LineItem {
   id: string;
@@ -14,8 +15,12 @@ export interface InvoiceFormState {
   // Document type & template
   documentType: DocumentType;
   templateId: string;
-  /** Style ID for PDF styling (classic, ocean, forest, mono, royal) */
+  /** Layout ID for PDF structure (classic, modern) */
+  layoutId: string;
+  /** Style ID for PDF styling (classic, classic-mono, elegant) */
   styleId: string;
+  /** Page margin size (padding around content) */
+  pageMargin: PageMargin;
 
   // Locale & format
   locale: InvoiceLocale;

@@ -17,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getTemplate, TEMPLATES } from "@/lib/invoice/templates";
+import { getLayout, LAYOUTS } from "@/lib/invoice/layouts";
 import { getAllStyles, getStyle } from "@/lib/invoice/styles";
 import {
   CURRENCIES,
@@ -30,7 +30,7 @@ import {
   PAPER_SIZES,
   type PageSize,
 } from "@/lib/invoice/translations";
-import type { InvoiceFormState } from "@/lib/invoice/types";
+import type { InvoiceFormState, PageMargin } from "@/lib/invoice/types";
 import { cn } from "@/lib/utils";
 
 const dropdownTriggerClasses = cn(
@@ -40,26 +40,28 @@ const dropdownTriggerClasses = cn(
 
 interface InvoiceSettingsProps {
   invoice: InvoiceFormState;
-  onTemplateChange: (templateId: string) => void;
+  onLayoutChange: (layoutId: string) => void;
   onStyleChange: (styleId: string) => void;
   onLocaleChange: (locale: InvoiceLocale) => void;
   onNumberLocaleChange: (numberLocale: NumberLocale) => void;
   onCurrencyChange: (currency: string) => void;
   onPageSizeChange: (pageSize: PageSize) => void;
+  onPageMarginChange: (pageMargin: PageMargin) => void;
   collapsed?: boolean;
   className?: string;
 }
 
 function SettingsContent({
   invoice,
-  onTemplateChange,
+  onLayoutChange,
   onStyleChange,
   onLocaleChange,
   onNumberLocaleChange,
   onCurrencyChange,
   onPageSizeChange,
+  onPageMarginChange,
 }: Omit<InvoiceSettingsProps, "collapsed" | "className">) {
-  const currentTemplate = getTemplate(invoice.templateId);
+  const currentLayout = getLayout(invoice.layoutId || "classic");
   const currentStyle = getStyle(invoice.styleId || "classic");
   const allStyles = getAllStyles();
   const currentPreset = getPresetFromSettings(
@@ -79,35 +81,51 @@ function SettingsContent({
 
   return (
     <div className="flex w-52 flex-col gap-3">
-      {/* Template */}
+      {/* Layout */}
       <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Template</Label>
+        <Label className="text-xs text-muted-foreground">Layout</Label>
         <DropdownMenu>
           <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            <div
-              className={cn(
-                "h-3 w-3 rounded-full",
-                currentTemplate.previewColor,
-              )}
-            />
-            <span>{currentTemplate.name}</span>
+            <span>{currentLayout.name}</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuRadioGroup
-              value={invoice.templateId}
-              onValueChange={onTemplateChange}
+              value={invoice.layoutId || "classic"}
+              onValueChange={onLayoutChange}
             >
-              {TEMPLATES.map((template) => (
-                <DropdownMenuRadioItem key={template.id} value={template.id}>
-                  <div
-                    className={cn(
-                      "h-3 w-3 rounded-full",
-                      template.previewColor,
-                    )}
-                  />
-                  <span>{template.name}</span>
+              {LAYOUTS.map((layout) => (
+                <DropdownMenuRadioItem key={layout.id} value={layout.id}>
+                  <span>{layout.name}</span>
                 </DropdownMenuRadioItem>
               ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Page Margin */}
+      <div className="flex flex-col gap-1">
+        <Label className="text-xs text-muted-foreground">Page Margin</Label>
+        <DropdownMenu>
+          <DropdownMenuTrigger className={dropdownTriggerClasses}>
+            <span>
+              {invoice.pageMargin === "none"
+                ? "None"
+                : invoice.pageMargin === "small"
+                  ? "Some"
+                  : "Plenty"}
+            </span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuRadioGroup
+              value={invoice.pageMargin || "none"}
+              onValueChange={(value) => onPageMarginChange(value as PageMargin)}
+            >
+              <DropdownMenuRadioItem value="none">None</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="small">Some</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="normal">
+                Plenty
+              </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -335,12 +353,13 @@ function SettingsContent({
 
 export function InvoiceSettings({
   invoice,
-  onTemplateChange,
+  onLayoutChange,
   onStyleChange,
   onLocaleChange,
   onNumberLocaleChange,
   onCurrencyChange,
   onPageSizeChange,
+  onPageMarginChange,
   collapsed = false,
   className,
 }: InvoiceSettingsProps) {
@@ -360,12 +379,13 @@ export function InvoiceSettings({
         <PopoverContent align="end" className="w-auto p-4">
           <SettingsContent
             invoice={invoice}
-            onTemplateChange={onTemplateChange}
+            onLayoutChange={onLayoutChange}
             onStyleChange={onStyleChange}
             onLocaleChange={onLocaleChange}
             onNumberLocaleChange={onNumberLocaleChange}
             onCurrencyChange={onCurrencyChange}
             onPageSizeChange={onPageSizeChange}
+            onPageMarginChange={onPageMarginChange}
           />
         </PopoverContent>
       </Popover>
@@ -376,12 +396,13 @@ export function InvoiceSettings({
     <div className={className}>
       <SettingsContent
         invoice={invoice}
-        onTemplateChange={onTemplateChange}
+        onLayoutChange={onLayoutChange}
         onStyleChange={onStyleChange}
         onLocaleChange={onLocaleChange}
         onNumberLocaleChange={onNumberLocaleChange}
         onCurrencyChange={onCurrencyChange}
         onPageSizeChange={onPageSizeChange}
+        onPageMarginChange={onPageMarginChange}
       />
     </div>
   );

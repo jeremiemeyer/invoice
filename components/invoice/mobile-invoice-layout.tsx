@@ -105,7 +105,7 @@ export function MobileInvoiceLayout({
       {/* Settings button - z-30 */}
       <InvoiceSettings
         invoice={state}
-        onTemplateChange={(templateId) => setField("templateId", templateId)}
+        onLayoutChange={(layoutId) => setField("layoutId", layoutId)}
         onStyleChange={(styleId) => setField("styleId", styleId)}
         onLocaleChange={(locale) => setField("locale", locale)}
         onNumberLocaleChange={(numberLocale) =>
@@ -113,6 +113,7 @@ export function MobileInvoiceLayout({
         }
         onCurrencyChange={(currency) => setField("currency", currency)}
         onPageSizeChange={(pageSize) => setField("pageSize", pageSize)}
+        onPageMarginChange={(pageMargin) => setField("pageMargin", pageMargin)}
         collapsed
         className="fixed top-4 right-4 z-30"
       />

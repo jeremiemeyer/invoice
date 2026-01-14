@@ -18,6 +18,7 @@ import type { Style } from "@react-pdf/types";
 import type { ReactNode } from "react";
 import { calculateLineItemTotal } from "../calculate";
 import { formatCurrency } from "../format-currency";
+import { getLayout } from "../layouts";
 import { parseLexicalState } from "../lexical-to-html";
 import { getStyle, type InvoiceStyle } from "../styles";
 import {
@@ -322,6 +323,7 @@ function PageFooter({
 export function InvoicePdfDocument({
   invoice,
   totals,
+  layoutId = "classic",
   styleId = "classic",
   currentStep,
   onStepClick,
@@ -340,6 +342,35 @@ export function InvoicePdfDocument({
   const colors = style.colors;
   const styles = createStyles(style);
 
+  // For non-classic layouts, use the layout component wrapped in Document
+  if (layoutId !== "classic") {
+    const layout = getLayout(layoutId);
+    const LayoutComponent = layout.component;
+    return (
+      <Document>
+        <LayoutComponent
+          invoice={invoice}
+          totals={totals}
+          style={style}
+          translations={translations}
+          documentTypeLabels={documentTypeLabels}
+          dateLocale={localeConfig.dateLocale}
+          currentStep={currentStep}
+          onStepClick={onStepClick}
+        />
+      </Document>
+    );
+  }
+
+  // Page margin adds outer padding around all content
+  const pageMarginSize =
+    invoice.pageMargin === "none"
+      ? 0
+      : invoice.pageMargin === "small"
+        ? style.spacing.page / 2
+        : style.spacing.page;
+
+  // Classic layout with interactive wizard overlays
   return (
     <Document>
       <Page
@@ -349,6 +380,7 @@ export function InvoicePdfDocument({
           backgroundColor: colors.background,
           display: "flex",
           flexDirection: "column",
+          padding: pageMarginSize,
         }}
       >
         {/* Main content wrapper - flex to push footer down */}

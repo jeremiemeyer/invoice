@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+import { DEFAULT_LAYOUT_ID } from "./layouts";
 import { DEFAULT_TEMPLATE_ID } from "./templates";
 import type { InvoiceLocale } from "./translations";
 import type { DocumentType, InvoiceFormState, LineItem } from "./types";
@@ -49,7 +50,9 @@ export const defaultInvoiceState: InvoiceFormState = {
   // Document type & template
   documentType: "invoice",
   templateId: DEFAULT_TEMPLATE_ID,
+  layoutId: DEFAULT_LAYOUT_ID,
   styleId: "classic",
+  pageMargin: "none",
 
   // Locale & format
   locale: "en-US",

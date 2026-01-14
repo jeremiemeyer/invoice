@@ -1,7 +1,9 @@
 import { ClassicLayout } from "./classic";
+import { CompactLayout } from "./compact";
+import { ModernLayout } from "./modern";
 import type { LayoutDefinition } from "./types";
 
-export type { LayoutProps, LayoutComponent, LayoutDefinition } from "./types";
+export type { LayoutComponent, LayoutDefinition, LayoutProps } from "./types";
 export { PAGE_DIMENSIONS } from "./types";
 
 /** All available layouts */
@@ -10,6 +12,16 @@ export const LAYOUTS: LayoutDefinition[] = [
     id: "classic",
     name: "Classic",
     component: ClassicLayout,
+  },
+  {
+    id: "modern",
+    name: "Modern",
+    component: ModernLayout,
+  },
+  {
+    id: "compact",
+    name: "Compact",
+    component: CompactLayout,
   },
 ];
 
@@ -25,4 +37,4 @@ export function getLayout(id: string): LayoutDefinition {
 }
 
 /** Export individual layouts */
-export { ClassicLayout };
+export { ClassicLayout, CompactLayout, ModernLayout };
