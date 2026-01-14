@@ -137,6 +137,8 @@ export function InvoicePage() {
       <div className="invoice:hidden">
         <MobileInvoiceLayout
           state={state}
+          previewState={previewState}
+          previewTotals={previewTotals}
           setField={setField}
           updateLineItem={updateLineItem}
           removeLineItem={removeLineItem}
@@ -146,6 +148,8 @@ export function InvoicePage() {
           setCurrentStep={setCurrentStep}
           isBlank={isBlank}
           loadState={loadState}
+          previewMode={previewMode}
+          onPreviewModeChange={setPreviewMode}
         />
       </div>
     </div>

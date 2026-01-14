@@ -1,14 +1,19 @@
 "use client";
 
+import { setIsHtmlMode } from "@rawwee/react-pdf-html";
 import { useEffect, useRef, useState } from "react";
+import { InvoicePdfDocument } from "@/lib/invoice/pdf/invoice-pdf-document";
 import { getPageSizeConfig } from "@/lib/invoice/translations";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 import { InvoiceWizard } from "./form/invoice-wizard";
-import { InvoiceHtmlPreview } from "./preview/invoice-html-preview";
 import { InvoiceSettings } from "./preview/invoice-settings";
 
 interface MobileInvoiceLayoutProps {
   state: UseInvoiceReturn["state"];
+  /** State for the preview (may include demo data when previewMode is true) */
+  previewState: UseInvoiceReturn["state"];
+  /** Totals for the preview (may be demo totals when previewMode is true) */
+  previewTotals: UseInvoiceReturn["totals"];
   setField: UseInvoiceReturn["setField"];
   updateLineItem: UseInvoiceReturn["updateLineItem"];
   removeLineItem: UseInvoiceReturn["removeLineItem"];
@@ -18,10 +23,14 @@ interface MobileInvoiceLayoutProps {
   setCurrentStep: (step: number) => void;
   isBlank: boolean;
   loadState: UseInvoiceReturn["loadState"];
+  previewMode?: boolean;
+  onPreviewModeChange?: (previewMode: boolean) => void;
 }
 
 export function MobileInvoiceLayout({
   state,
+  previewState,
+  previewTotals,
   setField,
   updateLineItem,
   removeLineItem,
@@ -31,6 +40,8 @@ export function MobileInvoiceLayout({
   setCurrentStep,
   isBlank,
   loadState,
+  previewMode = false,
+  onPreviewModeChange,
 }: MobileInvoiceLayoutProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [previewScale, setPreviewScale] = useState(0.5);
@@ -39,6 +50,11 @@ export function MobileInvoiceLayout({
   const pageSizeConfig = getPageSizeConfig(state.pageSize);
   const previewWidth = pageSizeConfig.previewWidth;
   const previewHeight = pageSizeConfig.previewHeight;
+
+  // Enable HTML mode for InvoicePdfDocument
+  useEffect(() => {
+    setIsHtmlMode(true);
+  }, []);
 
   // Calculate preview scale based on viewport
   useEffect(() => {
@@ -79,20 +95,29 @@ export function MobileInvoiceLayout({
   return (
     <div className="relative h-screen overflow-hidden">
       {/* Fixed preview in background - z-0 */}
-      <div className="fixed inset-x-0 top-0 z-0 flex justify-center pt-4 pointer-events-none">
+      <div className="fixed inset-x-0 top-0 z-0 flex justify-center pt-4">
         <div
           style={{
             transform: `scale(${previewScale})`,
             transformOrigin: "top center",
           }}
         >
-          <InvoiceHtmlPreview
-            invoice={state}
-            totals={totals}
-            currentStep={currentStep}
-            onStepClick={setCurrentStep}
-            className="pointer-events-auto !p-0 !overflow-visible !bg-transparent"
-          />
+          <div
+            className="relative overflow-hidden bg-white shadow-[0_0_0_1px_rgba(0,25,59,.05),0_1px_1px_0_rgba(0,25,59,.04),0_3px_3px_0_rgba(0,25,59,.03),0_6px_4px_0_rgba(0,25,59,.02),0_11px_4px_0_rgba(0,25,59,.01),0_32px_24px_-12px_rgba(0,0,59,.06)]"
+            style={{
+              width: previewWidth,
+              height: previewHeight,
+            }}
+          >
+            <InvoicePdfDocument
+              invoice={previewState}
+              totals={previewTotals}
+              layoutId={state.layoutId || "classic"}
+              styleId={state.styleId || "classic"}
+              currentStep={currentStep}
+              onStepClick={setCurrentStep}
+            />
+          </div>
         </div>
       </div>
 
@@ -114,6 +139,8 @@ export function MobileInvoiceLayout({
         onCurrencyChange={(currency) => setField("currency", currency)}
         onPageSizeChange={(pageSize) => setField("pageSize", pageSize)}
         onPageMarginChange={(pageMargin) => setField("pageMargin", pageMargin)}
+        previewMode={previewMode}
+        onPreviewModeChange={onPreviewModeChange}
         collapsed
         className="fixed top-4 right-4 z-30"
       />
@@ -121,13 +148,13 @@ export function MobileInvoiceLayout({
       {/* Scrollable area - z-20, scrollbar will be above backdrop */}
       <div
         ref={scrollRef}
-        className="relative z-20 h-full overflow-y-auto overflow-x-hidden"
+        className="relative z-20 h-full overflow-y-auto overflow-x-hidden pointer-events-none"
       >
-        {/* Spacer to push content below the preview */}
+        {/* Spacer to push content below the preview - allows clicks through to preview */}
         <div style={{ height: `${scaledPreviewHeight + 32}px` }} />
 
         {/* Wizard content */}
-        <div className="relative">
+        <div className="relative pointer-events-auto">
           <div className="rounded-t-2xl bg-background shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
             <InvoiceWizard
               state={state}
@@ -140,6 +167,12 @@ export function MobileInvoiceLayout({
               setCurrentStep={setCurrentStep}
               isBlank={isBlank}
               loadState={loadState}
+              previewMode={previewMode}
+              onExitPreviewMode={
+                onPreviewModeChange
+                  ? () => onPreviewModeChange(false)
+                  : undefined
+              }
               compact
             />
 

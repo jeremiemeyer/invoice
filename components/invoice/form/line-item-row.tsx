@@ -208,15 +208,23 @@ export function LineItemRow({
               onCancel={handleCancel}
             />
             <div className="flex w-full items-center justify-between border-t border-black/10 px-3 py-2">
-              <div className="flex items-center">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="flex items-center rounded-md px-1.5 py-1 -mx-1.5 -my-1 transition-colors hover:bg-black/5"
+              >
                 <kbd className="rounded bg-black/5 px-1.5 py-0.5 text-xs text-muted-foreground">
                   Esc
                 </kbd>
                 <span className="ml-1.5 text-xs text-muted-foreground">
                   Cancel
                 </span>
-              </div>
-              <div className="flex items-center">
+              </button>
+              <button
+                type="button"
+                onClick={handleSave}
+                className="flex items-center rounded-md px-1.5 py-1 -mx-1.5 -my-1 transition-colors hover:bg-black/5"
+              >
                 <kbd className="flex items-center gap-1 rounded bg-black/5 px-1.5 py-0.5 text-xs text-muted-foreground">
                   {isMac ? "⌘" : "Ctrl"}
                   <span>↵</span>
@@ -224,7 +232,7 @@ export function LineItemRow({
                 <span className="ml-1.5 text-xs text-muted-foreground">
                   Save
                 </span>
-              </div>
+              </button>
             </div>
           </PopoverContent>
         </Popover>
