@@ -41,7 +41,7 @@ export function ClassicLayout({
   // Common text styles
   const labelStyle: Style = {
     fontSize: 8,
-    fontWeight: 600,
+    fontWeight: style.fontStyle.labelWeight,
     color: colors.muted,
     textTransform: "uppercase",
     fontFamily: fonts.body,
@@ -49,21 +49,21 @@ export function ClassicLayout({
 
   const textStyle: Style = {
     fontSize: 10,
-    fontWeight: 500,
+    fontWeight: 400,
     color: colors.secondary,
     fontFamily: fonts.body,
   };
 
   const mutedTextStyle: Style = {
     fontSize: 10,
-    fontWeight: 500,
+    fontWeight: 400,
     color: colors.muted,
     fontFamily: fonts.body,
   };
 
   const numberStyle: Style = {
     fontSize: 10,
-    fontWeight: 500,
+    fontWeight: 400,
     color: colors.secondary,
     fontFamily: fonts.mono,
   };

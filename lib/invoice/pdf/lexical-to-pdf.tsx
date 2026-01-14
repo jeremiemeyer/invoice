@@ -30,7 +30,7 @@ const IS_CODE = 16;
 // Base styles
 const baseTextStyle: Style = {
   fontSize: 10,
-  fontWeight: 500,
+  fontWeight: 400,
   color: "#111827",
   fontFamily: "Inter",
 };
@@ -89,7 +89,7 @@ function renderTextNode(node: SerializedNode, key: number): ReactNode {
 function renderParagraph(
   node: SerializedNode,
   key: number,
-  isFirst: boolean
+  isFirst: boolean,
 ): ReactNode {
   const children = node.children || [];
 
@@ -125,7 +125,7 @@ function collectListItems(
   node: SerializedNode,
   baseIndent: number,
   isOrdered: boolean,
-  items: ListItemData[]
+  items: ListItemData[],
 ): void {
   if (node.type === "list") {
     const listIsOrdered = node.listType === "number";
@@ -199,7 +199,7 @@ function renderList(node: SerializedNode, key: number): ReactNode {
             </Text>
             <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap" }}>
               {item.content.map((child, childIdx) =>
-                renderNode(child, childIdx, true)
+                renderNode(child, childIdx, true),
               )}
             </View>
           </View>
@@ -215,12 +215,12 @@ function renderList(node: SerializedNode, key: number): ReactNode {
 function renderNode(
   node: SerializedNode,
   key: number,
-  isFirst: boolean
+  isFirst: boolean,
 ): ReactNode {
   switch (node.type) {
     case "root":
       return (node.children || []).map((child, idx) =>
-        renderNode(child, idx, idx === 0)
+        renderNode(child, idx, idx === 0),
       );
 
     case "paragraph":
@@ -238,16 +238,11 @@ function renderNode(
     case "listitem":
       // Handled by renderList/collectListItems
       return (node.children || []).map((child, idx) =>
-        renderNode(child, idx, true)
+        renderNode(child, idx, true),
       );
 
     case "heading": {
-      const headingSize =
-        node.tag === "h1"
-          ? 14
-          : node.tag === "h2"
-            ? 12
-            : 11;
+      const headingSize = node.tag === "h1" ? 14 : node.tag === "h2" ? 12 : 11;
       return (
         <View key={key} style={{ marginTop: isFirst ? 0 : 4 }}>
           {(node.children || []).map((child, idx) => {
@@ -285,7 +280,7 @@ function renderNode(
  */
 export function lexicalToPdf(
   state: SerializedEditorState | null,
-  style?: Style
+  style?: Style,
 ): ReactNode {
   if (!state || !state.root) {
     return <Text style={style || baseTextStyle}>-</Text>;

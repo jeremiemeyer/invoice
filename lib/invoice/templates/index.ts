@@ -7,9 +7,7 @@ export type { InvoiceTemplateConfig };
 export const DEFAULT_TEMPLATE_ID = "classic";
 
 /** All available invoice templates */
-export const TEMPLATES: InvoiceTemplateConfig[] = [
-  classicTemplate,
-];
+export const TEMPLATES: InvoiceTemplateConfig[] = [classicTemplate];
 
 /**
  * Get a template by ID.

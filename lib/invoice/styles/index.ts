@@ -21,7 +21,7 @@ const elegantFonts = {
 const defaultFontStyle = {
   monoLabels: false,
   monoNumbers: false,
-  labelWeight: 600,
+  labelWeight: 500,
 };
 
 const monoFontStyle = {
@@ -41,13 +41,13 @@ export const styles: Record<string, InvoiceStyle> = {
     id: "classic",
     name: "Classic",
     colors: {
-      primary: "#111827",   // gray-900
+      primary: "#111827", // gray-900
       secondary: "#4b5563", // gray-600
-      muted: "#9ca3af",     // gray-400
-      border: "#e5e7eb",    // gray-200
+      muted: "#9ca3af", // gray-400
+      border: "#e5e7eb", // gray-200
       background: "#ffffff",
-      accent: "#111827",    // gray-900
-      avatarBg: "#e5e7eb",  // gray-200
+      accent: "#111827", // gray-900
+      avatarBg: "#e5e7eb", // gray-200
     },
     fonts: defaultFonts,
     fontStyle: defaultFontStyle,
@@ -57,13 +57,13 @@ export const styles: Record<string, InvoiceStyle> = {
     id: "classic-mono",
     name: "Classic Mono",
     colors: {
-      primary: "#111827",   // gray-900
+      primary: "#111827", // gray-900
       secondary: "#4b5563", // gray-600
-      muted: "#9ca3af",     // gray-400
-      border: "#e5e7eb",    // gray-200
+      muted: "#9ca3af", // gray-400
+      border: "#e5e7eb", // gray-200
       background: "#ffffff",
-      accent: "#111827",    // gray-900
-      avatarBg: "#e5e7eb",  // gray-200
+      accent: "#111827", // gray-900
+      avatarBg: "#e5e7eb", // gray-200
     },
     fonts: defaultFonts,
     fontStyle: monoFontStyle,
@@ -73,13 +73,13 @@ export const styles: Record<string, InvoiceStyle> = {
     id: "elegant",
     name: "Elegant",
     colors: {
-      primary: "#1c1917",   // stone-900
+      primary: "#1c1917", // stone-900
       secondary: "#44403c", // stone-700
-      muted: "#a8a29e",     // stone-400
-      border: "#e7e5e4",    // stone-200
+      muted: "#a8a29e", // stone-400
+      border: "#e7e5e4", // stone-200
       background: "#ffffff", // white
-      accent: "#78350f",    // amber-900 (warm gold-brown)
-      avatarBg: "#fef3c7",  // amber-100
+      accent: "#78350f", // amber-900 (warm gold-brown)
+      avatarBg: "#fef3c7", // amber-100
     },
     fonts: elegantFonts,
     fontStyle: defaultFontStyle,

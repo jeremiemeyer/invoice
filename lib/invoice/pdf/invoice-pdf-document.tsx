@@ -102,7 +102,7 @@ function createStyles(style: InvoiceStyle) {
     } as Style,
     text: {
       fontSize: 10,
-      fontWeight: 500,
+      fontWeight: 400,
       color: colors.secondary,
       fontFamily: fonts.body,
       lineHeight: 1.25,
@@ -110,21 +110,21 @@ function createStyles(style: InvoiceStyle) {
     // For important values like invoice number (uses mono in mono style)
     value: {
       fontSize: 10,
-      fontWeight: 500,
+      fontWeight: 400,
       color: colors.primary,
       fontFamily: numberFont,
       lineHeight: 1.25,
     } as Style,
     number: {
       fontSize: 10,
-      fontWeight: 500,
+      fontWeight: 400,
       color: colors.secondary,
       fontFamily: numberFont,
       lineHeight: 1.25,
     } as Style,
     mutedText: {
       fontSize: 10,
-      fontWeight: 500,
+      fontWeight: 400,
       color: colors.muted,
       fontFamily: fonts.body,
       lineHeight: 1.25,
@@ -153,7 +153,7 @@ function createStyles(style: InvoiceStyle) {
     // For line item descriptions (body font)
     itemText: {
       fontSize: 10,
-      fontWeight: 500,
+      fontWeight: 400,
       color: colors.primary,
       fontFamily: fonts.body,
       lineHeight: 1.25,
@@ -825,6 +825,7 @@ export function InvoicePdfDocument({
                     style={{
                       ...styles.number,
                       fontSize: 14,
+                      fontWeight: 500,
                       color: colors.primary,
                       flex: 1,
                       textAlign: "right",
