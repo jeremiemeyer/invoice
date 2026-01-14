@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import { getLayout, LAYOUTS } from "@/lib/invoice/layouts";
 import { getAllStyles, getStyle } from "@/lib/invoice/styles";
 import {
@@ -47,6 +48,8 @@ interface InvoiceSettingsProps {
   onCurrencyChange: (currency: string) => void;
   onPageSizeChange: (pageSize: PageSize) => void;
   onPageMarginChange: (pageMargin: PageMargin) => void;
+  previewMode?: boolean;
+  onPreviewModeChange?: (enabled: boolean) => void;
   collapsed?: boolean;
   className?: string;
 }
@@ -60,6 +63,8 @@ function SettingsContent({
   onCurrencyChange,
   onPageSizeChange,
   onPageMarginChange,
+  previewMode,
+  onPreviewModeChange,
 }: Omit<InvoiceSettingsProps, "collapsed" | "className">) {
   const currentLayout = getLayout(invoice.layoutId || "classic");
   const currentStyle = getStyle(invoice.styleId || "classic");
@@ -81,6 +86,20 @@ function SettingsContent({
 
   return (
     <div className="flex w-52 flex-col gap-3">
+      {/* Mock Data Preview */}
+      {onPreviewModeChange && (
+        <div className="flex items-center justify-between pb-2 border-b">
+          <Label className="text-sm font-medium text-muted-foreground">
+            Preview (Mock Data)
+          </Label>
+          <Switch
+            checked={previewMode}
+            onCheckedChange={onPreviewModeChange}
+            size="sm"
+          />
+        </div>
+      )}
+
       {/* Layout */}
       <div className="flex flex-col gap-1">
         <Label className="text-xs text-muted-foreground">Layout</Label>
@@ -360,6 +379,8 @@ export function InvoiceSettings({
   onCurrencyChange,
   onPageSizeChange,
   onPageMarginChange,
+  previewMode,
+  onPreviewModeChange,
   collapsed = false,
   className,
 }: InvoiceSettingsProps) {
@@ -386,6 +407,8 @@ export function InvoiceSettings({
             onCurrencyChange={onCurrencyChange}
             onPageSizeChange={onPageSizeChange}
             onPageMarginChange={onPageMarginChange}
+            previewMode={previewMode}
+            onPreviewModeChange={onPreviewModeChange}
           />
         </PopoverContent>
       </Popover>
@@ -403,6 +426,8 @@ export function InvoiceSettings({
         onCurrencyChange={onCurrencyChange}
         onPageSizeChange={onPageSizeChange}
         onPageMarginChange={onPageMarginChange}
+        previewMode={previewMode}
+        onPreviewModeChange={onPreviewModeChange}
       />
     </div>
   );

@@ -8,6 +8,16 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { downloadInvoicePdf } from "@/lib/invoice/pdf/generate-pdf";
 import type { InvoiceFormState } from "@/lib/invoice/types";
@@ -40,6 +50,8 @@ interface InvoiceWizardProps {
   isBlank: boolean;
   loadState: (state: InvoiceFormState) => void;
   compact?: boolean;
+  previewMode?: boolean;
+  onExitPreviewMode?: () => void;
 }
 
 export function InvoiceWizard({
@@ -54,8 +66,18 @@ export function InvoiceWizard({
   isBlank,
   loadState,
   compact = false,
+  previewMode = false,
+  onExitPreviewMode,
 }: InvoiceWizardProps) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showExitPreviewDialog, setShowExitPreviewDialog] = useState(false);
+
+  // Handle click on form when in preview mode
+  const handlePreviewModeClick = () => {
+    if (previewMode && onExitPreviewMode) {
+      setShowExitPreviewDialog(true);
+    }
+  };
 
   const previousStepLabel =
     currentStep > 0 ? STEPS[currentStep - 1].label : null;
@@ -99,7 +121,49 @@ export function InvoiceWizard({
   const contentWrapper = compact ? "mx-auto max-w-sm" : "";
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="relative flex h-full flex-col">
+      {/* Preview mode overlay */}
+      {previewMode && (
+        <div
+          role="button"
+          tabIndex={0}
+          className="absolute inset-0 z-50 cursor-pointer"
+          onClick={handlePreviewModeClick}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handlePreviewModeClick();
+            }
+          }}
+        />
+      )}
+
+      {/* Exit preview mode dialog */}
+      <AlertDialog
+        open={showExitPreviewDialog}
+        onOpenChange={setShowExitPreviewDialog}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Exit preview mode?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You&apos;re currently viewing mock data. Exit preview mode to edit
+              your invoice.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                onExitPreviewMode?.();
+                setShowExitPreviewDialog(false);
+              }}
+            >
+              Exit preview mode
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Header */}
       <header className={`border-b px-6 py-4 ${compact ? "" : "pl-20"}`}>
         <div className={`flex items-center justify-between ${contentWrapper}`}>
