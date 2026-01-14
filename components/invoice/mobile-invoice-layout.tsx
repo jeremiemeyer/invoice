@@ -148,13 +148,16 @@ export function MobileInvoiceLayout({
       {/* Scrollable area - z-20, scrollbar will be above backdrop */}
       <div
         ref={scrollRef}
-        className="relative z-20 h-full overflow-y-auto overflow-x-hidden pointer-events-none"
+        className="relative z-20 h-full overflow-y-auto overflow-x-hidden"
       >
         {/* Spacer to push content below the preview - allows clicks through to preview */}
-        <div style={{ height: `${scaledPreviewHeight + 32}px` }} />
+        <div
+          className="pointer-events-none"
+          style={{ height: `${scaledPreviewHeight + 32}px` }}
+        />
 
         {/* Wizard content */}
-        <div className="relative pointer-events-auto">
+        <div className="relative">
           <div className="rounded-t-2xl bg-background shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
             <InvoiceWizard
               state={state}
