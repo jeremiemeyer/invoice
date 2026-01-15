@@ -36,6 +36,8 @@ export interface InvoiceFormState {
   fromEmail: string;
   fromPhone: string;
   fromTaxId: string;
+  fromRegistrationId: string;
+  showFromRegistrationId: boolean;
   fromLogoUrl: string;
   showFromLogo: boolean;
 
@@ -48,6 +50,8 @@ export interface InvoiceFormState {
   customerEmail: string;
   customerPhone: string;
   customerTaxId: string;
+  customerRegistrationId: string;
+  showCustomerRegistrationId: boolean;
   customerLogoUrl: string;
   showCustomerLogo: boolean;
 

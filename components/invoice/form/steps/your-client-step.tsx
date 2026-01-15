@@ -87,6 +87,20 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         onChange={(value) => setField("customerTaxId", value)}
         placeholder="XX-XXXXXXX"
       />
+
+      <InlineField
+        label="Registration No."
+        value={state.customerRegistrationId}
+        onChange={(value) => setField("customerRegistrationId", value)}
+        placeholder="123 456 789 00012"
+        isVisible={state.showCustomerRegistrationId}
+        onToggleVisibility={() =>
+          setField(
+            "showCustomerRegistrationId",
+            !state.showCustomerRegistrationId,
+          )
+        }
+      />
     </div>
   );
 }

@@ -85,12 +85,313 @@ function SettingsContent({
   );
 
   return (
-    <div className="flex w-52 flex-col gap-3">
-      {/* Mock Data Preview */}
+    <div className="flex w-52 flex-col gap-4">
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* APPEARANCE SECTION */}
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      <div className="flex flex-col gap-3">
+        <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Appearance
+        </Label>
+
+        {/* Layout */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">Layout</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              <span>{currentLayout.name}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={invoice.layoutId || "classic"}
+                onValueChange={onLayoutChange}
+              >
+                {LAYOUTS.map((layout) => (
+                  <DropdownMenuRadioItem key={layout.id} value={layout.id}>
+                    <span>{layout.name}</span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Page Margin */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">Page Margin</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              <span>
+                {invoice.pageMargin === "none"
+                  ? "None"
+                  : invoice.pageMargin === "small"
+                    ? "Some"
+                    : "Plenty"}
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={invoice.pageMargin || "none"}
+                onValueChange={(value) =>
+                  onPageMarginChange(value as PageMargin)
+                }
+              >
+                <DropdownMenuRadioItem value="none">None</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="small">
+                  Some
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="normal">
+                  Plenty
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Style */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">Style</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              <div
+                className="h-3 w-3 rounded-full"
+                style={{ backgroundColor: currentStyle.colors.accent }}
+              />
+              <span>{currentStyle.name}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={invoice.styleId || "classic"}
+                onValueChange={onStyleChange}
+              >
+                {allStyles.map((style) => (
+                  <DropdownMenuRadioItem key={style.id} value={style.id}>
+                    <div
+                      className="h-3 w-3 rounded-full"
+                      style={{ backgroundColor: style.colors.accent }}
+                    />
+                    <span>{style.name}</span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* REGION SECTION */}
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      <div className="flex flex-col gap-3 border-t pt-4">
+        <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Region
+        </Label>
+
+        {/* Country Preset */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">
+            Country preset
+          </Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              {currentPreset ? (
+                <>
+                  <CircleFlag
+                    countryCode={currentPreset.countryCode}
+                    height={16}
+                    width={16}
+                  />
+                  <span>{currentPreset.label}</span>
+                </>
+              ) : (
+                <>
+                  <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={1} />
+                  <span className="text-muted-foreground">Custom</span>
+                </>
+              )}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={currentPreset?.id ?? "custom"}
+                onValueChange={(presetId) => {
+                  const preset = INVOICE_PRESETS.find((p) => p.id === presetId);
+                  if (preset) {
+                    onLocaleChange(preset.locale);
+                    onNumberLocaleChange(preset.numberLocale);
+                    onCurrencyChange(preset.currency);
+                    onPageSizeChange(preset.pageSize);
+                  }
+                }}
+              >
+                {INVOICE_PRESETS.map((preset) => (
+                  <DropdownMenuRadioItem key={preset.id} value={preset.id}>
+                    <CircleFlag
+                      countryCode={preset.countryCode}
+                      height={16}
+                      width={16}
+                    />
+                    <span>{preset.label}</span>
+                  </DropdownMenuRadioItem>
+                ))}
+                {!currentPreset && (
+                  <DropdownMenuRadioItem value="custom" disabled>
+                    <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} />
+                    <span className="text-muted-foreground">Custom</span>
+                  </DropdownMenuRadioItem>
+                )}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <p className="text-[10px] text-muted-foreground/70">
+            Sets currency, language, paper & format
+          </p>
+        </div>
+
+        {/* Currency */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">Currency</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              {currentCurrency && (
+                <CircleFlag
+                  countryCode={currentCurrency.countryCode}
+                  height={16}
+                  width={16}
+                />
+              )}
+              <span>{invoice.currency}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={invoice.currency}
+                onValueChange={onCurrencyChange}
+              >
+                {CURRENCIES.map((currency) => (
+                  <DropdownMenuRadioItem
+                    key={currency.value}
+                    value={currency.value}
+                  >
+                    <CircleFlag
+                      countryCode={currency.countryCode}
+                      height={16}
+                      width={16}
+                    />
+                    <span>{currency.value}</span>
+                    <span className="text-muted-foreground">
+                      {currency.label}
+                    </span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Language */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">Language</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              {currentLanguage && (
+                <CircleFlag
+                  countryCode={currentLanguage.countryCode}
+                  height={16}
+                  width={16}
+                />
+              )}
+              <span>{currentLanguage?.label ?? invoice.locale}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={invoice.locale}
+                onValueChange={(value) =>
+                  onLocaleChange(value as InvoiceLocale)
+                }
+              >
+                {LANGUAGES.map((lang) => (
+                  <DropdownMenuRadioItem key={lang.value} value={lang.value}>
+                    <CircleFlag
+                      countryCode={lang.countryCode}
+                      height={16}
+                      width={16}
+                    />
+                    <span>{lang.label}</span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Paper Size */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">Paper Size</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              <span>{currentPaperSize?.label ?? invoice.pageSize}</span>
+              <span className="text-muted-foreground text-xs">
+                {currentPaperSize?.dimensions}
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={invoice.pageSize}
+                onValueChange={(value) => onPageSizeChange(value as PageSize)}
+              >
+                {PAPER_SIZES.map((size) => (
+                  <DropdownMenuRadioItem key={size.value} value={size.value}>
+                    <span>{size.label}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {size.dimensions}
+                    </span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Number Format */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs text-muted-foreground">Number Format</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={dropdownTriggerClasses}>
+              <span>{currentNumberFormat?.label ?? invoice.numberLocale}</span>
+              <span className="text-muted-foreground text-xs">
+                {currentNumberFormat?.example}
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuRadioGroup
+                value={invoice.numberLocale}
+                onValueChange={(value) =>
+                  onNumberLocaleChange(value as NumberLocale)
+                }
+              >
+                {NUMBER_FORMATS.map((format) => (
+                  <DropdownMenuRadioItem
+                    key={format.value}
+                    value={format.value}
+                  >
+                    <span>{format.label}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {format.example}
+                    </span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* PREVIEW SECTION */}
+      {/* ═══════════════════════════════════════════════════════════════════ */}
       {onPreviewModeChange && (
-        <div className="flex items-center justify-between pb-2 border-b">
+        <div className="flex items-center justify-between border-t pt-4">
           <Label className="text-sm font-medium text-muted-foreground">
-            Preview (Mock Data)
+            Preview mode
           </Label>
           <Switch
             checked={previewMode}
@@ -99,273 +400,6 @@ function SettingsContent({
           />
         </div>
       )}
-
-      {/* Layout */}
-      <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Layout</Label>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            <span>{currentLayout.name}</span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuRadioGroup
-              value={invoice.layoutId || "classic"}
-              onValueChange={onLayoutChange}
-            >
-              {LAYOUTS.map((layout) => (
-                <DropdownMenuRadioItem key={layout.id} value={layout.id}>
-                  <span>{layout.name}</span>
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Page Margin */}
-      <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Page Margin</Label>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            <span>
-              {invoice.pageMargin === "none"
-                ? "None"
-                : invoice.pageMargin === "small"
-                  ? "Some"
-                  : "Plenty"}
-            </span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuRadioGroup
-              value={invoice.pageMargin || "none"}
-              onValueChange={(value) => onPageMarginChange(value as PageMargin)}
-            >
-              <DropdownMenuRadioItem value="none">None</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="small">Some</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="normal">
-                Plenty
-              </DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Style */}
-      <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Style</Label>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            <div
-              className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: currentStyle.colors.accent }}
-            />
-            <span>{currentStyle.name}</span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuRadioGroup
-              value={invoice.styleId || "classic"}
-              onValueChange={onStyleChange}
-            >
-              {allStyles.map((style) => (
-                <DropdownMenuRadioItem key={style.id} value={style.id}>
-                  <div
-                    className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: style.colors.accent }}
-                  />
-                  <span>{style.name}</span>
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Settings Preset */}
-      <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Settings Preset</Label>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            {currentPreset ? (
-              <>
-                <CircleFlag
-                  countryCode={currentPreset.countryCode}
-                  height={16}
-                  width={16}
-                />
-                <span>{currentPreset.label}</span>
-              </>
-            ) : (
-              <>
-                <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={1} />
-                <span className="text-muted-foreground">Custom</span>
-              </>
-            )}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuRadioGroup
-              value={currentPreset?.id ?? "custom"}
-              onValueChange={(presetId) => {
-                const preset = INVOICE_PRESETS.find((p) => p.id === presetId);
-                if (preset) {
-                  onLocaleChange(preset.locale);
-                  onNumberLocaleChange(preset.numberLocale);
-                  onCurrencyChange(preset.currency);
-                  onPageSizeChange(preset.pageSize);
-                }
-              }}
-            >
-              {INVOICE_PRESETS.map((preset) => (
-                <DropdownMenuRadioItem key={preset.id} value={preset.id}>
-                  <CircleFlag
-                    countryCode={preset.countryCode}
-                    height={16}
-                    width={16}
-                  />
-                  <span>{preset.label}</span>
-                </DropdownMenuRadioItem>
-              ))}
-              {!currentPreset && (
-                <DropdownMenuRadioItem value="custom" disabled>
-                  <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} />
-                  <span className="text-muted-foreground">Custom</span>
-                </DropdownMenuRadioItem>
-              )}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Currency */}
-      <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Currency</Label>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            {currentCurrency && (
-              <CircleFlag
-                countryCode={currentCurrency.countryCode}
-                height={16}
-                width={16}
-              />
-            )}
-            <span>{invoice.currency}</span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuRadioGroup
-              value={invoice.currency}
-              onValueChange={onCurrencyChange}
-            >
-              {CURRENCIES.map((currency) => (
-                <DropdownMenuRadioItem
-                  key={currency.value}
-                  value={currency.value}
-                >
-                  <CircleFlag
-                    countryCode={currency.countryCode}
-                    height={16}
-                    width={16}
-                  />
-                  <span>{currency.value}</span>
-                  <span className="text-muted-foreground">
-                    {currency.label}
-                  </span>
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Language */}
-      <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Language</Label>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            {currentLanguage && (
-              <CircleFlag
-                countryCode={currentLanguage.countryCode}
-                height={16}
-                width={16}
-              />
-            )}
-            <span>{currentLanguage?.label ?? invoice.locale}</span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuRadioGroup
-              value={invoice.locale}
-              onValueChange={(value) => onLocaleChange(value as InvoiceLocale)}
-            >
-              {LANGUAGES.map((lang) => (
-                <DropdownMenuRadioItem key={lang.value} value={lang.value}>
-                  <CircleFlag
-                    countryCode={lang.countryCode}
-                    height={16}
-                    width={16}
-                  />
-                  <span>{lang.label}</span>
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Paper Size */}
-      <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Paper Size</Label>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            <span>{currentPaperSize?.label ?? invoice.pageSize}</span>
-            <span className="text-muted-foreground text-xs">
-              {currentPaperSize?.dimensions}
-            </span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuRadioGroup
-              value={invoice.pageSize}
-              onValueChange={(value) => onPageSizeChange(value as PageSize)}
-            >
-              {PAPER_SIZES.map((size) => (
-                <DropdownMenuRadioItem key={size.value} value={size.value}>
-                  <span>{size.label}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {size.dimensions}
-                  </span>
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Number Format */}
-      <div className="flex flex-col gap-1">
-        <Label className="text-xs text-muted-foreground">Number Format</Label>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerClasses}>
-            <span>{currentNumberFormat?.label ?? invoice.numberLocale}</span>
-            <span className="text-muted-foreground text-xs">
-              {currentNumberFormat?.example}
-            </span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuRadioGroup
-              value={invoice.numberLocale}
-              onValueChange={(value) =>
-                onNumberLocaleChange(value as NumberLocale)
-              }
-            >
-              {NUMBER_FORMATS.map((format) => (
-                <DropdownMenuRadioItem key={format.value} value={format.value}>
-                  <span>{format.label}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {format.example}
-                  </span>
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
     </div>
   );
 }

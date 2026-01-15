@@ -28,8 +28,26 @@ function getDocumentPrefix(
   locale: InvoiceLocale,
 ): string {
   const prefixes = {
-    invoice: { "en-US": "INV", "fr-FR": "FA" },
-    quote: { "en-US": "QUO", "fr-FR": "DEV" },
+    invoice: {
+      "en-US": "INV",
+      "en-GB": "INV",
+      "en-AU": "INV",
+      "fr-FR": "FA",
+      "de-DE": "RE",
+      "de-CH": "RE",
+      "es-ES": "FAC",
+      "pt-PT": "FT",
+    },
+    quote: {
+      "en-US": "QUO",
+      "en-GB": "QUO",
+      "en-AU": "QUO",
+      "fr-FR": "DEV",
+      "de-DE": "ANG",
+      "de-CH": "OFF",
+      "es-ES": "PRE",
+      "pt-PT": "ORC",
+    },
   };
   return prefixes[documentType][locale];
 }
@@ -68,6 +86,8 @@ export const defaultInvoiceState: InvoiceFormState = {
   fromEmail: "",
   fromPhone: "",
   fromTaxId: "",
+  fromRegistrationId: "",
+  showFromRegistrationId: true,
   fromLogoUrl: "",
   showFromLogo: true,
 
@@ -80,6 +100,8 @@ export const defaultInvoiceState: InvoiceFormState = {
   customerEmail: "",
   customerPhone: "",
   customerTaxId: "",
+  customerRegistrationId: "",
+  showCustomerRegistrationId: true,
   customerLogoUrl: "",
   showCustomerLogo: true,
 

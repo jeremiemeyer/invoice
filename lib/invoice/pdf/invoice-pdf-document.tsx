@@ -505,6 +505,11 @@ export function InvoicePdfDocument({
                   {translations.taxId}: {invoice.fromTaxId}
                 </Text>
               )}
+              {invoice.showFromRegistrationId && invoice.fromRegistrationId && (
+                <Text style={styles.mutedText}>
+                  {translations.registrationId}: {invoice.fromRegistrationId}
+                </Text>
+              )}
             </Section>
 
             {/* Your Client - Right (Step 1) */}
@@ -575,6 +580,13 @@ export function InvoicePdfDocument({
                   {translations.taxId}: {invoice.customerTaxId}
                 </Text>
               )}
+              {invoice.showCustomerRegistrationId &&
+                invoice.customerRegistrationId && (
+                  <Text style={styles.mutedText}>
+                    {translations.registrationId}:{" "}
+                    {invoice.customerRegistrationId}
+                  </Text>
+                )}
             </Section>
           </View>
 

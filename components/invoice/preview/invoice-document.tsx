@@ -248,6 +248,13 @@ export function InvoiceDocument({
                   {t.taxId}: {invoice.fromTaxId}
                 </p>
               )}
+              {invoice.showFromRegistrationId && invoice.fromRegistrationId && (
+                <p
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
+                >
+                  {t.registrationId}: {invoice.fromRegistrationId}
+                </p>
+              )}
             </div>
           </div>
         </Section>
@@ -349,6 +356,17 @@ export function InvoiceDocument({
                   {t.taxId}: {invoice.customerTaxId}
                 </p>
               )}
+              {invoice.showCustomerRegistrationId &&
+                invoice.customerRegistrationId && (
+                  <p
+                    className={cn(
+                      "truncate text-[10px] font-medium",
+                      labelClass,
+                    )}
+                  >
+                    {t.registrationId}: {invoice.customerRegistrationId}
+                  </p>
+                )}
             </div>
           </div>
         </Section>

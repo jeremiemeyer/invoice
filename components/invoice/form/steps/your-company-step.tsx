@@ -85,6 +85,17 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         onChange={(value) => setField("fromTaxId", value)}
         placeholder="XX-XXXXXXX"
       />
+
+      <InlineField
+        label="Registration No."
+        value={state.fromRegistrationId}
+        onChange={(value) => setField("fromRegistrationId", value)}
+        placeholder="123 456 789 00012"
+        isVisible={state.showFromRegistrationId}
+        onToggleVisibility={() =>
+          setField("showFromRegistrationId", !state.showFromRegistrationId)
+        }
+      />
     </div>
   );
 }

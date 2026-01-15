@@ -17,9 +17,33 @@ const documentTitles: Record<InvoiceLocale, Record<DocumentType, string>> = {
     invoice: "Invoice",
     quote: "Quote",
   },
+  "en-GB": {
+    invoice: "Invoice",
+    quote: "Quote",
+  },
+  "en-AU": {
+    invoice: "Invoice",
+    quote: "Quote",
+  },
   "fr-FR": {
     invoice: "Facture",
     quote: "Devis",
+  },
+  "de-DE": {
+    invoice: "Rechnung",
+    quote: "Angebot",
+  },
+  "de-CH": {
+    invoice: "Rechnung",
+    quote: "Offerte",
+  },
+  "es-ES": {
+    invoice: "Factura",
+    quote: "Presupuesto",
+  },
+  "pt-PT": {
+    invoice: "Fatura",
+    quote: "Orçamento",
   },
 };
 
@@ -315,6 +339,11 @@ export function ModernLayout({
                   {t.taxId}: {invoice.fromTaxId}
                 </Text>
               )}
+              {invoice.showFromRegistrationId && invoice.fromRegistrationId && (
+                <Text style={mutedTextStyle}>
+                  {t.registrationId}: {invoice.fromRegistrationId}
+                </Text>
+              )}
             </View>
           </View>
         </Section>
@@ -397,6 +426,12 @@ export function ModernLayout({
                   {t.taxId}: {invoice.customerTaxId}
                 </Text>
               )}
+              {invoice.showCustomerRegistrationId &&
+                invoice.customerRegistrationId && (
+                  <Text style={mutedTextStyle}>
+                    {t.registrationId}: {invoice.customerRegistrationId}
+                  </Text>
+                )}
             </View>
           </View>
         </Section>

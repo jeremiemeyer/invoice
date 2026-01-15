@@ -211,6 +211,11 @@ export function ClassicLayout({
               {t.taxId}: {invoice.fromTaxId}
             </Text>
           )}
+          {invoice.showFromRegistrationId && invoice.fromRegistrationId && (
+            <Text style={mutedTextStyle}>
+              {t.registrationId}: {invoice.fromRegistrationId}
+            </Text>
+          )}
         </View>
 
         {/* Your Client - Right */}
@@ -284,6 +289,12 @@ export function ClassicLayout({
               {t.taxId}: {invoice.customerTaxId}
             </Text>
           )}
+          {invoice.showCustomerRegistrationId &&
+            invoice.customerRegistrationId && (
+              <Text style={mutedTextStyle}>
+                {t.registrationId}: {invoice.customerRegistrationId}
+              </Text>
+            )}
         </View>
       </View>
 

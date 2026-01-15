@@ -1,6 +1,14 @@
 import type { DocumentType } from "./types";
 
-export type InvoiceLocale = "en-US" | "fr-FR";
+export type InvoiceLocale =
+  | "en-US"
+  | "en-GB"
+  | "en-AU"
+  | "fr-FR"
+  | "de-DE"
+  | "de-CH"
+  | "es-ES"
+  | "pt-PT";
 export type NumberLocale = "en-US" | "fr-FR" | "de-DE" | "de-CH";
 export type PageSize = "A4" | "LETTER";
 
@@ -26,6 +34,24 @@ export const INVOICE_PRESETS: InvoicePreset[] = [
     countryCode: "us",
   },
   {
+    id: "gb",
+    label: "United Kingdom",
+    locale: "en-GB",
+    numberLocale: "en-US",
+    currency: "GBP",
+    pageSize: "A4",
+    countryCode: "gb",
+  },
+  {
+    id: "au",
+    label: "Australia",
+    locale: "en-AU",
+    numberLocale: "en-US",
+    currency: "AUD",
+    pageSize: "A4",
+    countryCode: "au",
+  },
+  {
     id: "fr",
     label: "France",
     locale: "fr-FR",
@@ -33,6 +59,42 @@ export const INVOICE_PRESETS: InvoicePreset[] = [
     currency: "EUR",
     pageSize: "A4",
     countryCode: "fr",
+  },
+  {
+    id: "de",
+    label: "Deutschland",
+    locale: "de-DE",
+    numberLocale: "de-DE",
+    currency: "EUR",
+    pageSize: "A4",
+    countryCode: "de",
+  },
+  {
+    id: "ch",
+    label: "Schweiz",
+    locale: "de-CH",
+    numberLocale: "de-CH",
+    currency: "CHF",
+    pageSize: "A4",
+    countryCode: "ch",
+  },
+  {
+    id: "es",
+    label: "España",
+    locale: "es-ES",
+    numberLocale: "de-DE",
+    currency: "EUR",
+    pageSize: "A4",
+    countryCode: "es",
+  },
+  {
+    id: "pt",
+    label: "Portugal",
+    locale: "pt-PT",
+    numberLocale: "de-DE",
+    currency: "EUR",
+    pageSize: "A4",
+    countryCode: "pt",
   },
 ];
 
@@ -78,8 +140,14 @@ export interface LanguageOption {
 }
 
 export const LANGUAGES: LanguageOption[] = [
-  { value: "en-US", label: "English", countryCode: "us" },
+  { value: "en-US", label: "English (US)", countryCode: "us" },
+  { value: "en-GB", label: "English (UK)", countryCode: "gb" },
+  { value: "en-AU", label: "English (AU)", countryCode: "au" },
   { value: "fr-FR", label: "Français", countryCode: "fr" },
+  { value: "de-DE", label: "Deutsch", countryCode: "de" },
+  { value: "de-CH", label: "Deutsch (CH)", countryCode: "ch" },
+  { value: "es-ES", label: "Español", countryCode: "es" },
+  { value: "pt-PT", label: "Português", countryCode: "pt" },
 ];
 
 // Paper sizes
@@ -125,6 +193,7 @@ export interface InvoiceTranslations {
   total: string;
   paymentDetails: string;
   taxId: string;
+  registrationId: string;
 }
 
 export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
@@ -145,6 +214,26 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     total: "Total",
     paymentDetails: "Payment Details",
     taxId: "Tax ID",
+    registrationId: "Reg. No.",
+  },
+  "en-AU": {
+    invoiceNo: "Invoice No",
+    issued: "Issued",
+    dueDate: "Due date",
+    from: "From",
+    to: "To",
+    description: "Description",
+    qty: "Qty",
+    price: "Price",
+    amount: "Amount",
+    note: "Note",
+    subtotal: "Subtotal",
+    discount: "Discount",
+    tax: "GST",
+    total: "Total",
+    paymentDetails: "Payment Details",
+    taxId: "Tax ID",
+    registrationId: "ABN",
   },
   "fr-FR": {
     invoiceNo: "Facture N°",
@@ -162,13 +251,115 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "TVA",
     total: "Total",
     paymentDetails: "Coordonnées bancaires",
-    taxId: "N° SIRET",
+    taxId: "N° TVA",
+    registrationId: "SIRET",
+  },
+  "es-ES": {
+    invoiceNo: "Factura N°",
+    issued: "Fecha",
+    dueDate: "Vencimiento",
+    from: "De",
+    to: "Para",
+    description: "Descripción",
+    qty: "Cant.",
+    price: "Precio",
+    amount: "Importe",
+    note: "Nota",
+    subtotal: "Subtotal",
+    discount: "Descuento",
+    tax: "IVA",
+    total: "Total",
+    paymentDetails: "Datos bancarios",
+    taxId: "NIF",
+    registrationId: "Reg. Mercantil",
+  },
+  "en-GB": {
+    invoiceNo: "Invoice No",
+    issued: "Issued",
+    dueDate: "Due date",
+    from: "From",
+    to: "To",
+    description: "Description",
+    qty: "Qty",
+    price: "Price",
+    amount: "Amount",
+    note: "Note",
+    subtotal: "Subtotal",
+    discount: "Discount",
+    tax: "VAT",
+    total: "Total",
+    paymentDetails: "Payment Details",
+    taxId: "VAT No.",
+    registrationId: "Co. Reg. No.",
+  },
+  "de-DE": {
+    invoiceNo: "Rechnung Nr.",
+    issued: "Datum",
+    dueDate: "Fällig am",
+    from: "Von",
+    to: "An",
+    description: "Beschreibung",
+    qty: "Menge",
+    price: "Preis",
+    amount: "Betrag",
+    note: "Hinweis",
+    subtotal: "Zwischensumme",
+    discount: "Rabatt",
+    tax: "MwSt.",
+    total: "Gesamt",
+    paymentDetails: "Bankverbindung",
+    taxId: "USt-IdNr.",
+    registrationId: "HRB",
+  },
+  "de-CH": {
+    invoiceNo: "Rechnung Nr.",
+    issued: "Datum",
+    dueDate: "Fällig am",
+    from: "Von",
+    to: "An",
+    description: "Beschreibung",
+    qty: "Menge",
+    price: "Preis",
+    amount: "Betrag",
+    note: "Hinweis",
+    subtotal: "Zwischensumme",
+    discount: "Rabatt",
+    tax: "MwSt.",
+    total: "Total",
+    paymentDetails: "Bankverbindung",
+    taxId: "MwSt-Nr.",
+    registrationId: "UID",
+  },
+  "pt-PT": {
+    invoiceNo: "Fatura N°",
+    issued: "Data",
+    dueDate: "Vencimento",
+    from: "De",
+    to: "Para",
+    description: "Descrição",
+    qty: "Qtd.",
+    price: "Preço",
+    amount: "Valor",
+    note: "Nota",
+    subtotal: "Subtotal",
+    discount: "Desconto",
+    tax: "IVA",
+    total: "Total",
+    paymentDetails: "Dados bancários",
+    taxId: "NIF",
+    registrationId: "NIPC",
   },
 };
 
 export const localeConfig: Record<InvoiceLocale, { dateLocale: string }> = {
   "en-US": { dateLocale: "en-US" },
+  "en-GB": { dateLocale: "en-GB" },
+  "en-AU": { dateLocale: "en-AU" },
   "fr-FR": { dateLocale: "fr-FR" },
+  "de-DE": { dateLocale: "de-DE" },
+  "de-CH": { dateLocale: "de-CH" },
+  "es-ES": { dateLocale: "es-ES" },
+  "pt-PT": { dateLocale: "pt-PT" },
 };
 
 export const pageSizeConfig: Record<
@@ -222,6 +413,18 @@ export const documentTypeLabels: Record<
       newDocument: "New Quote",
     },
   },
+  "en-AU": {
+    invoice: {
+      documentNo: "Invoice No",
+      dateLabel: "Due date",
+      newDocument: "New Invoice",
+    },
+    quote: {
+      documentNo: "Quote No",
+      dateLabel: "Valid until",
+      newDocument: "New Quote",
+    },
+  },
   "fr-FR": {
     invoice: {
       documentNo: "Facture N°",
@@ -232,6 +435,66 @@ export const documentTypeLabels: Record<
       documentNo: "Devis N°",
       dateLabel: "Validité",
       newDocument: "Nouveau Devis",
+    },
+  },
+  "es-ES": {
+    invoice: {
+      documentNo: "Factura N°",
+      dateLabel: "Vencimiento",
+      newDocument: "Nueva Factura",
+    },
+    quote: {
+      documentNo: "Presupuesto N°",
+      dateLabel: "Válido hasta",
+      newDocument: "Nuevo Presupuesto",
+    },
+  },
+  "en-GB": {
+    invoice: {
+      documentNo: "Invoice No",
+      dateLabel: "Due date",
+      newDocument: "New Invoice",
+    },
+    quote: {
+      documentNo: "Quote No",
+      dateLabel: "Valid until",
+      newDocument: "New Quote",
+    },
+  },
+  "de-DE": {
+    invoice: {
+      documentNo: "Rechnung Nr.",
+      dateLabel: "Fällig am",
+      newDocument: "Neue Rechnung",
+    },
+    quote: {
+      documentNo: "Angebot Nr.",
+      dateLabel: "Gültig bis",
+      newDocument: "Neues Angebot",
+    },
+  },
+  "de-CH": {
+    invoice: {
+      documentNo: "Rechnung Nr.",
+      dateLabel: "Fällig am",
+      newDocument: "Neue Rechnung",
+    },
+    quote: {
+      documentNo: "Offerte Nr.",
+      dateLabel: "Gültig bis",
+      newDocument: "Neue Offerte",
+    },
+  },
+  "pt-PT": {
+    invoice: {
+      documentNo: "Fatura N°",
+      dateLabel: "Vencimento",
+      newDocument: "Nova Fatura",
+    },
+    quote: {
+      documentNo: "Orçamento N°",
+      dateLabel: "Válido até",
+      newDocument: "Novo Orçamento",
     },
   },
 };
