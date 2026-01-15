@@ -17,6 +17,7 @@ import { Text as PdfText } from "@react-pdf/renderer";
 import type { Style } from "@react-pdf/types";
 import type { ReactNode } from "react";
 import { calculateLineItemTotal } from "../calculate";
+import { getCountryConfig } from "../countries";
 import { formatCurrency } from "../format-currency";
 import { getLayout } from "../layouts";
 import { parseLexicalState } from "../lexical-to-html";
@@ -337,6 +338,10 @@ export function InvoicePdfDocument({
   );
   const localeConfig = getLocaleConfig(invoice.locale);
 
+  // Country-specific ID labels
+  const fromCountryConfig = getCountryConfig(invoice.fromCountryCode);
+  const customerCountryConfig = getCountryConfig(invoice.customerCountryCode);
+
   // Get style and create styles
   const style = getStyle(styleId);
   const colors = style.colors;
@@ -494,22 +499,23 @@ export function InvoicePdfDocument({
               {invoice.fromCity && (
                 <Text style={styles.mutedText}>{invoice.fromCity}</Text>
               )}
-              {invoice.fromCountry && (
-                <Text style={styles.mutedText}>{invoice.fromCountry}</Text>
-              )}
+              <Text style={styles.mutedText}>{fromCountryConfig.name}</Text>
               {invoice.fromPhone && (
                 <Text style={styles.mutedText}>{invoice.fromPhone}</Text>
               )}
               {invoice.fromTaxId && (
                 <Text style={styles.mutedText}>
-                  {translations.taxId}: {invoice.fromTaxId}
+                  {fromCountryConfig.taxId.label}: {invoice.fromTaxId}
                 </Text>
               )}
-              {invoice.showFromRegistrationId && invoice.fromRegistrationId && (
-                <Text style={styles.mutedText}>
-                  {translations.registrationId}: {invoice.fromRegistrationId}
-                </Text>
-              )}
+              {invoice.showFromRegistrationId &&
+                invoice.fromRegistrationId &&
+                fromCountryConfig.registrationId.available && (
+                  <Text style={styles.mutedText}>
+                    {fromCountryConfig.registrationId.label}:{" "}
+                    {invoice.fromRegistrationId}
+                  </Text>
+                )}
             </Section>
 
             {/* Your Client - Right (Step 1) */}
@@ -569,21 +575,20 @@ export function InvoicePdfDocument({
               {invoice.customerCity && (
                 <Text style={styles.mutedText}>{invoice.customerCity}</Text>
               )}
-              {invoice.customerCountry && (
-                <Text style={styles.mutedText}>{invoice.customerCountry}</Text>
-              )}
+              <Text style={styles.mutedText}>{customerCountryConfig.name}</Text>
               {invoice.customerPhone && (
                 <Text style={styles.mutedText}>{invoice.customerPhone}</Text>
               )}
               {invoice.customerTaxId && (
                 <Text style={styles.mutedText}>
-                  {translations.taxId}: {invoice.customerTaxId}
+                  {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
                 </Text>
               )}
               {invoice.showCustomerRegistrationId &&
-                invoice.customerRegistrationId && (
+                invoice.customerRegistrationId &&
+                customerCountryConfig.registrationId.available && (
                   <Text style={styles.mutedText}>
-                    {translations.registrationId}:{" "}
+                    {customerCountryConfig.registrationId.label}:{" "}
                     {invoice.customerRegistrationId}
                   </Text>
                 )}

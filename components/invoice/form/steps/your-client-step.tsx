@@ -1,7 +1,9 @@
 "use client";
 
+import { InlineCountryField } from "@/components/ui/inline-country-field";
 import { InlineField } from "@/components/ui/inline-field";
 import { InlineImageField } from "@/components/ui/inline-image-field";
+import { getCountryConfig } from "@/lib/invoice/countries";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
 interface YourClientStepProps {
@@ -10,6 +12,9 @@ interface YourClientStepProps {
 }
 
 export function YourClientStep({ state, setField }: YourClientStepProps) {
+  // Get country-specific ID labels based on client's country
+  const countryConfig = getCountryConfig(state.customerCountryCode);
+
   return (
     <div>
       <h2 className="pb-3 text-2xl font-semibold">Your client</h2>
@@ -64,12 +69,10 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         autoComplete="section-customer address-level2"
       />
 
-      <InlineField
+      <InlineCountryField
         label="Country"
-        value={state.customerCountry}
-        onChange={(value) => setField("customerCountry", value)}
-        placeholder="United States"
-        autoComplete="section-customer country-name"
+        value={state.customerCountryCode}
+        onChange={(code) => setField("customerCountryCode", code)}
       />
 
       <InlineField
@@ -82,25 +85,27 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
       />
 
       <InlineField
-        label="Tax ID"
+        label={countryConfig.taxId.label}
         value={state.customerTaxId}
         onChange={(value) => setField("customerTaxId", value)}
-        placeholder="XX-XXXXXXX"
+        placeholder={countryConfig.taxId.placeholder}
       />
 
-      <InlineField
-        label="Registration No."
-        value={state.customerRegistrationId}
-        onChange={(value) => setField("customerRegistrationId", value)}
-        placeholder="123 456 789 00012"
-        isVisible={state.showCustomerRegistrationId}
-        onToggleVisibility={() =>
-          setField(
-            "showCustomerRegistrationId",
-            !state.showCustomerRegistrationId,
-          )
-        }
-      />
+      {countryConfig.registrationId.available && (
+        <InlineField
+          label={countryConfig.registrationId.label}
+          value={state.customerRegistrationId}
+          onChange={(value) => setField("customerRegistrationId", value)}
+          placeholder={countryConfig.registrationId.placeholder}
+          isVisible={state.showCustomerRegistrationId}
+          onToggleVisibility={() =>
+            setField(
+              "showCustomerRegistrationId",
+              !state.showCustomerRegistrationId,
+            )
+          }
+        />
+      )}
     </div>
   );
 }

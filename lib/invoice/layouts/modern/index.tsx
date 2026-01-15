@@ -3,6 +3,7 @@
 import { Image, Page, Text, View } from "@rawwee/react-pdf-html";
 import type { Style } from "@react-pdf/types";
 import { calculateLineItemTotal } from "../../calculate";
+import { getCountryConfig } from "../../countries";
 import { formatCurrency } from "../../format-currency";
 import { parseLexicalState } from "../../lexical-to-html";
 import { lexicalToPdf } from "../../pdf/lexical-to-pdf";
@@ -79,6 +80,10 @@ export function ModernLayout({
   onStepClick,
 }: LayoutProps) {
   const { colors, fonts, spacing } = style;
+
+  // Country-specific ID labels
+  const fromCountryConfig = getCountryConfig(invoice.fromCountryCode);
+  const customerCountryConfig = getCountryConfig(invoice.customerCountryCode);
 
   // Common text styles
   const labelStyle: Style = {
@@ -328,22 +333,23 @@ export function ModernLayout({
               {invoice.fromCity && (
                 <Text style={mutedTextStyle}>{invoice.fromCity}</Text>
               )}
-              {invoice.fromCountry && (
-                <Text style={mutedTextStyle}>{invoice.fromCountry}</Text>
-              )}
+              <Text style={mutedTextStyle}>{fromCountryConfig.name}</Text>
               {invoice.fromPhone && (
                 <Text style={mutedTextStyle}>{invoice.fromPhone}</Text>
               )}
               {invoice.fromTaxId && (
                 <Text style={mutedTextStyle}>
-                  {t.taxId}: {invoice.fromTaxId}
+                  {fromCountryConfig.taxId.label}: {invoice.fromTaxId}
                 </Text>
               )}
-              {invoice.showFromRegistrationId && invoice.fromRegistrationId && (
-                <Text style={mutedTextStyle}>
-                  {t.registrationId}: {invoice.fromRegistrationId}
-                </Text>
-              )}
+              {invoice.showFromRegistrationId &&
+                invoice.fromRegistrationId &&
+                fromCountryConfig.registrationId.available && (
+                  <Text style={mutedTextStyle}>
+                    {fromCountryConfig.registrationId.label}:{" "}
+                    {invoice.fromRegistrationId}
+                  </Text>
+                )}
             </View>
           </View>
         </Section>
@@ -415,21 +421,21 @@ export function ModernLayout({
               {invoice.customerCity && (
                 <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
               )}
-              {invoice.customerCountry && (
-                <Text style={mutedTextStyle}>{invoice.customerCountry}</Text>
-              )}
+              <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
               {invoice.customerPhone && (
                 <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
               )}
               {invoice.customerTaxId && (
                 <Text style={mutedTextStyle}>
-                  {t.taxId}: {invoice.customerTaxId}
+                  {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
                 </Text>
               )}
               {invoice.showCustomerRegistrationId &&
-                invoice.customerRegistrationId && (
+                invoice.customerRegistrationId &&
+                customerCountryConfig.registrationId.available && (
                   <Text style={mutedTextStyle}>
-                    {t.registrationId}: {invoice.customerRegistrationId}
+                    {customerCountryConfig.registrationId.label}:{" "}
+                    {invoice.customerRegistrationId}
                   </Text>
                 )}
             </View>

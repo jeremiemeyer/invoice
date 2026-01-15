@@ -1,3 +1,4 @@
+import type { CountryCode } from "./countries";
 import type { InvoiceLocale, NumberLocale, PageSize } from "./translations";
 
 export type DocumentType = "invoice" | "quote";
@@ -27,12 +28,17 @@ export interface InvoiceFormState {
   numberLocale: NumberLocale;
   pageSize: PageSize;
 
+  // Country codes for ID labels (determines Tax ID, Registration ID labels)
+  /** Your business country - determines ID labels like "N° TVA", "SIRET" */
+  fromCountryCode: CountryCode;
+  /** Client's country - determines their ID labels */
+  customerCountryCode: CountryCode;
+
   // From details
   fromName: string;
   fromSubtitle: string;
   fromAddress: string;
   fromCity: string;
-  fromCountry: string;
   fromEmail: string;
   fromPhone: string;
   fromTaxId: string;
@@ -46,7 +52,6 @@ export interface InvoiceFormState {
   customerSubtitle: string;
   customerAddress: string;
   customerCity: string;
-  customerCountry: string;
   customerEmail: string;
   customerPhone: string;
   customerTaxId: string;

@@ -4,6 +4,7 @@
  * Used for PDF generation and can be wrapped by InvoiceHtmlPreview for interactive preview.
  */
 import { calculateLineItemTotal } from "@/lib/invoice/calculate";
+import { getCountryConfig } from "@/lib/invoice/countries";
 import { formatCurrency } from "@/lib/invoice/format-currency";
 import {
   lexicalToHtml,
@@ -74,6 +75,10 @@ export function InvoiceDocument({
   const docLabels = getDocumentTypeLabels(invoice.locale, invoice.documentType);
   const localeConfig = getLocaleConfig(invoice.locale);
   const template = getTemplate(invoice.templateId);
+
+  // Country-specific ID labels (independent from invoice language)
+  const fromCountryConfig = getCountryConfig(invoice.fromCountryCode);
+  const customerCountryConfig = getCountryConfig(invoice.customerCountryCode);
 
   // Template-aware class helpers
   const labelClass = template.colors.label;
@@ -227,13 +232,9 @@ export function InvoiceDocument({
                   {invoice.fromCity}
                 </p>
               )}
-              {invoice.fromCountry && (
-                <p
-                  className={cn("truncate text-[10px] font-medium", labelClass)}
-                >
-                  {invoice.fromCountry}
-                </p>
-              )}
+              <p className={cn("truncate text-[10px] font-medium", labelClass)}>
+                {fromCountryConfig.name}
+              </p>
               {invoice.fromPhone && (
                 <p
                   className={cn("truncate text-[10px] font-medium", labelClass)}
@@ -245,16 +246,22 @@ export function InvoiceDocument({
                 <p
                   className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
-                  {t.taxId}: {invoice.fromTaxId}
+                  {fromCountryConfig.taxId.label}: {invoice.fromTaxId}
                 </p>
               )}
-              {invoice.showFromRegistrationId && invoice.fromRegistrationId && (
-                <p
-                  className={cn("truncate text-[10px] font-medium", labelClass)}
-                >
-                  {t.registrationId}: {invoice.fromRegistrationId}
-                </p>
-              )}
+              {invoice.showFromRegistrationId &&
+                invoice.fromRegistrationId &&
+                fromCountryConfig.registrationId.available && (
+                  <p
+                    className={cn(
+                      "truncate text-[10px] font-medium",
+                      labelClass,
+                    )}
+                  >
+                    {fromCountryConfig.registrationId.label}:{" "}
+                    {invoice.fromRegistrationId}
+                  </p>
+                )}
             </div>
           </div>
         </Section>
@@ -335,13 +342,9 @@ export function InvoiceDocument({
                   {invoice.customerCity}
                 </p>
               )}
-              {invoice.customerCountry && (
-                <p
-                  className={cn("truncate text-[10px] font-medium", labelClass)}
-                >
-                  {invoice.customerCountry}
-                </p>
-              )}
+              <p className={cn("truncate text-[10px] font-medium", labelClass)}>
+                {customerCountryConfig.name}
+              </p>
               {invoice.customerPhone && (
                 <p
                   className={cn("truncate text-[10px] font-medium", labelClass)}
@@ -353,18 +356,20 @@ export function InvoiceDocument({
                 <p
                   className={cn("truncate text-[10px] font-medium", labelClass)}
                 >
-                  {t.taxId}: {invoice.customerTaxId}
+                  {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
                 </p>
               )}
               {invoice.showCustomerRegistrationId &&
-                invoice.customerRegistrationId && (
+                invoice.customerRegistrationId &&
+                customerCountryConfig.registrationId.available && (
                   <p
                     className={cn(
                       "truncate text-[10px] font-medium",
                       labelClass,
                     )}
                   >
-                    {t.registrationId}: {invoice.customerRegistrationId}
+                    {customerCountryConfig.registrationId.label}:{" "}
+                    {invoice.customerRegistrationId}
                   </p>
                 )}
             </div>

@@ -117,6 +117,9 @@ export function InvoicePage() {
             onPageMarginChange={(pageMargin) =>
               setField("pageMargin", pageMargin)
             }
+            onFromCountryCodeChange={(countryCode) =>
+              setField("fromCountryCode", countryCode)
+            }
             previewMode={previewMode}
             onPreviewModeChange={setPreviewMode}
             className="fixed top-4 right-4 z-10"

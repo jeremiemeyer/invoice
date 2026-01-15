@@ -139,6 +139,9 @@ export function MobileInvoiceLayout({
         onCurrencyChange={(currency) => setField("currency", currency)}
         onPageSizeChange={(pageSize) => setField("pageSize", pageSize)}
         onPageMarginChange={(pageMargin) => setField("pageMargin", pageMargin)}
+        onFromCountryCodeChange={(countryCode) =>
+          setField("fromCountryCode", countryCode)
+        }
         previewMode={previewMode}
         onPreviewModeChange={onPreviewModeChange}
         collapsed

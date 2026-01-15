@@ -17,7 +17,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import type { CountryCode } from "@/lib/invoice/countries";
 import { getLayout, LAYOUTS } from "@/lib/invoice/layouts";
 import { getAllStyles, getStyle } from "@/lib/invoice/styles";
 import {
@@ -48,6 +50,7 @@ interface InvoiceSettingsProps {
   onCurrencyChange: (currency: string) => void;
   onPageSizeChange: (pageSize: PageSize) => void;
   onPageMarginChange: (pageMargin: PageMargin) => void;
+  onFromCountryCodeChange: (countryCode: CountryCode) => void;
   previewMode?: boolean;
   onPreviewModeChange?: (enabled: boolean) => void;
   collapsed?: boolean;
@@ -63,6 +66,7 @@ function SettingsContent({
   onCurrencyChange,
   onPageSizeChange,
   onPageMarginChange,
+  onFromCountryCodeChange,
   previewMode,
   onPreviewModeChange,
 }: Omit<InvoiceSettingsProps, "collapsed" | "className">) {
@@ -85,14 +89,17 @@ function SettingsContent({
   );
 
   return (
-    <div className="flex w-52 flex-col gap-4">
+    <div className="flex w-52 flex-col gap-4 md:gap-8">
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {/* APPEARANCE SECTION */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       <div className="flex flex-col gap-3">
-        <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Appearance
-        </Label>
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+            Appearance
+          </Label>
+          <Separator />
+        </div>
 
         {/* Layout */}
         <div className="flex flex-col gap-1">
@@ -182,15 +189,18 @@ function SettingsContent({
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {/* REGION SECTION */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
-      <div className="flex flex-col gap-3 border-t pt-4">
-        <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Region
-        </Label>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+            Region Formatting
+          </Label>
+          <Separator />
+        </div>
 
-        {/* Country Preset */}
+        {/* Formatting Preset */}
         <div className="flex flex-col gap-1">
           <Label className="text-xs text-muted-foreground">
-            Country preset
+            Formatting preset
           </Label>
           <DropdownMenu>
             <DropdownMenuTrigger className={dropdownTriggerClasses}>
@@ -220,6 +230,10 @@ function SettingsContent({
                     onNumberLocaleChange(preset.numberLocale);
                     onCurrencyChange(preset.currency);
                     onPageSizeChange(preset.pageSize);
+                    // Set business country code for ID labels (uppercase)
+                    onFromCountryCodeChange(
+                      preset.countryCode.toUpperCase() as CountryCode,
+                    );
                   }
                 }}
               >
@@ -242,9 +256,6 @@ function SettingsContent({
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <p className="text-[10px] text-muted-foreground/70">
-            Sets currency, language, paper & format
-          </p>
         </div>
 
         {/* Currency */}
@@ -389,15 +400,18 @@ function SettingsContent({
       {/* PREVIEW SECTION */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {onPreviewModeChange && (
-        <div className="flex items-center justify-between border-t pt-4">
-          <Label className="text-sm font-medium text-muted-foreground">
-            Preview mode
-          </Label>
-          <Switch
-            checked={previewMode}
-            onCheckedChange={onPreviewModeChange}
-            size="sm"
-          />
+        <div className="flex flex-col gap-3">
+          <Separator />
+          <div className="flex items-center justify-between">
+            <Label className="text-sm font-medium text-muted-foreground">
+              Preview mode
+            </Label>
+            <Switch
+              checked={previewMode}
+              onCheckedChange={onPreviewModeChange}
+              size="sm"
+            />
+          </div>
         </div>
       )}
     </div>
@@ -413,6 +427,7 @@ export function InvoiceSettings({
   onCurrencyChange,
   onPageSizeChange,
   onPageMarginChange,
+  onFromCountryCodeChange,
   previewMode,
   onPreviewModeChange,
   collapsed = false,
@@ -441,6 +456,7 @@ export function InvoiceSettings({
             onCurrencyChange={onCurrencyChange}
             onPageSizeChange={onPageSizeChange}
             onPageMarginChange={onPageMarginChange}
+            onFromCountryCodeChange={onFromCountryCodeChange}
             previewMode={previewMode}
             onPreviewModeChange={onPreviewModeChange}
           />
@@ -460,6 +476,7 @@ export function InvoiceSettings({
         onCurrencyChange={onCurrencyChange}
         onPageSizeChange={onPageSizeChange}
         onPageMarginChange={onPageMarginChange}
+        onFromCountryCodeChange={onFromCountryCodeChange}
         previewMode={previewMode}
         onPreviewModeChange={onPreviewModeChange}
       />

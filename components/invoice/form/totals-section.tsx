@@ -5,10 +5,10 @@ import { CircleFlag } from "react-circle-flags";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Combobox,
-  ComboboxContent,
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
+  ComboboxPopup,
 } from "@/components/ui/combobox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -90,7 +90,7 @@ export function TotalsSection({ state, setField, totals }: TotalsSectionProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <ComboboxContent className="p-1">
+            <ComboboxPopup className="p-1">
               <ComboboxList>
                 {filteredCurrencies.map((c) => (
                   <ComboboxItem key={c.value} value={c.value}>
@@ -109,7 +109,7 @@ export function TotalsSection({ state, setField, totals }: TotalsSectionProps) {
                   </div>
                 )}
               </ComboboxList>
-            </ComboboxContent>
+            </ComboboxPopup>
           </Combobox>
         </Field>
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { Combobox as ComboboxPrimitive } from "@base-ui/react/combobox";
-import { Cancel01Icon, UnfoldMoreIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { ChevronsUpDownIcon, XIcon } from "lucide-react";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -90,7 +89,13 @@ function ComboboxInput({
           className,
         )}
         data-slot="combobox-input"
-        render={<Input className="has-disabled:opacity-100" />}
+        render={
+          <Input
+            className="has-disabled:opacity-100"
+            size={typeof sizeValue === "number" ? sizeValue : undefined}
+            data-size={typeof sizeValue === "string" ? sizeValue : undefined}
+          />
+        }
         {...props}
       />
       {showTrigger && (
@@ -100,7 +105,7 @@ function ComboboxInput({
             sizeValue === "sm" ? "end-0" : "end-0.5",
           )}
         >
-          <HugeiconsIcon icon={UnfoldMoreIcon} strokeWidth={2} />
+          <ChevronsUpDownIcon />
         </ComboboxTrigger>
       )}
       {showClear && (
@@ -110,7 +115,7 @@ function ComboboxInput({
             sizeValue === "sm" ? "end-0" : "end-0.5",
           )}
         >
-          <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
+          <XIcon />
         </ComboboxClear>
       )}
     </div>
@@ -134,9 +139,11 @@ function ComboboxPopup({
   className,
   children,
   sideOffset = 4,
+  align,
   ...props
 }: ComboboxPrimitive.Popup.Props & {
   sideOffset?: number;
+  align?: "start" | "center" | "end";
 }) {
   const { chipsRef } = React.useContext(ComboboxContext);
 
@@ -147,10 +154,11 @@ function ComboboxPopup({
         className="z-50 select-none"
         data-slot="combobox-positioner"
         sideOffset={sideOffset}
+        align={align}
       >
         <span
           className={cn(
-            "relative flex max-h-full origin-(--transform-origin) rounded-lg border bg-popover bg-clip-padding transition-[scale,opacity] before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-lg has-data-starting-style:scale-98 has-data-starting-style:opacity-0 dark:not-in-data-[slot=group]:bg-clip-border",
+            "relative flex max-h-full origin-(--transform-origin) rounded-lg border bg-popover not-dark:bg-clip-padding shadow-lg/5 transition-[scale,opacity] before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/6%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
             className,
           )}
         >
@@ -192,12 +200,12 @@ function ComboboxItem({
           strokeWidth="2"
           viewBox="0 0 24 24"
           width="24"
-          xmlns="http://www.w3.org/1500/svg"
+          xmlns="http://www.w3.org/2000/svg"
         >
           <path d="M5.252 12.7 10.2 18.63 18.748 5.37" />
         </svg>
       </ComboboxPrimitive.ItemIndicator>
-      <div className="col-start-2 flex items-center gap-2">{children}</div>
+      <div className="col-start-2">{children}</div>
     </ComboboxPrimitive.Item>
   );
 }
@@ -328,7 +336,7 @@ function ComboboxChips({
   return (
     <ComboboxPrimitive.Chips
       className={cn(
-        "relative inline-flex min-h-9 w-full flex-wrap gap-1 rounded-lg border border-input bg-background bg-clip-padding p-[calc(--spacing(1)-1px)] text-base shadow-xs outline-none ring-ring/24 transition-shadow *:min-h-7 before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] not-has-disabled:not-focus-within:not-aria-invalid:before:shadow-[0_1px_--theme(--color-black/4%)] focus-within:border-ring focus-within:ring-[3px] has-disabled:pointer-events-none has-data-[size=lg]:min-h-10 has-data-[size=sm]:min-h-8 has-aria-invalid:border-destructive/36 has-disabled:opacity-64 has-[:disabled,:focus-within,[aria-invalid]]:shadow-none focus-within:has-aria-invalid:border-destructive/64 focus-within:has-aria-invalid:ring-destructive/16 has-data-[size=lg]:*:min-h-8 has-data-[size=sm]:*:min-h-6 sm:min-h-8 sm:text-sm sm:has-data-[size=lg]:min-h-9 sm:has-data-[size=sm]:min-h-7 sm:*:min-h-6 sm:has-data-[size=lg]:*:min-h-7 sm:has-data-[size=sm]:*:min-h-5 dark:not-has-disabled:bg-input/32 dark:not-in-data-[slot=group]:bg-clip-border dark:has-aria-invalid:ring-destructive/24 dark:not-has-disabled:not-focus-within:not-aria-invalid:before:shadow-[0_-1px_--theme(--color-white/8%)]",
+        "relative inline-flex min-h-9 w-full flex-wrap gap-1 rounded-lg border border-input bg-background not-dark:bg-clip-padding p-[calc(--spacing(1)-1px)] text-base shadow-xs/5 outline-none ring-ring/24 transition-shadow *:min-h-7 before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] not-has-disabled:not-focus-within:not-aria-invalid:before:shadow-[0_1px_--theme(--color-black/6%)] focus-within:border-ring focus-within:ring-[3px] has-disabled:pointer-events-none has-data-[size=lg]:min-h-10 has-data-[size=sm]:min-h-8 has-aria-invalid:border-destructive/36 has-disabled:opacity-64 has-[:disabled,:focus-within,[aria-invalid]]:shadow-none focus-within:has-aria-invalid:border-destructive/64 focus-within:has-aria-invalid:ring-destructive/16 has-data-[size=lg]:*:min-h-8 has-data-[size=sm]:*:min-h-6 sm:min-h-8 sm:text-sm sm:has-data-[size=lg]:min-h-9 sm:has-data-[size=sm]:min-h-7 sm:*:min-h-6 sm:has-data-[size=lg]:*:min-h-7 sm:has-data-[size=sm]:*:min-h-5 dark:not-has-disabled:bg-input/32 dark:has-aria-invalid:ring-destructive/24 dark:not-has-disabled:not-focus-within:not-aria-invalid:before:shadow-[0_-1px_--theme(--color-white/6%)]",
         className,
       )}
       data-slot="combobox-chips"
@@ -381,17 +389,18 @@ function ComboboxChipRemove(props: ComboboxPrimitive.ChipRemove.Props) {
       data-slot="combobox-chip-remove"
       {...props}
     >
-      <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
+      <XIcon />
     </ComboboxPrimitive.ChipRemove>
   );
 }
+
+const useComboboxFilter = ComboboxPrimitive.useFilter;
 
 export {
   Combobox,
   ComboboxInput,
   ComboboxTrigger,
   ComboboxPopup,
-  ComboboxPopup as ComboboxContent,
   ComboboxItem,
   ComboboxSeparator,
   ComboboxGroup,
@@ -405,4 +414,5 @@ export {
   ComboboxCollection,
   ComboboxChips,
   ComboboxChip,
+  useComboboxFilter,
 };

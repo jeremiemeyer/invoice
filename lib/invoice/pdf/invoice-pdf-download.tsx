@@ -6,19 +6,20 @@
 
 import {
   Document,
-  Page,
-  View,
-  Text,
   Image,
+  Page,
   StyleSheet,
+  Text,
+  View,
 } from "@react-pdf/renderer";
 import { calculateLineItemTotal } from "../calculate";
+import { getCountryConfig } from "../countries";
 import { formatCurrency } from "../format-currency";
 import { lexicalToPlainText, parseLexicalState } from "../lexical-to-html";
 import {
-  getTranslations,
   getDocumentTypeLabels,
   getLocaleConfig,
+  getTranslations,
 } from "../translations";
 import type { InvoiceFormState, InvoiceTotals } from "../types";
 
@@ -68,9 +69,13 @@ export function InvoicePdfForDownload({
   const translations = getTranslations(invoice.locale);
   const documentTypeLabels = getDocumentTypeLabels(
     invoice.locale,
-    invoice.documentType
+    invoice.documentType,
   );
   const localeConfig = getLocaleConfig(invoice.locale);
+
+  // Country-specific ID labels
+  const fromCountryConfig = getCountryConfig(invoice.fromCountryCode);
+  const customerCountryConfig = getCountryConfig(invoice.customerCountryCode);
 
   // Styles matching the HTML template exactly
   // HTML uses px, React-PDF uses pt (at 72 DPI)
@@ -185,7 +190,9 @@ export function InvoicePdfForDownload({
           {/* Invoice Number - left side */}
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>{documentTypeLabels.documentNo}</Text>
-            <Text style={{ fontSize: 10, fontWeight: 500, color: COLORS.primary }}>
+            <Text
+              style={{ fontSize: 10, fontWeight: 500, color: COLORS.primary }}
+            >
               {invoice.invoiceNumber || "-"}
             </Text>
           </View>
@@ -225,7 +232,13 @@ export function InvoicePdfForDownload({
                   />
                 ) : (
                   <View style={styles.avatar}>
-                    <Text style={{ fontSize: 16, fontWeight: 500, color: COLORS.primary }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 500,
+                        color: COLORS.primary,
+                      }}
+                    >
                       {getInitial(invoice.fromName)}
                     </Text>
                   </View>
@@ -244,13 +257,23 @@ export function InvoicePdfForDownload({
             </View>
 
             {/* Contact Details */}
-            {invoice.fromEmail && <Text style={styles.text}>{invoice.fromEmail}</Text>}
-            {invoice.fromAddress && <Text style={styles.mutedText}>{invoice.fromAddress}</Text>}
-            {invoice.fromCity && <Text style={styles.mutedText}>{invoice.fromCity}</Text>}
-            {invoice.fromCountry && <Text style={styles.mutedText}>{invoice.fromCountry}</Text>}
-            {invoice.fromPhone && <Text style={styles.mutedText}>{invoice.fromPhone}</Text>}
+            {invoice.fromEmail && (
+              <Text style={styles.text}>{invoice.fromEmail}</Text>
+            )}
+            {invoice.fromAddress && (
+              <Text style={styles.mutedText}>{invoice.fromAddress}</Text>
+            )}
+            {invoice.fromCity && (
+              <Text style={styles.mutedText}>{invoice.fromCity}</Text>
+            )}
+            <Text style={styles.mutedText}>{fromCountryConfig.name}</Text>
+            {invoice.fromPhone && (
+              <Text style={styles.mutedText}>{invoice.fromPhone}</Text>
+            )}
             {invoice.fromTaxId && (
-              <Text style={styles.mutedText}>{translations.taxId}: {invoice.fromTaxId}</Text>
+              <Text style={styles.mutedText}>
+                {fromCountryConfig.taxId.label}: {invoice.fromTaxId}
+              </Text>
             )}
           </View>
 
@@ -270,7 +293,13 @@ export function InvoicePdfForDownload({
                   />
                 ) : (
                   <View style={styles.avatar}>
-                    <Text style={{ fontSize: 16, fontWeight: 500, color: COLORS.primary }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 500,
+                        color: COLORS.primary,
+                      }}
+                    >
                       {getInitial(invoice.customerName)}
                     </Text>
                   </View>
@@ -289,13 +318,23 @@ export function InvoicePdfForDownload({
             </View>
 
             {/* Contact Details */}
-            {invoice.customerEmail && <Text style={styles.text}>{invoice.customerEmail}</Text>}
-            {invoice.customerAddress && <Text style={styles.mutedText}>{invoice.customerAddress}</Text>}
-            {invoice.customerCity && <Text style={styles.mutedText}>{invoice.customerCity}</Text>}
-            {invoice.customerCountry && <Text style={styles.mutedText}>{invoice.customerCountry}</Text>}
-            {invoice.customerPhone && <Text style={styles.mutedText}>{invoice.customerPhone}</Text>}
+            {invoice.customerEmail && (
+              <Text style={styles.text}>{invoice.customerEmail}</Text>
+            )}
+            {invoice.customerAddress && (
+              <Text style={styles.mutedText}>{invoice.customerAddress}</Text>
+            )}
+            {invoice.customerCity && (
+              <Text style={styles.mutedText}>{invoice.customerCity}</Text>
+            )}
+            <Text style={styles.mutedText}>{customerCountryConfig.name}</Text>
+            {invoice.customerPhone && (
+              <Text style={styles.mutedText}>{invoice.customerPhone}</Text>
+            )}
             {invoice.customerTaxId && (
-              <Text style={styles.mutedText}>{translations.taxId}: {invoice.customerTaxId}</Text>
+              <Text style={styles.mutedText}>
+                {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
+              </Text>
             )}
           </View>
         </View>
@@ -309,9 +348,15 @@ export function InvoicePdfForDownload({
             </View>
             {/* Right side with pl-8 and grid: 60px 1fr 1fr */}
             <View style={{ flexDirection: "row", paddingLeft: 32, flex: 1 }}>
-              <Text style={[styles.label, { width: 60 }]}>{translations.qty}</Text>
-              <Text style={[styles.label, { flex: 1 }]}>{translations.price}</Text>
-              <Text style={[styles.label, { flex: 1, textAlign: "right" }]}>{translations.amount}</Text>
+              <Text style={[styles.label, { width: 60 }]}>
+                {translations.qty}
+              </Text>
+              <Text style={[styles.label, { flex: 1 }]}>
+                {translations.price}
+              </Text>
+              <Text style={[styles.label, { flex: 1, textAlign: "right" }]}>
+                {translations.amount}
+              </Text>
             </View>
           </View>
 
@@ -319,20 +364,37 @@ export function InvoicePdfForDownload({
           {invoice.lineItems.map((item, index) => (
             <View key={item.id || index} style={styles.lineItem}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 10, fontWeight: 500, color: COLORS.primary }}>
-                  {item.name ? lexicalToPlainText(parseLexicalState(item.name)) : "-"}
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 500,
+                    color: COLORS.primary,
+                  }}
+                >
+                  {item.name
+                    ? lexicalToPlainText(parseLexicalState(item.name))
+                    : "-"}
                 </Text>
               </View>
               <View style={{ flexDirection: "row", paddingLeft: 32, flex: 1 }}>
-                <Text style={[styles.text, { width: 60 }]}>{item.quantity}</Text>
+                <Text style={[styles.text, { width: 60 }]}>
+                  {item.quantity}
+                </Text>
                 <Text style={[styles.text, { flex: 1 }]}>
-                  {formatCurrency(item.price, invoice.currency, invoice.numberLocale)}
+                  {formatCurrency(
+                    item.price,
+                    invoice.currency,
+                    invoice.numberLocale,
+                  )}
                 </Text>
                 <Text style={[styles.text, { flex: 1, textAlign: "right" }]}>
                   {formatCurrency(
-                    calculateLineItemTotal({ price: item.price, quantity: item.quantity }),
+                    calculateLineItemTotal({
+                      price: item.price,
+                      quantity: item.quantity,
+                    }),
                     invoice.currency,
-                    invoice.numberLocale
+                    invoice.numberLocale,
                   )}
                 </Text>
               </View>
@@ -343,10 +405,18 @@ export function InvoicePdfForDownload({
           <View style={{ flexDirection: "row", paddingVertical: 12 }}>
             {/* Note - pr-6 = 24px */}
             <View style={{ flex: 1, paddingRight: 24 }}>
-              <View style={{ minHeight: 40, justifyContent: "center", paddingVertical: 8 }}>
+              <View
+                style={{
+                  minHeight: 40,
+                  justifyContent: "center",
+                  paddingVertical: 8,
+                }}
+              >
                 <Text style={styles.label}>{translations.note}</Text>
               </View>
-              <Text style={{ fontSize: 8, fontWeight: 500, color: COLORS.muted }}>
+              <Text
+                style={{ fontSize: 8, fontWeight: 500, color: COLORS.muted }}
+              >
                 {invoice.notes || "-"}
               </Text>
             </View>
@@ -355,39 +425,71 @@ export function InvoicePdfForDownload({
             <View style={{ flex: 1, paddingLeft: 32 }}>
               {/* Subtotal */}
               <View style={styles.totalRow}>
-                <Text style={[styles.text, { color: COLORS.muted }]}>{translations.subtotal}</Text>
+                <Text style={[styles.text, { color: COLORS.muted }]}>
+                  {translations.subtotal}
+                </Text>
                 <Text style={[styles.text, { flex: 1, textAlign: "right" }]}>
-                  {formatCurrency(totals.subTotal, invoice.currency, invoice.numberLocale)}
+                  {formatCurrency(
+                    totals.subTotal,
+                    invoice.currency,
+                    invoice.numberLocale,
+                  )}
                 </Text>
               </View>
 
               {/* Discount */}
               {invoice.includeDiscount && invoice.discount > 0 && (
                 <View style={styles.totalRow}>
-                  <Text style={[styles.text, { color: COLORS.muted }]}>{translations.discount}</Text>
+                  <Text style={[styles.text, { color: COLORS.muted }]}>
+                    {translations.discount}
+                  </Text>
                   <Text style={[styles.text, { flex: 1, textAlign: "right" }]}>
-                    -{formatCurrency(invoice.discount, invoice.currency, invoice.numberLocale)}
+                    -
+                    {formatCurrency(
+                      invoice.discount,
+                      invoice.currency,
+                      invoice.numberLocale,
+                    )}
                   </Text>
                 </View>
               )}
 
               {/* Tax */}
-              {(invoice.showTaxIfZero || (invoice.includeTax && invoice.taxRate > 0)) && (
+              {(invoice.showTaxIfZero ||
+                (invoice.includeTax && invoice.taxRate > 0)) && (
                 <View style={styles.totalRow}>
                   <Text style={[styles.text, { color: COLORS.muted }]}>
                     {translations.tax} ({invoice.taxRate}%)
                   </Text>
                   <Text style={[styles.text, { flex: 1, textAlign: "right" }]}>
-                    {formatCurrency(totals.tax, invoice.currency, invoice.numberLocale)}
+                    {formatCurrency(
+                      totals.tax,
+                      invoice.currency,
+                      invoice.numberLocale,
+                    )}
                   </Text>
                 </View>
               )}
 
               {/* Total - text-sm = 14px */}
               <View style={styles.totalRowLast}>
-                <Text style={[styles.text, { color: COLORS.muted }]}>{translations.total}</Text>
-                <Text style={{ fontSize: 14, fontWeight: 500, color: COLORS.primary, flex: 1, textAlign: "right" }}>
-                  {formatCurrency(totals.total, invoice.currency, invoice.numberLocale)}
+                <Text style={[styles.text, { color: COLORS.muted }]}>
+                  {translations.total}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: COLORS.primary,
+                    flex: 1,
+                    textAlign: "right",
+                  }}
+                >
+                  {formatCurrency(
+                    totals.total,
+                    invoice.currency,
+                    invoice.numberLocale,
+                  )}
                 </Text>
               </View>
             </View>

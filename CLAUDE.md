@@ -48,8 +48,11 @@ InvoicePage
 - `InvoiceFormState`: Full form state including locale, numberLocale, currency, lineItems, dates
 - `InvoiceTotals`: { subTotal, tax, total }
 
-### Localization (lib/invoice/translations.ts)
+### Localization
 
+The app separates language from business country - a French company can write invoices in English while showing French tax ID labels.
+
+**Language settings** (`lib/invoice/translations.ts`):
 - `locale`: Text language (en-US, fr-FR) - controls labels like "Invoice", "Facture"
 - `numberLocale`: Number formatting - controls decimal/thousand separators:
   - `en-US`: 1,234.56
@@ -57,6 +60,12 @@ InvoicePage
   - `de-DE`: 1.234,56
   - `de-CH`: 1'234.56 (also displays currency codes like "EUR" instead of "€")
 - Currency formatting uses `Intl.NumberFormat` with the `numberLocale` parameter
+
+**Country-specific IDs** (`lib/invoice/countries.ts`):
+- `fromCountryCode`: Your business country - determines tax ID labels (e.g., "N° TVA", "SIRET" for France)
+- `customerCountryCode`: Client's country - determines their tax ID labels
+- Each country config includes: `taxId.label`, `taxId.placeholder`, `registrationId.label`, etc.
+- Supported countries: US, GB, AU, FR, DE, CH, ES, PT
 
 ### Rich Text Editor
 

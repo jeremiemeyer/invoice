@@ -192,8 +192,8 @@ export interface InvoiceTranslations {
   tax: string;
   total: string;
   paymentDetails: string;
-  taxId: string;
-  registrationId: string;
+  // Note: taxId and registrationId labels are now in countries.ts
+  // They are country-specific (SIRET, ABN, etc.), not language-specific
 }
 
 export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
@@ -213,8 +213,6 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "Tax",
     total: "Total",
     paymentDetails: "Payment Details",
-    taxId: "Tax ID",
-    registrationId: "Reg. No.",
   },
   "en-AU": {
     invoiceNo: "Invoice No",
@@ -232,8 +230,6 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "GST",
     total: "Total",
     paymentDetails: "Payment Details",
-    taxId: "Tax ID",
-    registrationId: "ABN",
   },
   "fr-FR": {
     invoiceNo: "Facture N°",
@@ -251,8 +247,6 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "TVA",
     total: "Total",
     paymentDetails: "Coordonnées bancaires",
-    taxId: "N° TVA",
-    registrationId: "SIRET",
   },
   "es-ES": {
     invoiceNo: "Factura N°",
@@ -270,8 +264,6 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "IVA",
     total: "Total",
     paymentDetails: "Datos bancarios",
-    taxId: "NIF",
-    registrationId: "Reg. Mercantil",
   },
   "en-GB": {
     invoiceNo: "Invoice No",
@@ -289,8 +281,6 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "VAT",
     total: "Total",
     paymentDetails: "Payment Details",
-    taxId: "VAT No.",
-    registrationId: "Co. Reg. No.",
   },
   "de-DE": {
     invoiceNo: "Rechnung Nr.",
@@ -308,8 +298,6 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "MwSt.",
     total: "Gesamt",
     paymentDetails: "Bankverbindung",
-    taxId: "USt-IdNr.",
-    registrationId: "HRB",
   },
   "de-CH": {
     invoiceNo: "Rechnung Nr.",
@@ -327,8 +315,6 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "MwSt.",
     total: "Total",
     paymentDetails: "Bankverbindung",
-    taxId: "MwSt-Nr.",
-    registrationId: "UID",
   },
   "pt-PT": {
     invoiceNo: "Fatura N°",
@@ -346,8 +332,6 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     tax: "IVA",
     total: "Total",
     paymentDetails: "Dados bancários",
-    taxId: "NIF",
-    registrationId: "NIPC",
   },
 };
 

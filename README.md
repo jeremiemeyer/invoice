@@ -14,6 +14,7 @@ A simple invoice generator inspired by [Midday](https://midday.ai) and [cryptoin
   - Languages: English, French
   - Number formats: US/UK (1,234.56), France (1 234,56), Germany (1.234,56), Switzerland (1'234.56)
   - Paper sizes: Letter, A4
+- **Country-specific tax IDs** - Business country determines tax ID labels (e.g., French company shows "N° TVA" and "SIRET" even when invoice is in English)
 - **Tax & discount support** - Flexible totals with optional tax rate and discounts
 - **Local storage persistence** - Your invoice data is saved locally
 

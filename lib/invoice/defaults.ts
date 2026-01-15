@@ -77,12 +77,15 @@ export const defaultInvoiceState: InvoiceFormState = {
   numberLocale: "en-US",
   pageSize: "LETTER",
 
+  // Country codes for ID labels
+  fromCountryCode: "US",
+  customerCountryCode: "US",
+
   // From details
   fromName: "",
   fromSubtitle: "",
   fromAddress: "",
   fromCity: "",
-  fromCountry: "",
   fromEmail: "",
   fromPhone: "",
   fromTaxId: "",
@@ -96,7 +99,6 @@ export const defaultInvoiceState: InvoiceFormState = {
   customerSubtitle: "",
   customerAddress: "",
   customerCity: "",
-  customerCountry: "",
   customerEmail: "",
   customerPhone: "",
   customerTaxId: "",
