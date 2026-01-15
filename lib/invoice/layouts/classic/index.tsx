@@ -489,12 +489,23 @@ export function ClassicLayout({
           padding: spacing.page,
           paddingTop: 24,
           paddingBottom: 24,
+          flexDirection: "row",
         }}
       >
-        <Text style={labelStyle}>{t.paymentDetails}</Text>
-        <Text style={{ ...textStyle, marginTop: 4 }}>
-          {invoice.paymentDetails || "-"}
-        </Text>
+        <View style={{ flex: 1, paddingRight: 24 }}>
+          <Text style={labelStyle}>{t.paymentDetails}</Text>
+          <Text style={{ ...textStyle, marginTop: 4, fontSize: 9 }}>
+            {invoice.paymentDetails || "-"}
+          </Text>
+        </View>
+        {invoice.paymentDetailsSecondary && (
+          <View style={{ width: 200, paddingLeft: 32 }}>
+            <Text style={{ ...labelStyle, opacity: 0 }}>&nbsp;</Text>
+            <Text style={{ ...textStyle, marginTop: 4, fontSize: 9 }}>
+              {invoice.paymentDetailsSecondary}
+            </Text>
+          </View>
+        )}
       </View>
     </Page>
   );

@@ -891,14 +891,30 @@ export function InvoicePdfDocument({
           onStepClick={onStepClick}
           wrap={false}
           style={{
-            paddingHorizontal: LAYOUT.sectionPadding,
+            flexDirection: "row",
             paddingVertical: LAYOUT.sectionVerticalPadding,
           }}
         >
-          <Text style={styles.label}>{translations.paymentDetails}</Text>
-          <Text style={{ ...styles.text, marginTop: 4 }}>
-            {invoice.paymentDetails || "-"}
-          </Text>
+          <View style={{ flex: 1, paddingHorizontal: LAYOUT.sectionPadding }}>
+            <Text style={styles.label}>{translations.paymentDetails}</Text>
+            <Text style={{ ...styles.text, marginTop: 4, fontSize: 9 }}>
+              {invoice.paymentDetails || "-"}
+            </Text>
+          </View>
+          {invoice.paymentDetailsSecondary && (
+            <View
+              style={{
+                flex: 1,
+                paddingLeft: LAYOUT.columnGap,
+                paddingRight: LAYOUT.sectionPadding,
+              }}
+            >
+              <Text style={{ ...styles.label, opacity: 0 }}>&nbsp;</Text>
+              <Text style={{ ...styles.text, marginTop: 4, fontSize: 9 }}>
+                {invoice.paymentDetailsSecondary}
+              </Text>
+            </View>
+          )}
         </Section>
 
         {/* Page footer with page numbers */}

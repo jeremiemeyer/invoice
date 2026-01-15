@@ -52,6 +52,7 @@ export const demoInvoiceData: InvoiceFormState = {
   includeDiscount: true,
   paymentDetails:
     "Account Holder: Acme Consulting LLC\nBank: Example National Bank\nRouting Number: 123456789\nAccount Number: 000123456789",
+  paymentDetailsSecondary: "",
   notes:
     "Thank you for your business. This invoice is for demonstration purposes only.",
 };

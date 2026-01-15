@@ -100,6 +100,7 @@ export const defaultInvoiceState: InvoiceFormState = {
 
   // Payment & Notes
   paymentDetails: "",
+  paymentDetailsSecondary: "",
   notes: "",
 };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface InlineFieldProps {
@@ -108,7 +109,6 @@ interface LabelAboveTextareaProps {
   placeholder?: string;
   className?: string;
   id?: string;
-  rows?: number;
 }
 
 export function LabelAboveTextarea({
@@ -118,24 +118,36 @@ export function LabelAboveTextarea({
   placeholder,
   className,
   id,
-  rows = 3,
 }: LabelAboveTextareaProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize textarea based on content
+  // biome-ignore lint/correctness/useExhaustiveDependencies: need to resize when value/placeholder changes
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [value, placeholder]);
+
   return (
     <div className={cn("", className)}>
       <p className="block pb-2 text-sm font-medium text-black/60">{label}</p>
       <label
         className={cn(
-          "group flex min-h-[54px] items-center border-b border-black/10 transition-colors",
+          "group flex border-b border-black/10 pb-2 transition-colors",
           "focus-within:border-blue-600",
           "[&:hover:not(:focus-within)]:border-black/20",
         )}
       >
         <textarea
+          ref={textareaRef}
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          rows={rows}
+          rows={1}
           className="w-full resize-none bg-transparent text-sm caret-blue-600 outline-none placeholder:text-black/30 whitespace-pre-wrap"
         />
       </label>

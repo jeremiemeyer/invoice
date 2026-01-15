@@ -610,25 +610,49 @@ export function InvoiceDocument({
         className={cn("border-t", borderClass)}
         renderSection={renderSection}
       >
-        <div className="px-8 py-6">
-          <p
-            className={cn(
-              "text-[8px] uppercase",
-              labelWeightClass,
-              labelClass,
-              labelFontClass,
-            )}
-          >
-            {t.paymentDetails}
-          </p>
-          <p
-            className={cn(
-              "mt-1 whitespace-pre-wrap text-[10px] font-medium",
-              textClass,
-            )}
-          >
-            {invoice.paymentDetails || "-"}
-          </p>
+        <div className="grid grid-cols-2 px-8 py-6">
+          <div className="pr-6">
+            <p
+              className={cn(
+                "text-[8px] uppercase",
+                labelWeightClass,
+                labelClass,
+                labelFontClass,
+              )}
+            >
+              {t.paymentDetails}
+            </p>
+            <p
+              className={cn(
+                "mt-1 whitespace-pre-wrap text-[9px] font-medium",
+                textClass,
+              )}
+            >
+              {invoice.paymentDetails || "-"}
+            </p>
+          </div>
+          {invoice.paymentDetailsSecondary && (
+            <div className="pl-8">
+              <p
+                className={cn(
+                  "text-[8px] uppercase",
+                  labelWeightClass,
+                  labelClass,
+                  labelFontClass,
+                )}
+              >
+                &nbsp;
+              </p>
+              <p
+                className={cn(
+                  "mt-1 whitespace-pre-wrap text-[9px] font-medium",
+                  textClass,
+                )}
+              >
+                {invoice.paymentDetailsSecondary}
+              </p>
+            </div>
+          )}
         </div>
       </Section>
     </>

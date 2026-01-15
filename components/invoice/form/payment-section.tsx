@@ -30,6 +30,19 @@ export function PaymentSection({ state, setField }: PaymentSectionProps) {
           rows={4}
         />
       </Field>
+      <Field>
+        <FieldLabel htmlFor="paymentDetailsSecondary">
+          Additional Details
+        </FieldLabel>
+        <FieldDescription>Bank address or other payment info</FieldDescription>
+        <Textarea
+          id="paymentDetailsSecondary"
+          value={state.paymentDetailsSecondary}
+          onChange={(e) => setField("paymentDetailsSecondary", e.target.value)}
+          placeholder="Bank address or&#10;other payment info"
+          rows={3}
+        />
+      </Field>
     </FieldGroup>
   );
 }

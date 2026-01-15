@@ -687,7 +687,7 @@ export function ModernLayout({
       </Section>
 
       {/* Payment Details Footer (Step 3: Payment details) */}
-      {invoice.paymentDetails && (
+      {(invoice.paymentDetails || invoice.paymentDetailsSecondary) && (
         <Section
           stepIndex={3}
           stepLabel="Payment details"
@@ -699,12 +699,27 @@ export function ModernLayout({
             paddingBottom: sectionPadding,
             borderTopWidth: 1,
             borderTopColor: colors.border,
+            flexDirection: "row",
           }}
         >
-          <Text style={{ ...labelStyle, marginBottom: 8 }}>
-            {t.paymentDetails}
-          </Text>
-          <Text style={textStyle}>{invoice.paymentDetails}</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ ...labelStyle, marginBottom: 8 }}>
+              {t.paymentDetails}
+            </Text>
+            <Text style={{ ...textStyle, fontSize: 9 }}>
+              {invoice.paymentDetails || "-"}
+            </Text>
+          </View>
+          {invoice.paymentDetailsSecondary && (
+            <View style={{ flex: 1, paddingLeft: 24 }}>
+              <Text style={{ ...labelStyle, marginBottom: 8, opacity: 0 }}>
+                &nbsp;
+              </Text>
+              <Text style={{ ...textStyle, fontSize: 9 }}>
+                {invoice.paymentDetailsSecondary}
+              </Text>
+            </View>
+          )}
         </Section>
       )}
     </Page>

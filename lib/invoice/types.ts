@@ -69,6 +69,7 @@ export interface InvoiceFormState {
 
   // Payment & Notes
   paymentDetails: string;
+  paymentDetailsSecondary: string;
   notes: string;
 }
 

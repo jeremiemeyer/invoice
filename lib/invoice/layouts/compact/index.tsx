@@ -581,7 +581,7 @@ export function CompactLayout({
       </Section>
 
       {/* Payment Details Footer (Step 3: Payment details) */}
-      {invoice.paymentDetails && (
+      {(invoice.paymentDetails || invoice.paymentDetailsSecondary) && (
         <Section
           stepIndex={3}
           stepLabel="Payment details"
@@ -593,12 +593,27 @@ export function CompactLayout({
             paddingBottom: sectionPadding,
             borderTopWidth: 1,
             borderTopColor: colors.border,
+            flexDirection: "row",
           }}
         >
-          <Text style={{ ...labelStyle, marginBottom: 4 }}>
-            {t.paymentDetails}
-          </Text>
-          <Text style={textStyle}>{invoice.paymentDetails}</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ ...labelStyle, marginBottom: 4 }}>
+              {t.paymentDetails}
+            </Text>
+            <Text style={{ ...textStyle, fontSize: 8 }}>
+              {invoice.paymentDetails || "-"}
+            </Text>
+          </View>
+          {invoice.paymentDetailsSecondary && (
+            <View style={{ flex: 1, paddingLeft: 16 }}>
+              <Text style={{ ...labelStyle, marginBottom: 4, opacity: 0 }}>
+                &nbsp;
+              </Text>
+              <Text style={{ ...textStyle, fontSize: 8 }}>
+                {invoice.paymentDetailsSecondary}
+              </Text>
+            </View>
+          )}
         </Section>
       )}
     </Page>

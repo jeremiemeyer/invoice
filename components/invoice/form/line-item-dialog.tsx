@@ -31,6 +31,7 @@ export function LineItemDialog({
   const [price, setPrice] = useState("");
 
   // Reset form when dialog opens with new item
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (open) {
       setName(item?.name ?? "");
@@ -39,6 +40,7 @@ export function LineItemDialog({
       setPrice(item?.price ? String(item.price) : "");
     }
   }, [open, item]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleSave = () => {
     onSave({
@@ -72,7 +74,6 @@ export function LineItemDialog({
             value={description}
             onChange={setDescription}
             placeholder="Item description..."
-            rows={2}
             className="pt-4"
           />
 

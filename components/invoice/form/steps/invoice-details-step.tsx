@@ -147,7 +147,6 @@ export function InvoiceDetailsStep({
           value={state.notes}
           onChange={(value) => setField("notes", value)}
           placeholder="Thank you for your business!"
-          rows={3}
         />
       </div>
     </div>
