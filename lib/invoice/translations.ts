@@ -9,7 +9,13 @@ export type InvoiceLocale =
   | "de-CH"
   | "es-ES"
   | "pt-PT";
-export type NumberLocale = "en-US" | "fr-FR" | "de-DE" | "de-CH";
+export type NumberLocale =
+  | "en-US"
+  | "fr-FR"
+  | "de-DE"
+  | "de-CH"
+  | "es-ES"
+  | "pt-PT";
 export type PageSize = "A4" | "LETTER";
 
 // Preset combining all settings
@@ -82,7 +88,7 @@ export const INVOICE_PRESETS: InvoicePreset[] = [
     id: "es",
     label: "España",
     locale: "es-ES",
-    numberLocale: "de-DE",
+    numberLocale: "es-ES",
     currency: "EUR",
     pageSize: "A4",
     countryCode: "es",
@@ -91,7 +97,7 @@ export const INVOICE_PRESETS: InvoicePreset[] = [
     id: "pt",
     label: "Portugal",
     locale: "pt-PT",
-    numberLocale: "de-DE",
+    numberLocale: "pt-PT",
     currency: "EUR",
     pageSize: "A4",
     countryCode: "pt",
@@ -169,11 +175,21 @@ export interface NumberFormatOption {
   example: string;
 }
 
+// Generate labels dynamically using Intl.NumberFormat to match actual output
+function formatNumberLabel(locale: NumberLocale): string {
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(1234567.89);
+}
+
 export const NUMBER_FORMATS: NumberFormatOption[] = [
-  { value: "en-US", label: "1,234.56", example: "US/UK" },
-  { value: "fr-FR", label: "1 234,56", example: "France" },
-  { value: "de-DE", label: "1.234,56", example: "Germany" },
-  { value: "de-CH", label: "1'234.56", example: "Switzerland" },
+  { value: "en-US", label: formatNumberLabel("en-US"), example: "US/UK" },
+  { value: "fr-FR", label: formatNumberLabel("fr-FR"), example: "France" },
+  { value: "de-DE", label: formatNumberLabel("de-DE"), example: "Germany" },
+  { value: "de-CH", label: formatNumberLabel("de-CH"), example: "Switzerland" },
+  { value: "es-ES", label: formatNumberLabel("es-ES"), example: "España" },
+  { value: "pt-PT", label: formatNumberLabel("pt-PT"), example: "Portugal" },
 ];
 
 export interface InvoiceTranslations {
@@ -240,7 +256,7 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   "fr-FR": {
     invoiceNo: "Facture N°",
     issued: "Date",
-    dueDate: "Echéance",
+    dueDate: "Échéance",
     from: "De",
     to: "À",
     billing: "Facturation",
@@ -430,12 +446,12 @@ export const documentTypeLabels: Record<
   "fr-FR": {
     invoice: {
       documentNo: "Facture N°",
-      dateLabel: "Echéance",
+      dateLabel: "Échéance",
       newDocument: "Nouvelle Facture",
     },
     quote: {
       documentNo: "Devis N°",
-      dateLabel: "Validité",
+      dateLabel: "Valable jusqu'au",
       newDocument: "Nouveau Devis",
     },
   },

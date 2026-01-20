@@ -101,11 +101,11 @@ export const COUNTRIES: CountryIdConfig[] = [
     code: "PT",
     name: "Portugal",
     flag: "pt",
-    taxId: { label: "NIF", placeholder: "123456789" },
+    taxId: { label: "NIF/NIPC", placeholder: "123456789" },
     registrationId: {
       label: "NIPC",
       placeholder: "123456789",
-      available: true,
+      available: false, // Same as NIF for companies, no separate registration ID in Portugal
     },
   },
 ];
