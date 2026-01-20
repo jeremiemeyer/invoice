@@ -1,5 +1,5 @@
+import { setIsHtmlMode } from "@invoice-jm/react-pdf-html";
 import { pdf } from "@react-pdf/renderer";
-import { setIsHtmlMode } from "@rawwee/react-pdf-html";
 import { saveAs } from "file-saver";
 import type { InvoiceFormState, InvoiceTotals } from "../types";
 
@@ -22,9 +22,14 @@ export interface GeneratePdfOptions {
  * Uses the same component as the preview but in PDF mode.
  */
 export async function generatePdfBlob(
-  options: GeneratePdfOptions
+  options: GeneratePdfOptions,
 ): Promise<Blob> {
-  const { invoice, totals, layoutId = "classic", styleId = "classic" } = options;
+  const {
+    invoice,
+    totals,
+    layoutId = "classic",
+    styleId = "classic",
+  } = options;
 
   // Set to PDF mode (not HTML)
   setIsHtmlMode(false);
@@ -52,7 +57,7 @@ export async function generatePdfBlob(
  * Downloads the file with the invoice number as filename.
  */
 export async function downloadInvoicePdf(
-  options: GeneratePdfOptions
+  options: GeneratePdfOptions,
 ): Promise<void> {
   const { invoice } = options;
   const blob = await generatePdfBlob(options);

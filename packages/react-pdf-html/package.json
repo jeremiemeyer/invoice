@@ -1,29 +1,20 @@
 {
-  "name": "@rawwee/react-pdf-html",
-  "version": "1.2.1",
-  "description": "Package for rendering @react-pdf/renderer components as HTML components",
+  "name": "@invoice-jm/react-pdf-html",
+  "version": "1.0.0",
+  "description": "Dual-render React components as HTML or PDF. Local fork of react-pdf-html with custom modifications.",
   "sideEffects": true,
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf dist",
-    "build": "npm run clean && npm run build:core",
-    "build:core": "microbundle src/*.tsx --jsx React.createElement --jsxFragment React.Fragment"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/josippapez/react-pdf-html.git"
+    "build": "microbundle src/*.tsx --jsx React.createElement --jsxFragment React.Fragment",
+    "clean": "rm -rf dist"
   },
   "keywords": [
     "React",
     "React-PDF",
-    "PDF"
+    "PDF",
+    "dual-render"
   ],
-  "author": "Josip Papež",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/josippapez/react-pdf-html/issues"
-  },
-  "homepage": "https://github.com/josippapez/react-pdf-html#readme",
+  "license": "MIT",
   "dependencies": {
     "@react-pdf/renderer": "^3.4.4",
     "@react-pdf/types": "^2.7.0"

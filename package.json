@@ -31,7 +31,7 @@
     "@lexical/selection": "^0.39.0",
     "@lexical/table": "^0.39.0",
     "@lexical/utils": "^0.39.0",
-    "@rawwee/react-pdf-html": "workspace:*",
+    "@invoice-jm/react-pdf-html": "workspace:*",
     "@react-pdf/renderer": "^4.3.2",
     "@react-pdf/types": "^2.7.0",
     "class-variance-authority": "^0.7.1",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Image, Page, Text, View } from "@rawwee/react-pdf-html";
+import { Image, Page, Text, View } from "@invoice-jm/react-pdf-html";
 import type { Style } from "@react-pdf/types";
 import { calculateLineItemTotal } from "../../calculate";
 import { getCountryConfig } from "../../countries";

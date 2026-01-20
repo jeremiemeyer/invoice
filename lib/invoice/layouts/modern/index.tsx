@@ -1,6 +1,6 @@
 "use client";
 
-import { Image, Page, Text, View } from "@rawwee/react-pdf-html";
+import { Image, Page, Text, View } from "@invoice-jm/react-pdf-html";
 import type { Style } from "@react-pdf/types";
 import { calculateLineItemTotal } from "../../calculate";
 import { getCountryConfig } from "../../countries";
@@ -707,44 +707,85 @@ export function ModernLayout({
             </Text>
           </View>
 
-          {/* Totals - right columns */}
-          {/* Qty column - empty spacer */}
+          {/* Totals - aligned with Qty column start */}
           <View style={{ width: COLUMN_GAP }} />
-          <View style={{ width: QTY_WIDTH }} />
-
-          {/* Price column - Labels */}
-          <View style={{ width: PRICE_WIDTH }}>
-            {/* Subtotal label */}
-            <View style={{ height: 24, justifyContent: "center" }}>
+          <View style={{ width: QTY_WIDTH + PRICE_WIDTH + AMOUNT_WIDTH }}>
+            {/* Subtotal row */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                height: 24,
+                alignItems: "center",
+              }}
+            >
               <Text style={{ ...textStyle, color: colors.muted }}>
                 {t.subtotal}
               </Text>
+              <Text style={{ ...numberStyle, textAlign: "right" }}>
+                {formatCurrency(
+                  totals.subTotal,
+                  invoice.currency,
+                  invoice.numberLocale,
+                )}
+              </Text>
             </View>
 
-            {/* Discount label */}
+            {/* Discount row */}
             {invoice.includeDiscount && invoice.discount > 0 && (
-              <View style={{ height: 24, justifyContent: "center" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  height: 24,
+                  alignItems: "center",
+                }}
+              >
                 <Text style={{ ...textStyle, color: colors.muted }}>
                   {t.discount}
                 </Text>
-              </View>
-            )}
-
-            {/* Tax label */}
-            {(invoice.showTaxIfZero ||
-              (invoice.includeTax && invoice.taxRate > 0)) && (
-              <View style={{ height: 24, justifyContent: "center" }}>
-                <Text style={{ ...textStyle, color: colors.muted }}>
-                  {t.tax} ({invoice.taxRate}%)
+                <Text style={{ ...numberStyle, textAlign: "right" }}>
+                  -
+                  {formatCurrency(
+                    invoice.discount,
+                    invoice.currency,
+                    invoice.numberLocale,
+                  )}
                 </Text>
               </View>
             )}
 
-            {/* Total label */}
+            {/* Tax row */}
+            {(invoice.showTaxIfZero ||
+              (invoice.includeTax && invoice.taxRate > 0)) && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  height: 24,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ ...textStyle, color: colors.muted }}>
+                  {t.tax} ({invoice.taxRate}%)
+                </Text>
+                <Text style={{ ...numberStyle, textAlign: "right" }}>
+                  {formatCurrency(
+                    totals.tax,
+                    invoice.currency,
+                    invoice.numberLocale,
+                  )}
+                </Text>
+              </View>
+            )}
+
+            {/* Total row */}
             <View
               style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
                 height: 32,
-                justifyContent: "center",
+                alignItems: "center",
                 borderTopWidth: 1,
                 borderTopColor: colors.border,
                 marginTop: 4,
@@ -761,60 +802,6 @@ export function ModernLayout({
               >
                 {t.total}
               </Text>
-            </View>
-          </View>
-
-          {/* Amount column - Values */}
-          <View style={{ width: AMOUNT_WIDTH }}>
-            {/* Subtotal value */}
-            <View style={{ height: 24, justifyContent: "center" }}>
-              <Text style={{ ...numberStyle, textAlign: "right" }}>
-                {formatCurrency(
-                  totals.subTotal,
-                  invoice.currency,
-                  invoice.numberLocale,
-                )}
-              </Text>
-            </View>
-
-            {/* Discount value */}
-            {invoice.includeDiscount && invoice.discount > 0 && (
-              <View style={{ height: 24, justifyContent: "center" }}>
-                <Text style={{ ...numberStyle, textAlign: "right" }}>
-                  -
-                  {formatCurrency(
-                    invoice.discount,
-                    invoice.currency,
-                    invoice.numberLocale,
-                  )}
-                </Text>
-              </View>
-            )}
-
-            {/* Tax value */}
-            {(invoice.showTaxIfZero ||
-              (invoice.includeTax && invoice.taxRate > 0)) && (
-              <View style={{ height: 24, justifyContent: "center" }}>
-                <Text style={{ ...numberStyle, textAlign: "right" }}>
-                  {formatCurrency(
-                    totals.tax,
-                    invoice.currency,
-                    invoice.numberLocale,
-                  )}
-                </Text>
-              </View>
-            )}
-
-            {/* Total value */}
-            <View
-              style={{
-                height: 32,
-                justifyContent: "center",
-                borderTopWidth: 1,
-                borderTopColor: colors.border,
-                marginTop: 4,
-              }}
-            >
               <Text
                 style={{
                   fontSize: 16,

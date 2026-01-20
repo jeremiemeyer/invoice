@@ -3,7 +3,7 @@
  * Supports: bold, italic, underline, strikethrough, code, lists, paragraphs.
  */
 
-import { Text, View } from "@rawwee/react-pdf-html";
+import { Text, View } from "@invoice-jm/react-pdf-html";
 import type { Style } from "@react-pdf/types";
 import type { SerializedEditorState } from "lexical";
 import type { ReactNode } from "react";

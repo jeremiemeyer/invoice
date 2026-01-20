@@ -3,12 +3,17 @@ export function formatCurrency(
   currency: string,
   locale = "en-US",
 ): string {
-  return new Intl.NumberFormat(locale, {
+  const formatted = new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amount);
+
+  // Normalize narrow no-break space (U+202F) to regular no-break space (U+00A0)
+  // French locale uses U+202F as thousands separator, which is not supported
+  // by react-pdf fonts. U+00A0 is more widely supported and keeps the non-breaking behavior.
+  return formatted.replace(/\u202F/g, "\u00A0");
 }
 
 export function formatCurrencyForPdf(

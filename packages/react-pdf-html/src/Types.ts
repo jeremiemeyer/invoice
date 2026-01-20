@@ -1,13 +1,13 @@
-import {
+import type {
   DocumentProps,
   PageProps,
-  SVGPresentationAttributes,
   SourceObject,
   Style,
+  SVGPresentationAttributes,
   TextProps,
   ViewProps,
 } from "@react-pdf/types";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 export type { Style };
 

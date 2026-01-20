@@ -2,7 +2,7 @@
 
 ## Problème
 
-L'application utilise un système de dual-rendering avec `@rawwee/react-pdf-html`:
+L'application utilise un système de dual-rendering avec `@invoice-jm/react-pdf-html`:
 - **Mode HTML**: Les composants React-PDF (`View`, `Text`, `Page`) sont rendus comme des `<div>` pour la preview
 - **Mode PDF**: Les composants sont passés à React-PDF pour générer le PDF
 

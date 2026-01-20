@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/globals */
+// This is a forked package with intentional global state pattern
 import {
   Defs,
   Document,
@@ -15,8 +17,10 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import React, { CSSProperties, FC, useState } from "react";
-import {
+import type React from "react";
+import { type CSSProperties, type FC, useState } from "react";
+import type {
+  fontWeight,
   PropsDefs,
   PropsDocument,
   PropsG,
@@ -28,12 +32,11 @@ import {
   PropsPath,
   PropsPolygon,
   PropsRect,
-  PropsSVG,
   PropsStop,
+  PropsSVG,
   PropsText,
   PropsView,
   Style,
-  fontWeight,
 } from "./Types";
 
 let isHtml = true;
@@ -98,7 +101,7 @@ const fontWeightConverter = (fontWeight?: fontWeight | string | number) => {
 const adjustStyles = (style: Style) => {
   if (!style) return;
 
-  Object.keys(style).forEach(key => {
+  Object.keys(style).forEach((key) => {
     if (key === "paddingVertical") {
       style.paddingTop = style[key];
       style.paddingBottom = style[key];
@@ -121,8 +124,8 @@ const mergeStylesIntoOne = (styles: Style[]) => {
 
   if (!styles[0]) return mergedStyle;
 
-  styles.forEach(style => {
-    Object.keys(style).forEach(key => {
+  styles.forEach((style) => {
+    Object.keys(style).forEach((key) => {
       mergedStyle[key as keyof Style] = style[key as keyof Style];
     });
   });
@@ -141,7 +144,7 @@ export const CustomView: FC<PropsView> = ({ children, style, ...rest }) => {
 
     adjustStyles(newStyle as { [key: string]: string });
 
-    let styles: CSSProperties = {
+    const styles: CSSProperties = {
       display: "flex",
       flexDirection: "column",
       position: "relative",
@@ -180,7 +183,7 @@ export const CustomText: FC<PropsText> = ({ children, style, ...rest }) => {
     const isDebug = rest.debug;
     adjustStyles(newStyle as { [key: string]: string });
 
-    let styles: CSSProperties = {
+    const styles: CSSProperties = {
       whiteSpace: "break-spaces",
       position: "relative",
       border: isDebug ? "1px solid red" : "none",
@@ -353,7 +356,7 @@ export const CustomSVG: FC<PropsSVG> = ({ children, ...rest }) => {
 
 export const CustomPolygon: FC<PropsPolygon> = ({ style, ...rest }) => {
   if (isHtml) {
-    let newStyle = {
+    const newStyle = {
       ...style,
       strokeLinejoin: "round",
     } as React.CSSProperties | undefined;

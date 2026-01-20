@@ -12,7 +12,7 @@ import {
   Page,
   Text,
   View,
-} from "@rawwee/react-pdf-html";
+} from "@invoice-jm/react-pdf-html";
 import { Text as PdfText } from "@react-pdf/renderer";
 import type { Style } from "@react-pdf/types";
 import type { ReactNode } from "react";
@@ -830,9 +830,12 @@ export function InvoicePdfDocument({
               wrap={false}
               style={{ flexDirection: "row", paddingTop: LAYOUT.rowPadding }}
             >
-              {/* Left: Note - same structure as Subtotal row for vertical alignment */}
+              {/* Left: Note */}
               <View
-                style={{ flex: 1, paddingHorizontal: LAYOUT.sectionPadding }}
+                style={{
+                  flex: 1,
+                  paddingHorizontal: LAYOUT.sectionPadding,
+                }}
               >
                 {/* Label row - matches Subtotal row height */}
                 <View
@@ -855,7 +858,7 @@ export function InvoicePdfDocument({
                 </Text>
               </View>
 
-              {/* Right: Totals - uses same column structure */}
+              {/* Right: Totals - aligned with Qty/Price/Amount columns */}
               <View
                 style={{
                   flex: 1,
@@ -883,7 +886,6 @@ export function InvoicePdfDocument({
                   >
                     {translations.subtotal}
                   </Text>
-                  <Text style={{ ...styles.number, flex: 1 }} />
                   <Text
                     style={{ ...styles.number, flex: 1, textAlign: "right" }}
                   >
@@ -916,7 +918,6 @@ export function InvoicePdfDocument({
                     >
                       {translations.discount}
                     </Text>
-                    <Text style={{ ...styles.number, flex: 1 }} />
                     <Text
                       style={{ ...styles.number, flex: 1, textAlign: "right" }}
                     >
@@ -952,7 +953,6 @@ export function InvoicePdfDocument({
                     >
                       {translations.tax} ({invoice.taxRate}%)
                     </Text>
-                    <Text style={{ ...styles.number, flex: 1 }} />
                     <Text
                       style={{ ...styles.number, flex: 1, textAlign: "right" }}
                     >
@@ -983,7 +983,6 @@ export function InvoicePdfDocument({
                   >
                     {translations.total}
                   </Text>
-                  <Text style={{ ...styles.number, flex: 1 }} />
                   <Text
                     style={{
                       ...styles.number,

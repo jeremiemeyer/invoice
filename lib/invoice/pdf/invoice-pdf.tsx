@@ -1,13 +1,13 @@
 "use client";
 
-import { Document, usePDFComponentsAreHTML } from "@rawwee/react-pdf-html";
+import { Document, usePDFComponentsAreHTML } from "@invoice-jm/react-pdf-html";
 import { useEffect } from "react";
 import { getLayout } from "../layouts";
 import { getStyle } from "../styles";
 import {
-  getTranslations,
   getDocumentTypeLabels,
   getLocaleConfig,
+  getTranslations,
 } from "../translations";
 import type { InvoiceFormState, InvoiceTotals } from "../types";
 
@@ -51,7 +51,7 @@ export function InvoicePdf({
   const translations = getTranslations(invoice.locale);
   const documentTypeLabels = getDocumentTypeLabels(
     invoice.locale,
-    invoice.documentType
+    invoice.documentType,
   );
   const localeConfig = getLocaleConfig(invoice.locale);
 
