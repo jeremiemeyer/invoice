@@ -266,7 +266,9 @@ export function InvoicePdfForDownload({
             {invoice.fromCity && (
               <Text style={styles.mutedText}>{invoice.fromCity}</Text>
             )}
-            <Text style={styles.mutedText}>{fromCountryConfig.name}</Text>
+            {invoice.showFromCountry && (
+              <Text style={styles.mutedText}>{fromCountryConfig.name}</Text>
+            )}
             {invoice.fromPhone && (
               <Text style={styles.mutedText}>{invoice.fromPhone}</Text>
             )}
@@ -327,7 +329,9 @@ export function InvoicePdfForDownload({
             {invoice.customerCity && (
               <Text style={styles.mutedText}>{invoice.customerCity}</Text>
             )}
-            <Text style={styles.mutedText}>{customerCountryConfig.name}</Text>
+            {invoice.showCustomerCountry && (
+              <Text style={styles.mutedText}>{customerCountryConfig.name}</Text>
+            )}
             {invoice.customerPhone && (
               <Text style={styles.mutedText}>{invoice.customerPhone}</Text>
             )}

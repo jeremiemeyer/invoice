@@ -1,8 +1,13 @@
 import { nanoid } from "nanoid";
 import { DEFAULT_LAYOUT_ID } from "./layouts";
+import {
+  CURRENT_SCHEMA_VERSION,
+  type DocumentType,
+  type InvoiceFormState,
+  type LineItem,
+} from "./schemas";
 import { DEFAULT_TEMPLATE_ID } from "./templates";
 import type { InvoiceLocale } from "./translations";
-import type { DocumentType, InvoiceFormState, LineItem } from "./types";
 
 export function createLineItem(): LineItem {
   return {
@@ -65,6 +70,9 @@ export function generateDocumentNumber(
 }
 
 export const defaultInvoiceState: InvoiceFormState = {
+  // Schema version
+  schemaVersion: CURRENT_SCHEMA_VERSION,
+
   // Document type & template
   documentType: "invoice",
   templateId: DEFAULT_TEMPLATE_ID,
@@ -79,7 +87,9 @@ export const defaultInvoiceState: InvoiceFormState = {
 
   // Country codes for ID labels
   fromCountryCode: "US",
+  showFromCountry: true,
   customerCountryCode: "US",
+  showCustomerCountry: true,
 
   // From details
   fromName: "",
@@ -106,6 +116,14 @@ export const defaultInvoiceState: InvoiceFormState = {
   showCustomerRegistrationId: true,
   customerLogoUrl: "",
   showCustomerLogo: true,
+
+  // Separate shipping address
+  hasSeparateShippingAddress: false,
+  shippingName: "",
+  shippingSubtitle: "",
+  shippingAddress: "",
+  shippingCity: "",
+  shippingPhone: "",
 
   invoiceNumber: "",
   issueDate: "",

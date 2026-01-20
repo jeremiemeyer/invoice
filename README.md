@@ -61,10 +61,37 @@ The invoice appearance is split into two concepts:
 - Classic Mono - Monospace labels and numbers
 - Elegant - Serif headings with warm accents
 
+### Schema Versioning & Migrations
+
+Invoice data is versioned to support migrations when the schema evolves:
+
+```
+lib/invoice/schemas/       # Source of truth for data types
+├── v1.ts                  # V1 schema (frozen) - original format
+├── v2.ts                  # V2 schema (frozen) - current format
+└── index.ts               # Exports + InvoiceFormState alias
+
+lib/invoice/migrations/    # Migration logic
+├── v1-to-v2.ts           # V1 → V2 migration
+└── index.ts              # API: migrate(), needsMigration()
+```
+
+- **Schemas are frozen** - Once released, a schema version never changes
+- **InvoiceFormState** = alias to current schema (minus `schemaVersion`)
+- **Auto-detection** - Old files without `schemaVersion` are detected by field presence
+- **Migration dialog** - When opening old files, users are prompted to migrate
+
+**To create V3:**
+1. Create `schemas/v3.ts` with the new frozen schema
+2. Update `schemas/index.ts`: `CURRENT_SCHEMA_VERSION = 3`, update `InvoiceFormState` alias
+3. Create `migrations/v2-to-v3.ts`
+
 ### Key Files
 
 | File | Description |
 |------|-------------|
+| `lib/invoice/schemas/` | Schema definitions (source of truth) |
+| `lib/invoice/migrations/` | Schema migration logic |
 | `lib/invoice/pdf/invoice-pdf-document.tsx` | Main document component |
 | `components/invoice/preview/pdf-preview.tsx` | HTML preview with multi-page carousel |
 | `lib/invoice/layouts/` | Layout components (structure) |

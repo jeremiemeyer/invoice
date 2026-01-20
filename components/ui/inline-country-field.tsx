@@ -1,6 +1,8 @@
 "use client";
 
 import { Combobox as ComboboxPrimitive } from "@base-ui/react/combobox";
+import { ViewIcon, ViewOffSlashIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useState } from "react";
 import { CircleFlag } from "react-circle-flags";
 
@@ -26,6 +28,8 @@ interface InlineCountryFieldProps {
   value: CountryCode;
   onChange: (value: CountryCode) => void;
   className?: string;
+  isVisible?: boolean;
+  onToggleVisibility?: () => void;
 }
 
 export function InlineCountryField({
@@ -33,6 +37,8 @@ export function InlineCountryField({
   value,
   onChange,
   className,
+  isVisible = true,
+  onToggleVisibility,
 }: InlineCountryFieldProps) {
   const selectedCountry = COUNTRIES.find((c) => c.code === value);
   const selectedItem = countryItems.find((item) => item.value === value);
@@ -53,9 +59,26 @@ export function InlineCountryField({
           "group relative flex h-[54px] items-center justify-between border-b border-black/10 transition-colors",
           "focus-within:border-blue-600",
           "[&:hover:not(:focus-within)]:border-black/20",
+          !isVisible && "opacity-40",
           className,
         )}
       >
+        {/* Visibility toggle */}
+        {onToggleVisibility && (
+          <button
+            type="button"
+            onClick={onToggleVisibility}
+            className="absolute -left-10 flex h-8 w-8 items-center justify-center rounded opacity-0 transition-all hover:bg-accent group-hover:opacity-100"
+            title={isVisible ? "Hide in invoice" : "Show in invoice"}
+          >
+            <HugeiconsIcon
+              icon={isVisible ? ViewIcon : ViewOffSlashIcon}
+              size={16}
+              strokeWidth={1.5}
+              className="text-muted-foreground"
+            />
+          </button>
+        )}
         <span className="shrink-0 whitespace-nowrap text-sm font-medium">
           {label}
         </span>

@@ -6,7 +6,7 @@ import { calculateLineItemTotal } from "../../calculate";
 import { getCountryConfig } from "../../countries";
 import { formatCurrency } from "../../format-currency";
 import { lexicalToPlainText, parseLexicalState } from "../../lexical-to-html";
-import type { LayoutProps } from "../types";
+import { getAdaptiveFontSize, type LayoutProps } from "../types";
 
 // Helper to format dates
 function formatDate(dateStr: string, locale: string): string {
@@ -187,7 +187,14 @@ export function ClassicLayout({
 
           {/* Company Name */}
           <View style={{ marginBottom: 8 }}>
-            <Text style={headingStyle}>{invoice.fromName || "-"}</Text>
+            <Text
+              style={{
+                ...headingStyle,
+                fontSize: getAdaptiveFontSize(18, invoice.fromName),
+              }}
+            >
+              {invoice.fromName || "-"}
+            </Text>
             {invoice.fromSubtitle && (
               <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
                 {invoice.fromSubtitle}
@@ -205,7 +212,9 @@ export function ClassicLayout({
           {invoice.fromCity && (
             <Text style={mutedTextStyle}>{invoice.fromCity}</Text>
           )}
-          <Text style={mutedTextStyle}>{fromCountryConfig.name}</Text>
+          {invoice.showFromCountry && (
+            <Text style={mutedTextStyle}>{fromCountryConfig.name}</Text>
+          )}
           {invoice.fromPhone && (
             <Text style={mutedTextStyle}>{invoice.fromPhone}</Text>
           )}
@@ -266,7 +275,14 @@ export function ClassicLayout({
 
           {/* Client Name */}
           <View style={{ marginBottom: 8 }}>
-            <Text style={headingStyle}>{invoice.customerName || "-"}</Text>
+            <Text
+              style={{
+                ...headingStyle,
+                fontSize: getAdaptiveFontSize(18, invoice.customerName),
+              }}
+            >
+              {invoice.customerName || "-"}
+            </Text>
             {invoice.customerSubtitle && (
               <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
                 {invoice.customerSubtitle}
@@ -278,29 +294,107 @@ export function ClassicLayout({
           {invoice.customerEmail && (
             <Text style={textStyle}>{invoice.customerEmail}</Text>
           )}
-          {invoice.customerAddress && (
-            <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
-          )}
-          {invoice.customerCity && (
-            <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
-          )}
-          <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
-          {invoice.customerPhone && (
-            <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
-          )}
-          {invoice.customerTaxId && (
-            <Text style={mutedTextStyle}>
-              {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
-            </Text>
-          )}
-          {invoice.showCustomerRegistrationId &&
-            invoice.customerRegistrationId &&
-            customerCountryConfig.registrationId.available && (
-              <Text style={mutedTextStyle}>
-                {customerCountryConfig.registrationId.label}:{" "}
-                {invoice.customerRegistrationId}
+
+          {/* Address section - with optional billing/shipping labels */}
+          {invoice.hasSeparateShippingAddress ? (
+            <>
+              {/* Billing section - all billing info grouped together */}
+              <Text
+                style={{
+                  ...labelStyle,
+                  fontSize: 7,
+                  marginTop: 6,
+                  marginBottom: 2,
+                }}
+              >
+                {t.billing}
               </Text>
-            )}
+              {invoice.customerAddress && (
+                <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
+              )}
+              {invoice.customerCity && (
+                <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
+              )}
+              {invoice.showCustomerCountry && (
+                <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
+              )}
+              {invoice.customerPhone && (
+                <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
+              )}
+              {invoice.customerTaxId && (
+                <Text style={mutedTextStyle}>
+                  {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
+                </Text>
+              )}
+              {invoice.showCustomerRegistrationId &&
+                invoice.customerRegistrationId &&
+                customerCountryConfig.registrationId.available && (
+                  <Text style={mutedTextStyle}>
+                    {customerCountryConfig.registrationId.label}:{" "}
+                    {invoice.customerRegistrationId}
+                  </Text>
+                )}
+
+              {/* Shipping section */}
+              <Text
+                style={{
+                  ...labelStyle,
+                  fontSize: 7,
+                  marginTop: 6,
+                  marginBottom: 2,
+                }}
+              >
+                {t.shipping}
+              </Text>
+              {invoice.shippingName && (
+                <Text style={mutedTextStyle}>{invoice.shippingName}</Text>
+              )}
+              {invoice.shippingSubtitle && (
+                <Text style={mutedTextStyle}>{invoice.shippingSubtitle}</Text>
+              )}
+              {invoice.shippingAddress && (
+                <Text style={mutedTextStyle}>{invoice.shippingAddress}</Text>
+              )}
+              {invoice.shippingCity && (
+                <Text style={mutedTextStyle}>{invoice.shippingCity}</Text>
+              )}
+              {invoice.showCustomerCountry && (
+                <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
+              )}
+              {invoice.shippingPhone && (
+                <Text style={mutedTextStyle}>{invoice.shippingPhone}</Text>
+              )}
+            </>
+          ) : (
+            <>
+              {/* No separate shipping - show all info inline */}
+              {invoice.customerAddress && (
+                <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
+              )}
+              {invoice.customerCity && (
+                <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
+              )}
+              {invoice.showCustomerCountry && (
+                <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
+              )}
+              {invoice.customerPhone && (
+                <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
+              )}
+              {invoice.customerTaxId && (
+                <Text style={mutedTextStyle}>
+                  {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
+                </Text>
+              )}
+              {invoice.showCustomerRegistrationId &&
+                invoice.customerRegistrationId &&
+                customerCountryConfig.registrationId.available && (
+                  <Text style={mutedTextStyle}>
+                    {customerCountryConfig.registrationId.label}:{" "}
+                    {invoice.customerRegistrationId}
+                  </Text>
+                )}
+            </>
+          )}
         </View>
       </View>
 
@@ -498,32 +592,34 @@ export function ClassicLayout({
         </View>
       </View>
 
-      {/* Payment Details - Bottom */}
-      <View
-        style={{
-          borderTopWidth: 1,
-          borderTopColor: colors.border,
-          padding: spacing.page,
-          paddingTop: 24,
-          paddingBottom: 24,
-          flexDirection: "row",
-        }}
-      >
-        <View style={{ flex: 1, paddingRight: 24 }}>
-          <Text style={labelStyle}>{t.paymentDetails}</Text>
-          <Text style={{ ...textStyle, marginTop: 4, fontSize: 9 }}>
-            {invoice.paymentDetails || "-"}
-          </Text>
-        </View>
-        {invoice.paymentDetailsSecondary && (
-          <View style={{ width: 200, paddingLeft: 32 }}>
-            <Text style={{ ...labelStyle, opacity: 0 }}>&nbsp;</Text>
+      {/* Payment Details - Bottom (only shown if there are payment details) */}
+      {(invoice.paymentDetails || invoice.paymentDetailsSecondary) && (
+        <View
+          style={{
+            borderTopWidth: 1,
+            borderTopColor: colors.border,
+            padding: spacing.page,
+            paddingTop: 24,
+            paddingBottom: 24,
+            flexDirection: "row",
+          }}
+        >
+          <View style={{ flex: 1, paddingRight: 24 }}>
+            <Text style={labelStyle}>{t.paymentDetails}</Text>
             <Text style={{ ...textStyle, marginTop: 4, fontSize: 9 }}>
-              {invoice.paymentDetailsSecondary}
+              {invoice.paymentDetails || "-"}
             </Text>
           </View>
-        )}
-      </View>
+          {invoice.paymentDetailsSecondary && (
+            <View style={{ width: 200, paddingLeft: 32 }}>
+              <Text style={{ ...labelStyle, opacity: 0 }}>&nbsp;</Text>
+              <Text style={{ ...textStyle, marginTop: 4, fontSize: 9 }}>
+                {invoice.paymentDetailsSecondary}
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
     </Page>
   );
 }

@@ -4,7 +4,7 @@ import { ModernLayout } from "./modern";
 import type { LayoutDefinition } from "./types";
 
 export type { LayoutComponent, LayoutDefinition, LayoutProps } from "./types";
-export { PAGE_DIMENSIONS } from "./types";
+export { getAdaptiveFontSize, PAGE_DIMENSIONS } from "./types";
 
 /** All available layouts */
 export const LAYOUTS: LayoutDefinition[] = [

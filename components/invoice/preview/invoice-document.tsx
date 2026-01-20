@@ -6,6 +6,7 @@
 import { calculateLineItemTotal } from "@/lib/invoice/calculate";
 import { getCountryConfig } from "@/lib/invoice/countries";
 import { formatCurrency } from "@/lib/invoice/format-currency";
+import { getAdaptiveFontSize } from "@/lib/invoice/layouts";
 import {
   lexicalToHtml,
   parseLexicalState,
@@ -197,7 +198,12 @@ export function InvoiceDocument({
             )}
             <div className="flex flex-col">
               <div className="mb-2">
-                <p className="truncate text-lg font-medium leading-tight">
+                <p
+                  className="truncate font-medium leading-tight"
+                  style={{
+                    fontSize: getAdaptiveFontSize(18, invoice.fromName),
+                  }}
+                >
                   {invoice.fromName || "-"}
                 </p>
                 {invoice.fromSubtitle && (
@@ -232,9 +238,13 @@ export function InvoiceDocument({
                   {invoice.fromCity}
                 </p>
               )}
-              <p className={cn("truncate text-[10px] font-medium", labelClass)}>
-                {fromCountryConfig.name}
-              </p>
+              {invoice.showFromCountry && (
+                <p
+                  className={cn("truncate text-[10px] font-medium", labelClass)}
+                >
+                  {fromCountryConfig.name}
+                </p>
+              )}
               {invoice.fromPhone && (
                 <p
                   className={cn("truncate text-[10px] font-medium", labelClass)}
@@ -307,7 +317,12 @@ export function InvoiceDocument({
             )}
             <div className="flex flex-col">
               <div className="mb-2">
-                <p className="truncate text-lg font-medium leading-tight">
+                <p
+                  className="truncate font-medium leading-tight"
+                  style={{
+                    fontSize: getAdaptiveFontSize(18, invoice.customerName),
+                  }}
+                >
                   {invoice.customerName || "-"}
                 </p>
                 {invoice.customerSubtitle && (
@@ -328,23 +343,154 @@ export function InvoiceDocument({
                   {invoice.customerEmail}
                 </p>
               )}
-              {invoice.customerAddress && (
-                <p
-                  className={cn("truncate text-[10px] font-medium", labelClass)}
-                >
-                  {invoice.customerAddress}
-                </p>
+
+              {/* Address section - with optional billing/shipping labels */}
+              {invoice.hasSeparateShippingAddress ? (
+                <>
+                  {/* Billing address */}
+                  <p
+                    className={cn(
+                      "mt-1.5 mb-0.5 text-[6px] uppercase",
+                      labelWeightClass,
+                      labelClass,
+                      labelFontClass,
+                    )}
+                  >
+                    {t.billing}
+                  </p>
+                  {invoice.customerAddress && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {invoice.customerAddress}
+                    </p>
+                  )}
+                  {invoice.customerCity && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {invoice.customerCity}
+                    </p>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {customerCountryConfig.name}
+                    </p>
+                  )}
+
+                  {/* Shipping address */}
+                  <p
+                    className={cn(
+                      "mt-1.5 mb-0.5 text-[6px] uppercase",
+                      labelWeightClass,
+                      labelClass,
+                      labelFontClass,
+                    )}
+                  >
+                    {t.shipping}
+                  </p>
+                  {invoice.shippingName && (
+                    <p className="truncate text-[10px] font-medium">
+                      {invoice.shippingName}
+                    </p>
+                  )}
+                  {invoice.shippingSubtitle && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium opacity-80",
+                        labelClass,
+                      )}
+                    >
+                      {invoice.shippingSubtitle}
+                    </p>
+                  )}
+                  {invoice.shippingAddress && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {invoice.shippingAddress}
+                    </p>
+                  )}
+                  {invoice.shippingCity && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {invoice.shippingCity}
+                    </p>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {customerCountryConfig.name}
+                    </p>
+                  )}
+                  {invoice.shippingPhone && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {invoice.shippingPhone}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <>
+                  {invoice.customerAddress && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {invoice.customerAddress}
+                    </p>
+                  )}
+                  {invoice.customerCity && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {invoice.customerCity}
+                    </p>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <p
+                      className={cn(
+                        "truncate text-[10px] font-medium",
+                        labelClass,
+                      )}
+                    >
+                      {customerCountryConfig.name}
+                    </p>
+                  )}
+                </>
               )}
-              {invoice.customerCity && (
-                <p
-                  className={cn("truncate text-[10px] font-medium", labelClass)}
-                >
-                  {invoice.customerCity}
-                </p>
-              )}
-              <p className={cn("truncate text-[10px] font-medium", labelClass)}>
-                {customerCountryConfig.name}
-              </p>
+
               {invoice.customerPhone && (
                 <p
                   className={cn("truncate text-[10px] font-medium", labelClass)}

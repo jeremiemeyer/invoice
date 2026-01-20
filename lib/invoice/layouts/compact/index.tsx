@@ -10,7 +10,7 @@ import { lexicalToPdf } from "../../pdf/lexical-to-pdf";
 import type { InvoiceLocale } from "../../translations";
 import type { DocumentType } from "../../types";
 import { Section } from "../interactive-section";
-import type { LayoutProps } from "../types";
+import { getAdaptiveFontSize, type LayoutProps } from "../types";
 
 // Document title translations
 const documentTitles: Record<InvoiceLocale, Record<DocumentType, string>> = {
@@ -223,7 +223,14 @@ export function CompactLayout({
           <View style={{ flex: 1 }}>
             {/* Name section */}
             <View style={{ marginBottom: 6 }}>
-              <Text style={headingStyle}>{invoice.fromName || "-"}</Text>
+              <Text
+                style={{
+                  ...headingStyle,
+                  fontSize: getAdaptiveFontSize(12, invoice.fromName),
+                }}
+              >
+                {invoice.fromName || "-"}
+              </Text>
               {invoice.fromSubtitle && (
                 <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
                   {invoice.fromSubtitle}
@@ -240,7 +247,9 @@ export function CompactLayout({
             {invoice.fromCity && (
               <Text style={mutedTextStyle}>{invoice.fromCity}</Text>
             )}
-            <Text style={mutedTextStyle}>{fromCountryConfig.name}</Text>
+            {invoice.showFromCountry && (
+              <Text style={mutedTextStyle}>{fromCountryConfig.name}</Text>
+            )}
             {invoice.fromTaxId && (
               <Text style={mutedTextStyle}>
                 {fromCountryConfig.taxId.label}: {invoice.fromTaxId}
@@ -379,7 +388,14 @@ export function CompactLayout({
           <View style={{ flex: 1 }}>
             {/* Name section */}
             <View style={{ marginBottom: 6 }}>
-              <Text style={headingStyle}>{invoice.customerName || "-"}</Text>
+              <Text
+                style={{
+                  ...headingStyle,
+                  fontSize: getAdaptiveFontSize(12, invoice.customerName),
+                }}
+              >
+                {invoice.customerName || "-"}
+              </Text>
               {invoice.customerSubtitle && (
                 <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
                   {invoice.customerSubtitle}
@@ -390,26 +406,107 @@ export function CompactLayout({
             {invoice.customerEmail && (
               <Text style={textStyle}>{invoice.customerEmail}</Text>
             )}
-            {invoice.customerAddress && (
-              <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
-            )}
-            {invoice.customerCity && (
-              <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
-            )}
-            <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
-            {invoice.customerTaxId && (
-              <Text style={mutedTextStyle}>
-                {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
-              </Text>
-            )}
-            {invoice.showCustomerRegistrationId &&
-              invoice.customerRegistrationId &&
-              customerCountryConfig.registrationId.available && (
-                <Text style={mutedTextStyle}>
-                  {customerCountryConfig.registrationId.label}:{" "}
-                  {invoice.customerRegistrationId}
+
+            {/* Address section - with optional billing/shipping labels */}
+            {invoice.hasSeparateShippingAddress ? (
+              <>
+                {/* Billing section - all billing info grouped together */}
+                <Text
+                  style={{
+                    ...labelStyle,
+                    fontSize: 6,
+                    marginTop: 4,
+                    marginBottom: 2,
+                  }}
+                >
+                  {t.billing}
                 </Text>
-              )}
+                {invoice.customerAddress && (
+                  <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
+                )}
+                {invoice.customerCity && (
+                  <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
+                )}
+                {invoice.showCustomerCountry && (
+                  <Text style={mutedTextStyle}>
+                    {customerCountryConfig.name}
+                  </Text>
+                )}
+                {invoice.customerTaxId && (
+                  <Text style={mutedTextStyle}>
+                    {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
+                  </Text>
+                )}
+                {invoice.showCustomerRegistrationId &&
+                  invoice.customerRegistrationId &&
+                  customerCountryConfig.registrationId.available && (
+                    <Text style={mutedTextStyle}>
+                      {customerCountryConfig.registrationId.label}:{" "}
+                      {invoice.customerRegistrationId}
+                    </Text>
+                  )}
+
+                {/* Shipping section */}
+                <Text
+                  style={{
+                    ...labelStyle,
+                    fontSize: 6,
+                    marginTop: 4,
+                    marginBottom: 2,
+                  }}
+                >
+                  {t.shipping}
+                </Text>
+                {invoice.shippingName && (
+                  <Text style={mutedTextStyle}>{invoice.shippingName}</Text>
+                )}
+                {invoice.shippingSubtitle && (
+                  <Text style={mutedTextStyle}>{invoice.shippingSubtitle}</Text>
+                )}
+                {invoice.shippingAddress && (
+                  <Text style={mutedTextStyle}>{invoice.shippingAddress}</Text>
+                )}
+                {invoice.shippingCity && (
+                  <Text style={mutedTextStyle}>{invoice.shippingCity}</Text>
+                )}
+                {invoice.showCustomerCountry && (
+                  <Text style={mutedTextStyle}>
+                    {customerCountryConfig.name}
+                  </Text>
+                )}
+                {invoice.shippingPhone && (
+                  <Text style={mutedTextStyle}>{invoice.shippingPhone}</Text>
+                )}
+              </>
+            ) : (
+              <>
+                {/* No separate shipping - show all info inline */}
+                {invoice.customerAddress && (
+                  <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
+                )}
+                {invoice.customerCity && (
+                  <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
+                )}
+                {invoice.showCustomerCountry && (
+                  <Text style={mutedTextStyle}>
+                    {customerCountryConfig.name}
+                  </Text>
+                )}
+                {invoice.customerTaxId && (
+                  <Text style={mutedTextStyle}>
+                    {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
+                  </Text>
+                )}
+                {invoice.showCustomerRegistrationId &&
+                  invoice.customerRegistrationId &&
+                  customerCountryConfig.registrationId.available && (
+                    <Text style={mutedTextStyle}>
+                      {customerCountryConfig.registrationId.label}:{" "}
+                      {invoice.customerRegistrationId}
+                    </Text>
+                  )}
+              </>
+            )}
           </View>
         </View>
       </Section>
@@ -585,7 +682,7 @@ export function CompactLayout({
                 justifyContent: "space-between",
                 paddingTop: 8,
                 marginTop: 4,
-                borderTopWidth: 2,
+                borderTopWidth: 1,
                 borderTopColor: colors.primary,
               }}
             >
@@ -603,7 +700,7 @@ export function CompactLayout({
               <Text
                 style={{
                   fontSize: 14,
-                  fontWeight: 700,
+                  fontWeight: 600,
                   color: colors.primary,
                   fontFamily: style.fontStyle.monoNumbers
                     ? fonts.mono

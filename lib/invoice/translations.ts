@@ -182,6 +182,8 @@ export interface InvoiceTranslations {
   dueDate: string;
   from: string;
   to: string;
+  billing: string;
+  shipping: string;
   description: string;
   qty: string;
   price: string;
@@ -203,6 +205,8 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     dueDate: "Due date",
     from: "From",
     to: "To",
+    billing: "Billing",
+    shipping: "Shipping",
     description: "Description",
     qty: "Qty",
     price: "Price",
@@ -220,6 +224,8 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     dueDate: "Due date",
     from: "From",
     to: "To",
+    billing: "Billing",
+    shipping: "Shipping",
     description: "Description",
     qty: "Qty",
     price: "Price",
@@ -237,15 +243,17 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     dueDate: "Echéance",
     from: "De",
     to: "À",
+    billing: "Facturation",
+    shipping: "Livraison",
     description: "Description",
     qty: "Qté",
     price: "Prix",
     amount: "Montant",
     note: "Note",
-    subtotal: "Sous-total",
+    subtotal: "Total HT",
     discount: "Remise",
     tax: "TVA",
-    total: "Total",
+    total: "Total TTC",
     paymentDetails: "Coordonnées bancaires",
   },
   "es-ES": {
@@ -254,6 +262,8 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     dueDate: "Vencimiento",
     from: "De",
     to: "Para",
+    billing: "Facturación",
+    shipping: "Envío",
     description: "Descripción",
     qty: "Cant.",
     price: "Precio",
@@ -271,6 +281,8 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     dueDate: "Due date",
     from: "From",
     to: "To",
+    billing: "Billing",
+    shipping: "Shipping",
     description: "Description",
     qty: "Qty",
     price: "Price",
@@ -288,6 +300,8 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     dueDate: "Fällig am",
     from: "Von",
     to: "An",
+    billing: "Rechnung",
+    shipping: "Lieferung",
     description: "Beschreibung",
     qty: "Menge",
     price: "Preis",
@@ -305,6 +319,8 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     dueDate: "Fällig am",
     from: "Von",
     to: "An",
+    billing: "Rechnung",
+    shipping: "Lieferung",
     description: "Beschreibung",
     qty: "Menge",
     price: "Preis",
@@ -322,6 +338,8 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
     dueDate: "Vencimento",
     from: "De",
     to: "Para",
+    billing: "Faturação",
+    shipping: "Entrega",
     description: "Descrição",
     qty: "Qtd.",
     price: "Preço",

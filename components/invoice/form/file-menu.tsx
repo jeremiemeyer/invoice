@@ -6,7 +6,17 @@ import {
   Menu01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +24,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { defaultInvoiceState } from "@/lib/invoice/defaults";
+import {
+  CURRENT_SCHEMA_VERSION,
+  detectSchemaVersion,
+  getMigrationSummary,
+  migrate,
+  needsMigration,
+} from "@/lib/invoice/migrations";
 import type { InvoiceFormState } from "@/lib/invoice/types";
 
 interface FileMenuProps {
@@ -25,8 +42,21 @@ interface FileMenuProps {
 export function FileMenu({ state, onLoadState, isBlank }: FileMenuProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Migration dialog state
+  const [migrationDialog, setMigrationDialog] = useState<{
+    open: boolean;
+    parsedData: unknown;
+    fromVersion: number;
+    summary: string[];
+  }>({ open: false, parsedData: null, fromVersion: 0, summary: [] });
+
   const handleSave = () => {
-    const dataStr = JSON.stringify(state, null, 2);
+    // Ensure schemaVersion is included when saving
+    const dataToSave = {
+      ...state,
+      schemaVersion: state.schemaVersion ?? CURRENT_SCHEMA_VERSION,
+    };
+    const dataStr = JSON.stringify(dataToSave, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
@@ -56,6 +86,66 @@ export function FileMenu({ state, onLoadState, isBlank }: FileMenuProps) {
     fileInputRef.current?.click();
   };
 
+  const loadParsedData = (parsed: unknown) => {
+    // Check if migration is needed
+    if (needsMigration(parsed)) {
+      const detection = detectSchemaVersion(parsed);
+      const summary = getMigrationSummary(parsed);
+      setMigrationDialog({
+        open: true,
+        parsedData: parsed,
+        fromVersion: detection.version,
+        summary,
+      });
+      return;
+    }
+
+    // No migration needed - load directly
+    finalizeLoad(parsed as InvoiceFormState);
+  };
+
+  const finalizeLoad = (data: InvoiceFormState | unknown) => {
+    // Merge with defaults to fill in any missing fields
+    const loadedState: InvoiceFormState = {
+      ...defaultInvoiceState,
+      ...(data as InvoiceFormState),
+      // Ensure lineItems is always an array
+      lineItems: Array.isArray((data as InvoiceFormState).lineItems)
+        ? (data as InvoiceFormState).lineItems
+        : defaultInvoiceState.lineItems,
+    };
+
+    onLoadState(loadedState);
+  };
+
+  const handleMigrationConfirm = () => {
+    if (!migrationDialog.parsedData) return;
+
+    try {
+      const result = migrate(migrationDialog.parsedData);
+      finalizeLoad(result.data);
+    } catch (error) {
+      console.error("Migration failed:", error);
+      window.alert("Migration failed. Please contact support.");
+    }
+
+    setMigrationDialog({
+      open: false,
+      parsedData: null,
+      fromVersion: 0,
+      summary: [],
+    });
+  };
+
+  const handleMigrationCancel = () => {
+    setMigrationDialog({
+      open: false,
+      parsedData: null,
+      fromVersion: 0,
+      summary: [],
+    });
+  };
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -78,17 +168,7 @@ export function FileMenu({ state, onLoadState, isBlank }: FileMenuProps) {
         throw new Error("Invalid invoice file format");
       }
 
-      // Merge with defaults to fill in any missing fields
-      const loadedState: InvoiceFormState = {
-        ...defaultInvoiceState,
-        ...parsed,
-        // Ensure lineItems is always an array
-        lineItems: Array.isArray(parsed.lineItems)
-          ? parsed.lineItems
-          : defaultInvoiceState.lineItems,
-      };
-
-      onLoadState(loadedState);
+      loadParsedData(parsed);
     } catch (error) {
       console.error("Error loading file:", error);
       window.alert(
@@ -129,6 +209,47 @@ export function FileMenu({ state, onLoadState, isBlank }: FileMenuProps) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Migration Dialog */}
+      <AlertDialog
+        open={migrationDialog.open}
+        onOpenChange={(open) => !open && handleMigrationCancel()}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Update file format?</AlertDialogTitle>
+            <AlertDialogDescription className="sr-only">
+              Migration dialog for updating invoice file format
+            </AlertDialogDescription>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>
+                This file uses an older format (v{migrationDialog.fromVersion}).
+                Would you like to update it to the current format (v
+                {CURRENT_SCHEMA_VERSION})?
+              </p>
+              <div className="rounded-md bg-muted p-3 text-xs font-mono text-foreground">
+                {migrationDialog.summary.map((line, i) => (
+                  <div key={i} className="whitespace-pre-wrap">
+                    {line}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs">
+                The original file won&apos;t be modified. You can save the
+                updated version as a new file.
+              </p>
+            </div>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleMigrationCancel}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleMigrationConfirm}>
+              Update & Open
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

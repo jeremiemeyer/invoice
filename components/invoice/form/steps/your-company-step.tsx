@@ -28,10 +28,10 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
       />
 
       <InlineField
-        label="Subtitle"
+        label="Contact / Dept"
         value={state.fromSubtitle}
         onChange={(value) => setField("fromSubtitle", value)}
-        placeholder="Web Design & Development"
+        placeholder="Contact name or department"
       />
 
       <InlineImageField
@@ -71,6 +71,10 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         label="Country"
         value={state.fromCountryCode}
         onChange={(code) => setField("fromCountryCode", code)}
+        isVisible={state.showFromCountry}
+        onToggleVisibility={() =>
+          setField("showFromCountry", !state.showFromCountry)
+        }
       />
 
       <InlineField

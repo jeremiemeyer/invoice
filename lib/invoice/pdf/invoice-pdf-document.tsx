@@ -19,7 +19,7 @@ import type { ReactNode } from "react";
 import { calculateLineItemTotal } from "../calculate";
 import { getCountryConfig } from "../countries";
 import { formatCurrency } from "../format-currency";
-import { getLayout } from "../layouts";
+import { getAdaptiveFontSize, getLayout } from "../layouts";
 import { parseLexicalState } from "../lexical-to-html";
 import { getStyle, type InvoiceStyle } from "../styles";
 import {
@@ -481,7 +481,14 @@ export function InvoicePdfDocument({
 
               {/* Company Name */}
               <View style={{ marginBottom: 8 }}>
-                <Text style={styles.heading}>{invoice.fromName || "-"}</Text>
+                <Text
+                  style={{
+                    ...styles.heading,
+                    fontSize: getAdaptiveFontSize(18, invoice.fromName),
+                  }}
+                >
+                  {invoice.fromName || "-"}
+                </Text>
                 {invoice.fromSubtitle && (
                   <Text style={{ ...styles.mutedText, opacity: 0.8 }}>
                     {invoice.fromSubtitle}
@@ -499,7 +506,9 @@ export function InvoicePdfDocument({
               {invoice.fromCity && (
                 <Text style={styles.mutedText}>{invoice.fromCity}</Text>
               )}
-              <Text style={styles.mutedText}>{fromCountryConfig.name}</Text>
+              {invoice.showFromCountry && (
+                <Text style={styles.mutedText}>{fromCountryConfig.name}</Text>
+              )}
               {invoice.fromPhone && (
                 <Text style={styles.mutedText}>{invoice.fromPhone}</Text>
               )}
@@ -555,7 +564,12 @@ export function InvoicePdfDocument({
 
               {/* Client Name */}
               <View style={{ marginBottom: 8 }}>
-                <Text style={styles.heading}>
+                <Text
+                  style={{
+                    ...styles.heading,
+                    fontSize: getAdaptiveFontSize(18, invoice.customerName),
+                  }}
+                >
                   {invoice.customerName || "-"}
                 </Text>
                 {invoice.customerSubtitle && (
@@ -569,29 +583,129 @@ export function InvoicePdfDocument({
               {invoice.customerEmail && (
                 <Text style={styles.text}>{invoice.customerEmail}</Text>
               )}
-              {invoice.customerAddress && (
-                <Text style={styles.mutedText}>{invoice.customerAddress}</Text>
-              )}
-              {invoice.customerCity && (
-                <Text style={styles.mutedText}>{invoice.customerCity}</Text>
-              )}
-              <Text style={styles.mutedText}>{customerCountryConfig.name}</Text>
-              {invoice.customerPhone && (
-                <Text style={styles.mutedText}>{invoice.customerPhone}</Text>
-              )}
-              {invoice.customerTaxId && (
-                <Text style={styles.mutedText}>
-                  {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
-                </Text>
-              )}
-              {invoice.showCustomerRegistrationId &&
-                invoice.customerRegistrationId &&
-                customerCountryConfig.registrationId.available && (
-                  <Text style={styles.mutedText}>
-                    {customerCountryConfig.registrationId.label}:{" "}
-                    {invoice.customerRegistrationId}
+
+              {/* Address section - with optional billing/shipping labels */}
+              {invoice.hasSeparateShippingAddress ? (
+                <>
+                  {/* Billing section - all billing info grouped together */}
+                  <Text
+                    style={{
+                      ...styles.label,
+                      fontSize: 7,
+                      marginTop: 6,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {translations.billing}
                   </Text>
-                )}
+                  {invoice.customerAddress && (
+                    <Text style={styles.mutedText}>
+                      {invoice.customerAddress}
+                    </Text>
+                  )}
+                  {invoice.customerCity && (
+                    <Text style={styles.mutedText}>{invoice.customerCity}</Text>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <Text style={styles.mutedText}>
+                      {customerCountryConfig.name}
+                    </Text>
+                  )}
+                  {invoice.customerPhone && (
+                    <Text style={styles.mutedText}>
+                      {invoice.customerPhone}
+                    </Text>
+                  )}
+                  {invoice.customerTaxId && (
+                    <Text style={styles.mutedText}>
+                      {customerCountryConfig.taxId.label}:{" "}
+                      {invoice.customerTaxId}
+                    </Text>
+                  )}
+                  {invoice.showCustomerRegistrationId &&
+                    invoice.customerRegistrationId &&
+                    customerCountryConfig.registrationId.available && (
+                      <Text style={styles.mutedText}>
+                        {customerCountryConfig.registrationId.label}:{" "}
+                        {invoice.customerRegistrationId}
+                      </Text>
+                    )}
+
+                  {/* Shipping section */}
+                  <Text
+                    style={{
+                      ...styles.label,
+                      fontSize: 7,
+                      marginTop: 6,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {translations.shipping}
+                  </Text>
+                  {invoice.shippingName && (
+                    <Text style={styles.mutedText}>{invoice.shippingName}</Text>
+                  )}
+                  {invoice.shippingSubtitle && (
+                    <Text style={styles.mutedText}>
+                      {invoice.shippingSubtitle}
+                    </Text>
+                  )}
+                  {invoice.shippingAddress && (
+                    <Text style={styles.mutedText}>
+                      {invoice.shippingAddress}
+                    </Text>
+                  )}
+                  {invoice.shippingCity && (
+                    <Text style={styles.mutedText}>{invoice.shippingCity}</Text>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <Text style={styles.mutedText}>
+                      {customerCountryConfig.name}
+                    </Text>
+                  )}
+                  {invoice.shippingPhone && (
+                    <Text style={styles.mutedText}>
+                      {invoice.shippingPhone}
+                    </Text>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* No separate shipping - show all info inline */}
+                  {invoice.customerAddress && (
+                    <Text style={styles.mutedText}>
+                      {invoice.customerAddress}
+                    </Text>
+                  )}
+                  {invoice.customerCity && (
+                    <Text style={styles.mutedText}>{invoice.customerCity}</Text>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <Text style={styles.mutedText}>
+                      {customerCountryConfig.name}
+                    </Text>
+                  )}
+                  {invoice.customerPhone && (
+                    <Text style={styles.mutedText}>
+                      {invoice.customerPhone}
+                    </Text>
+                  )}
+                  {invoice.customerTaxId && (
+                    <Text style={styles.mutedText}>
+                      {customerCountryConfig.taxId.label}:{" "}
+                      {invoice.customerTaxId}
+                    </Text>
+                  )}
+                  {invoice.showCustomerRegistrationId &&
+                    invoice.customerRegistrationId &&
+                    customerCountryConfig.registrationId.available && (
+                      <Text style={styles.mutedText}>
+                        {customerCountryConfig.registrationId.label}:{" "}
+                        {invoice.customerRegistrationId}
+                      </Text>
+                    )}
+                </>
+              )}
             </Section>
           </View>
 
@@ -892,47 +1006,53 @@ export function InvoicePdfDocument({
           </Section>
         </View>
 
-        {/* Separator before Payment details - full width */}
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: colors.border,
-          }}
-        />
-
-        {/* Payment Method - Footer section (Step 3) - stays at bottom of page */}
-        <Section
-          stepIndex={3}
-          stepLabel="Payment details"
-          currentStep={currentStep}
-          onStepClick={onStepClick}
-          wrap={false}
-          style={{
-            flexDirection: "row",
-            paddingVertical: LAYOUT.sectionVerticalPadding,
-          }}
-        >
-          <View style={{ flex: 1, paddingHorizontal: LAYOUT.sectionPadding }}>
-            <Text style={styles.label}>{translations.paymentDetails}</Text>
-            <Text style={{ ...styles.text, marginTop: 4, fontSize: 9 }}>
-              {invoice.paymentDetails || "-"}
-            </Text>
-          </View>
-          {invoice.paymentDetailsSecondary && (
+        {/* Payment Method - Footer section (Step 3) - only shown if there are payment details */}
+        {(invoice.paymentDetails || invoice.paymentDetailsSecondary) && (
+          <>
+            {/* Separator before Payment details - full width */}
             <View
               style={{
-                flex: 1,
-                paddingLeft: LAYOUT.columnGap,
-                paddingRight: LAYOUT.sectionPadding,
+                borderBottomWidth: 1,
+                borderBottomColor: colors.border,
+              }}
+            />
+
+            <Section
+              stepIndex={3}
+              stepLabel="Payment details"
+              currentStep={currentStep}
+              onStepClick={onStepClick}
+              wrap={false}
+              style={{
+                flexDirection: "row",
+                paddingVertical: LAYOUT.sectionVerticalPadding,
               }}
             >
-              <Text style={{ ...styles.label, opacity: 0 }}>&nbsp;</Text>
-              <Text style={{ ...styles.text, marginTop: 4, fontSize: 9 }}>
-                {invoice.paymentDetailsSecondary}
-              </Text>
-            </View>
-          )}
-        </Section>
+              <View
+                style={{ flex: 1, paddingHorizontal: LAYOUT.sectionPadding }}
+              >
+                <Text style={styles.label}>{translations.paymentDetails}</Text>
+                <Text style={{ ...styles.text, marginTop: 4, fontSize: 9 }}>
+                  {invoice.paymentDetails}
+                </Text>
+              </View>
+              {invoice.paymentDetailsSecondary && (
+                <View
+                  style={{
+                    flex: 1,
+                    paddingLeft: LAYOUT.columnGap,
+                    paddingRight: LAYOUT.sectionPadding,
+                  }}
+                >
+                  <Text style={{ ...styles.label, opacity: 0 }}>&nbsp;</Text>
+                  <Text style={{ ...styles.text, marginTop: 4, fontSize: 9 }}>
+                    {invoice.paymentDetailsSecondary}
+                  </Text>
+                </View>
+              )}
+            </Section>
+          </>
+        )}
 
         {/* Page footer with page numbers */}
         <PageFooter

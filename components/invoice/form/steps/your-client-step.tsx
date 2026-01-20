@@ -1,5 +1,6 @@
 "use client";
 
+import { Checkbox } from "@/components/ui/checkbox";
 import { InlineCountryField } from "@/components/ui/inline-country-field";
 import { InlineField } from "@/components/ui/inline-field";
 import { InlineImageField } from "@/components/ui/inline-image-field";
@@ -28,10 +29,10 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
       />
 
       <InlineField
-        label="Subtitle"
+        label="Contact / Dept"
         value={state.customerSubtitle}
         onChange={(value) => setField("customerSubtitle", value)}
-        placeholder="Department or project"
+        placeholder="Contact name or department"
       />
 
       <InlineImageField
@@ -73,6 +74,10 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         label="Country"
         value={state.customerCountryCode}
         onChange={(code) => setField("customerCountryCode", code)}
+        isVisible={state.showCustomerCountry}
+        onToggleVisibility={() =>
+          setField("showCustomerCountry", !state.showCustomerCountry)
+        }
       />
 
       <InlineField
@@ -105,6 +110,64 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
             )
           }
         />
+      )}
+
+      {/* Separate shipping address toggle */}
+      <label className="flex h-[54px] cursor-pointer items-center justify-between border-b border-black/10 transition-colors hover:border-black/20">
+        <span className="text-sm font-medium">Different shipping address</span>
+        <Checkbox
+          checked={state.hasSeparateShippingAddress ?? false}
+          onCheckedChange={(checked) =>
+            setField("hasSeparateShippingAddress", checked === true)
+          }
+        />
+      </label>
+
+      {/* Shipping address fields (conditional) - full block for different delivery entity */}
+      {state.hasSeparateShippingAddress && (
+        <>
+          <div className="mt-4 mb-2">
+            <p className="text-xs font-medium uppercase text-muted-foreground">
+              Shipping details
+            </p>
+          </div>
+
+          <InlineField
+            label="Name"
+            value={state.shippingName}
+            onChange={(value) => setField("shippingName", value)}
+            placeholder="Contact name"
+          />
+
+          <InlineField
+            label="Company / Dept"
+            value={state.shippingSubtitle}
+            onChange={(value) => setField("shippingSubtitle", value)}
+            placeholder="Company or department"
+          />
+
+          <InlineField
+            label="Address"
+            value={state.shippingAddress}
+            onChange={(value) => setField("shippingAddress", value)}
+            placeholder="456 Warehouse Ave"
+          />
+
+          <InlineField
+            label="City"
+            value={state.shippingCity}
+            onChange={(value) => setField("shippingCity", value)}
+            placeholder="Los Angeles, CA 90001"
+          />
+
+          <InlineField
+            label="Phone"
+            type="tel"
+            value={state.shippingPhone}
+            onChange={(value) => setField("shippingPhone", value)}
+            placeholder="+1 234 567 890"
+          />
+        </>
       )}
     </div>
   );

@@ -58,3 +58,21 @@ export const PAGE_DIMENSIONS: Record<
   A4: { width: 595.28, height: 841.89 },
   LETTER: { width: 612, height: 792 },
 };
+
+/**
+ * Calculate adaptive font size based on text length.
+ * Reduces font size proportionally for longer text to prevent overflow.
+ *
+ * @param baseSize - The default font size for short text
+ * @param text - The text to measure
+ * @returns Adjusted font size
+ */
+export function getAdaptiveFontSize(baseSize: number, text: string): number {
+  const len = text?.length || 0;
+
+  // Reduction thresholds - proportional to base size
+  if (len > 40) return Math.round(baseSize * 0.6); // 60% of base
+  if (len > 30) return Math.round(baseSize * 0.7); // 70% of base
+  if (len > 20) return Math.round(baseSize * 0.85); // 85% of base
+  return baseSize;
+}
