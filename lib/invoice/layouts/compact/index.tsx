@@ -252,14 +252,17 @@ export function CompactLayout({
             )}
             {invoice.fromTaxId && (
               <Text style={mutedTextStyle}>
-                {fromCountryConfig.taxId.label}: {invoice.fromTaxId}
+                {fromCountryConfig.taxId.label}
+                {invoice.locale === "fr-FR" ? " : " : ": "}
+                {invoice.fromTaxId}
               </Text>
             )}
             {invoice.showFromRegistrationId &&
               invoice.fromRegistrationId &&
               fromCountryConfig.registrationId.available && (
                 <Text style={mutedTextStyle}>
-                  {fromCountryConfig.registrationId.label}:{" "}
+                  {fromCountryConfig.registrationId.label}
+                  {invoice.locale === "fr-FR" ? " : " : ": "}
                   {invoice.fromRegistrationId}
                 </Text>
               )}
@@ -284,7 +287,7 @@ export function CompactLayout({
             style={{
               fontSize: 20,
               fontWeight: 700,
-              color: colors.primary,
+              color: colors.accent,
               fontFamily: fonts.heading,
               textTransform: "uppercase",
               letterSpacing: 0.5,
@@ -434,14 +437,17 @@ export function CompactLayout({
                 )}
                 {invoice.customerTaxId && (
                   <Text style={mutedTextStyle}>
-                    {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
+                    {customerCountryConfig.taxId.label}
+                    {invoice.locale === "fr-FR" ? " : " : ": "}
+                    {invoice.customerTaxId}
                   </Text>
                 )}
                 {invoice.showCustomerRegistrationId &&
                   invoice.customerRegistrationId &&
                   customerCountryConfig.registrationId.available && (
                     <Text style={mutedTextStyle}>
-                      {customerCountryConfig.registrationId.label}:{" "}
+                      {customerCountryConfig.registrationId.label}
+                      {invoice.locale === "fr-FR" ? " : " : ": "}
                       {invoice.customerRegistrationId}
                     </Text>
                   )}
@@ -494,14 +500,17 @@ export function CompactLayout({
                 )}
                 {invoice.customerTaxId && (
                   <Text style={mutedTextStyle}>
-                    {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
+                    {customerCountryConfig.taxId.label}
+                    {invoice.locale === "fr-FR" ? " : " : ": "}
+                    {invoice.customerTaxId}
                   </Text>
                 )}
                 {invoice.showCustomerRegistrationId &&
                   invoice.customerRegistrationId &&
                   customerCountryConfig.registrationId.available && (
                     <Text style={mutedTextStyle}>
-                      {customerCountryConfig.registrationId.label}:{" "}
+                      {customerCountryConfig.registrationId.label}
+                      {invoice.locale === "fr-FR" ? " : " : ": "}
                       {invoice.customerRegistrationId}
                     </Text>
                   )}
@@ -683,7 +692,7 @@ export function CompactLayout({
                 paddingTop: 8,
                 marginTop: 4,
                 borderTopWidth: 1,
-                borderTopColor: colors.primary,
+                borderTopColor: colors.accent,
               }}
             >
               <Text
@@ -701,7 +710,7 @@ export function CompactLayout({
                 style={{
                   fontSize: 14,
                   fontWeight: 600,
-                  color: colors.primary,
+                  color: colors.accent,
                   fontFamily: style.fontStyle.monoNumbers
                     ? fonts.mono
                     : fonts.heading,

@@ -63,7 +63,7 @@ export const COUNTRIES: CountryIdConfig[] = [
     flag: "fr",
     taxId: { label: "N° TVA", placeholder: "FR12345678901" },
     registrationId: {
-      label: "SIRET",
+      label: "N° SIRET",
       placeholder: "123 456 789 00012",
       available: true,
     },

@@ -89,12 +89,12 @@ export const styles: Record<string, InvoiceStyle> = {
     id: "blue",
     name: "Blue",
     colors: {
-      primary: "#0f172a", // slate-900
-      secondary: "#475569", // slate-600
-      muted: "#94a3b8", // slate-400
-      border: "#e2e8f0", // slate-200
+      primary: "#1e3a5f", // deep navy blue
+      secondary: "#3d5a80", // medium blue-gray
+      muted: "#7c98b3", // soft blue-gray
+      border: "#c9d6e3", // light blue-gray
       background: "#ffffff", // white
-      accent: "#1d4ed8", // blue-700
+      accent: "#2563eb", // vibrant blue-600
       avatarBg: "#dbeafe", // blue-100
     },
     fonts: defaultFonts,

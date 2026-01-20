@@ -1,6 +1,6 @@
 import { ClassicLayout } from "./classic";
 import { CompactLayout } from "./compact";
-import { ModernLayout } from "./modern";
+import { MinimalistLayout } from "./minimalist";
 import type { LayoutDefinition } from "./types";
 
 export type { LayoutComponent, LayoutDefinition, LayoutProps } from "./types";
@@ -9,14 +9,14 @@ export { getAdaptiveFontSize, PAGE_DIMENSIONS } from "./types";
 /** All available layouts */
 export const LAYOUTS: LayoutDefinition[] = [
   {
+    id: "minimalist",
+    name: "Minimalist",
+    component: MinimalistLayout,
+  },
+  {
     id: "classic",
     name: "Classic",
     component: ClassicLayout,
-  },
-  {
-    id: "modern",
-    name: "Modern",
-    component: ModernLayout,
   },
   {
     id: "compact",
@@ -37,4 +37,4 @@ export function getLayout(id: string): LayoutDefinition {
 }
 
 /** Export individual layouts */
-export { ClassicLayout, CompactLayout, ModernLayout };
+export { ClassicLayout, CompactLayout, MinimalistLayout };

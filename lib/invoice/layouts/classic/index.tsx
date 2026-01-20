@@ -5,8 +5,48 @@ import type { Style } from "@react-pdf/types";
 import { calculateLineItemTotal } from "../../calculate";
 import { getCountryConfig } from "../../countries";
 import { formatCurrency } from "../../format-currency";
-import { lexicalToPlainText, parseLexicalState } from "../../lexical-to-html";
+import { parseLexicalState } from "../../lexical-to-html";
+import { lexicalToPdf } from "../../pdf/lexical-to-pdf";
+import type { InvoiceLocale } from "../../translations";
+import type { DocumentType } from "../../types";
+import { Section } from "../interactive-section";
 import { getAdaptiveFontSize, type LayoutProps } from "../types";
+
+// Document title translations
+const documentTitles: Record<InvoiceLocale, Record<DocumentType, string>> = {
+  "en-US": {
+    invoice: "Invoice",
+    quote: "Quote",
+  },
+  "en-GB": {
+    invoice: "Invoice",
+    quote: "Quote",
+  },
+  "en-AU": {
+    invoice: "Invoice",
+    quote: "Quote",
+  },
+  "fr-FR": {
+    invoice: "Facture",
+    quote: "Devis",
+  },
+  "de-DE": {
+    invoice: "Rechnung",
+    quote: "Angebot",
+  },
+  "de-CH": {
+    invoice: "Rechnung",
+    quote: "Offerte",
+  },
+  "es-ES": {
+    invoice: "Factura",
+    quote: "Presupuesto",
+  },
+  "pt-PT": {
+    invoice: "Fatura",
+    quote: "Orçamento",
+  },
+};
 
 // Helper to format dates
 function formatDate(dateStr: string, locale: string): string {
@@ -14,8 +54,8 @@ function formatDate(dateStr: string, locale: string): string {
   const date = new Date(dateStr);
   return date.toLocaleDateString(locale, {
     day: "numeric",
-    month: "2-digit",
-    year: "2-digit",
+    month: "short",
+    year: "numeric",
   });
 }
 
@@ -25,9 +65,9 @@ function getInitial(name: string): string {
 }
 
 /**
- * Classic layout - clean, professional invoice design.
- * This layout mirrors the original HTML invoice structure
- * using React-PDF components for WYSIWYG rendering.
+ * Classic layout - professional invoice design with prominent header.
+ * Features a document title, clear visual hierarchy,
+ * and a distinctive totals block.
  */
 export function ClassicLayout({
   invoice,
@@ -36,6 +76,8 @@ export function ClassicLayout({
   translations: t,
   documentTypeLabels: docLabels,
   dateLocale,
+  currentStep,
+  onStepClick,
 }: LayoutProps) {
   const { colors, fonts, spacing } = style;
 
@@ -45,11 +87,12 @@ export function ClassicLayout({
 
   // Common text styles
   const labelStyle: Style = {
-    fontSize: 8,
+    fontSize: 9,
     fontWeight: style.fontStyle.labelWeight,
     color: colors.muted,
     textTransform: "uppercase",
-    fontFamily: fonts.body,
+    fontFamily: style.fontStyle.monoLabels ? fonts.mono : fonts.body,
+    letterSpacing: 0.5,
   };
 
   const textStyle: Style = {
@@ -57,38 +100,57 @@ export function ClassicLayout({
     fontWeight: 400,
     color: colors.secondary,
     fontFamily: fonts.body,
+    lineHeight: 1.4,
   };
 
   const mutedTextStyle: Style = {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 400,
     color: colors.muted,
     fontFamily: fonts.body,
+    lineHeight: 1.4,
   };
 
   const numberStyle: Style = {
     fontSize: 10,
     fontWeight: 400,
     color: colors.secondary,
-    fontFamily: fonts.mono,
+    fontFamily: style.fontStyle.monoNumbers ? fonts.mono : fonts.body,
   };
 
   const headingStyle: Style = {
-    fontSize: 18,
-    fontWeight: 500,
+    fontSize: 14,
+    fontWeight: 600,
     color: colors.primary,
-    fontFamily: fonts.body,
+    fontFamily: fonts.heading,
   };
 
   // Avatar style
   const avatarStyle: Style = {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 32,
+    height: 32,
+    borderRadius: 4,
     backgroundColor: colors.avatarBg,
     alignItems: "center",
     justifyContent: "center",
   };
+
+  // Consistent horizontal padding for all sections
+  const sectionPadding = spacing.page;
+  // Column widths for the line items table
+  const QTY_WIDTH = 50;
+  const PRICE_WIDTH = 80;
+  const AMOUNT_WIDTH = 90;
+  const COLUMN_GAP = 24;
+  const RIGHT_COLUMNS_WIDTH =
+    QTY_WIDTH + PRICE_WIDTH + AMOUNT_WIDTH + COLUMN_GAP;
+  // Page margin adds outer padding around all content
+  const pageMarginSize =
+    invoice.pageMargin === "none"
+      ? 0
+      : invoice.pageMargin === "small"
+        ? spacing.page / 2
+        : spacing.page;
 
   return (
     <Page
@@ -96,356 +158,510 @@ export function ClassicLayout({
       style={{
         fontFamily: fonts.body,
         backgroundColor: colors.background,
-        paddingBottom: spacing.page,
+        padding: pageMarginSize,
       }}
     >
-      {/* Invoice Terms - Top bar */}
-      <View
+      {/* Header - Large title with document info (Step 4: Invoice terms) */}
+      <Section
+        stepIndex={4}
+        stepLabel="Invoice terms"
+        currentStep={currentStep}
+        onStepClick={onStepClick}
         style={{
-          borderBottomWidth: 1,
-          borderBottomColor: colors.border,
-          height: 56,
-          paddingHorizontal: spacing.page,
           flexDirection: "row",
-          alignItems: "center",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          paddingTop: sectionPadding,
+          paddingHorizontal: sectionPadding,
+          paddingBottom: 20,
+          borderBottomWidth: 2,
+          borderBottomColor: colors.accent,
         }}
       >
-        {/* Invoice Number */}
-        <View style={{ flex: 1 }}>
-          <Text style={labelStyle}>{docLabels.documentNo}</Text>
-          <Text style={{ ...numberStyle, fontWeight: 500 }}>
-            {invoice.invoiceNumber || "-"}
+        {/* Document Title */}
+        <View>
+          <Text
+            style={{
+              fontSize: 28,
+              fontWeight: 700,
+              color: colors.accent,
+              fontFamily: fonts.heading,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+            }}
+          >
+            {documentTitles[invoice.locale as InvoiceLocale]?.[
+              invoice.documentType
+            ] || documentTitles["en-US"][invoice.documentType]}
           </Text>
         </View>
 
-        {/* Dates */}
-        <View style={{ flexDirection: "row", paddingLeft: 32 }}>
-          <View style={{ minWidth: 60 }}>
-            <Text style={labelStyle}>{t.issued}</Text>
-            <Text style={textStyle}>
+        {/* Document Info Block */}
+        <View style={{ alignItems: "flex-end" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 4,
+            }}
+          >
+            <Text style={{ ...labelStyle, marginRight: 8 }}>
+              {docLabels.documentNo}
+            </Text>
+            <Text
+              style={{
+                ...numberStyle,
+                fontWeight: 600,
+                fontSize: 12,
+              }}
+            >
+              {invoice.invoiceNumber || "-"}
+            </Text>
+          </View>
+          {/* Dates */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 2,
+            }}
+          >
+            <Text style={mutedTextStyle}>
+              {t.issued}
+              {invoice.locale === "fr-FR" ? " : " : ": "}
+            </Text>
+            <Text style={mutedTextStyle}>
               {formatDate(invoice.issueDate, dateLocale)}
             </Text>
           </View>
-          <View style={{ marginLeft: 24 }}>
-            <Text style={labelStyle}>{docLabels.dateLabel}</Text>
-            <Text style={textStyle}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={mutedTextStyle}>
+              {docLabels.dateLabel}
+              {invoice.locale === "fr-FR" ? " : " : ": "}
+            </Text>
+            <Text style={mutedTextStyle}>
               {formatDate(invoice.dueDate, dateLocale)}
             </Text>
           </View>
         </View>
-      </View>
+      </Section>
 
-      {/* From / To Grid */}
+      {/* From / To Section - uses same paddingHorizontal as table for alignment */}
       <View
         style={{
           flexDirection: "row",
           borderBottomWidth: 1,
           borderBottomColor: colors.border,
+          paddingHorizontal: sectionPadding,
         }}
       >
-        {/* Your Company - Left */}
-        <View
+        {/* From - left column (Step 0: Your company) */}
+        <Section
+          stepIndex={0}
+          stepLabel="Your company"
+          currentStep={currentStep}
+          onStepClick={onStepClick}
           style={{
             flex: 1,
-            padding: spacing.page,
-            paddingTop: 24,
-            paddingBottom: 24,
-            borderRightWidth: 1,
-            borderRightColor: colors.border,
+            marginLeft: -sectionPadding,
+            paddingLeft: sectionPadding,
+            paddingVertical: 24,
           }}
         >
-          <Text style={{ ...labelStyle, marginBottom: 8 }}>{t.from}</Text>
+          <Text style={{ ...labelStyle, marginBottom: 12 }}>{t.from}</Text>
 
-          {/* Logo/Avatar */}
-          {invoice.showFromLogo && (
-            <View style={{ marginBottom: 8 }}>
-              {invoice.fromLogoUrl ? (
-                <Image
-                  src={invoice.fromLogoUrl}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 18,
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <View style={avatarStyle}>
-                  <Text
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            {/* Logo/Avatar */}
+            {invoice.showFromLogo && (
+              <View style={{ marginRight: 12 }}>
+                {invoice.fromLogoUrl ? (
+                  <Image
+                    src={invoice.fromLogoUrl}
                     style={{
-                      fontSize: 16,
-                      fontWeight: 500,
-                      color: colors.primary,
+                      width: 32,
+                      height: 32,
+                      borderRadius: 4,
+                      objectFit: "cover",
                     }}
-                  >
-                    {getInitial(invoice.fromName)}
+                  />
+                ) : (
+                  <View style={avatarStyle}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: colors.primary,
+                      }}
+                    >
+                      {getInitial(invoice.fromName)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* Details */}
+            <View style={{ flex: 1 }}>
+              {/* Name section */}
+              <View style={{ marginBottom: 8 }}>
+                <Text
+                  style={{
+                    ...headingStyle,
+                    fontSize: getAdaptiveFontSize(14, invoice.fromName),
+                  }}
+                >
+                  {invoice.fromName || "-"}
+                </Text>
+                {invoice.fromSubtitle && (
+                  <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
+                    {invoice.fromSubtitle}
                   </Text>
-                </View>
+                )}
+              </View>
+              {/* Contact details */}
+              {invoice.fromEmail && (
+                <Text style={textStyle}>{invoice.fromEmail}</Text>
               )}
+              {invoice.fromAddress && (
+                <Text style={mutedTextStyle}>{invoice.fromAddress}</Text>
+              )}
+              {invoice.fromCity && (
+                <Text style={mutedTextStyle}>{invoice.fromCity}</Text>
+              )}
+              {invoice.showFromCountry && (
+                <Text style={mutedTextStyle}>{fromCountryConfig.name}</Text>
+              )}
+              {invoice.fromPhone && (
+                <Text style={mutedTextStyle}>{invoice.fromPhone}</Text>
+              )}
+              {invoice.fromTaxId && (
+                <Text style={mutedTextStyle}>
+                  {fromCountryConfig.taxId.label}
+                  {invoice.locale === "fr-FR" ? " : " : ": "}
+                  {invoice.fromTaxId}
+                </Text>
+              )}
+              {invoice.showFromRegistrationId &&
+                invoice.fromRegistrationId &&
+                fromCountryConfig.registrationId.available && (
+                  <Text style={mutedTextStyle}>
+                    {fromCountryConfig.registrationId.label}
+                    {invoice.locale === "fr-FR" ? " : " : ": "}
+                    {invoice.fromRegistrationId}
+                  </Text>
+                )}
             </View>
-          )}
-
-          {/* Company Name */}
-          <View style={{ marginBottom: 8 }}>
-            <Text
-              style={{
-                ...headingStyle,
-                fontSize: getAdaptiveFontSize(18, invoice.fromName),
-              }}
-            >
-              {invoice.fromName || "-"}
-            </Text>
-            {invoice.fromSubtitle && (
-              <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
-                {invoice.fromSubtitle}
-              </Text>
-            )}
           </View>
+        </Section>
 
-          {/* Contact Details */}
-          {invoice.fromEmail && (
-            <Text style={textStyle}>{invoice.fromEmail}</Text>
-          )}
-          {invoice.fromAddress && (
-            <Text style={mutedTextStyle}>{invoice.fromAddress}</Text>
-          )}
-          {invoice.fromCity && (
-            <Text style={mutedTextStyle}>{invoice.fromCity}</Text>
-          )}
-          {invoice.showFromCountry && (
-            <Text style={mutedTextStyle}>{fromCountryConfig.name}</Text>
-          )}
-          {invoice.fromPhone && (
-            <Text style={mutedTextStyle}>{invoice.fromPhone}</Text>
-          )}
-          {invoice.fromTaxId && (
-            <Text style={mutedTextStyle}>
-              {fromCountryConfig.taxId.label}: {invoice.fromTaxId}
-            </Text>
-          )}
-          {invoice.showFromRegistrationId &&
-            invoice.fromRegistrationId &&
-            fromCountryConfig.registrationId.available && (
-              <Text style={mutedTextStyle}>
-                {fromCountryConfig.registrationId.label}:{" "}
-                {invoice.fromRegistrationId}
-              </Text>
-            )}
-        </View>
-
-        {/* Your Client - Right */}
-        <View
+        {/* To - right column (Step 1: Your client) - aligned with Qty/Price/Amount columns */}
+        <Section
+          stepIndex={1}
+          stepLabel="Your client"
+          currentStep={currentStep}
+          onStepClick={onStepClick}
           style={{
-            flex: 1,
-            padding: spacing.page,
-            paddingTop: 24,
-            paddingBottom: 24,
+            width: RIGHT_COLUMNS_WIDTH + sectionPadding,
+            marginRight: -sectionPadding,
+            paddingRight: sectionPadding,
+            paddingLeft: COLUMN_GAP,
+            paddingVertical: 24,
           }}
         >
-          <Text style={{ ...labelStyle, marginBottom: 8 }}>{t.to}</Text>
+          <Text style={{ ...labelStyle, marginBottom: 12 }}>{t.to}</Text>
 
-          {/* Logo/Avatar */}
-          {invoice.showCustomerLogo && (
-            <View style={{ marginBottom: 8 }}>
-              {invoice.customerLogoUrl ? (
-                <Image
-                  src={invoice.customerLogoUrl}
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            {/* Logo/Avatar */}
+            {invoice.showCustomerLogo && (
+              <View style={{ marginRight: 12 }}>
+                {invoice.customerLogoUrl ? (
+                  <Image
+                    src={invoice.customerLogoUrl}
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 4,
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <View style={avatarStyle}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: colors.primary,
+                      }}
+                    >
+                      {getInitial(invoice.customerName)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* Details */}
+            <View style={{ flex: 1 }}>
+              {/* Name section */}
+              <View style={{ marginBottom: 8 }}>
+                <Text
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 18,
-                    objectFit: "cover",
+                    ...headingStyle,
+                    fontSize: getAdaptiveFontSize(14, invoice.customerName),
                   }}
-                />
-              ) : (
-                <View style={avatarStyle}>
+                >
+                  {invoice.customerName || "-"}
+                </Text>
+                {invoice.customerSubtitle && (
+                  <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
+                    {invoice.customerSubtitle}
+                  </Text>
+                )}
+              </View>
+              {/* Contact details */}
+              {invoice.customerEmail && (
+                <Text style={textStyle}>{invoice.customerEmail}</Text>
+              )}
+
+              {/* Address section - with optional billing/shipping labels */}
+              {invoice.hasSeparateShippingAddress ? (
+                <>
+                  {/* Billing section - all billing info grouped together */}
                   <Text
                     style={{
-                      fontSize: 16,
-                      fontWeight: 500,
-                      color: colors.primary,
+                      ...labelStyle,
+                      fontSize: 7,
+                      marginTop: 6,
+                      marginBottom: 2,
                     }}
                   >
-                    {getInitial(invoice.customerName)}
+                    {t.billing}
                   </Text>
-                </View>
+                  {invoice.customerAddress && (
+                    <Text style={mutedTextStyle}>
+                      {invoice.customerAddress}
+                    </Text>
+                  )}
+                  {invoice.customerCity && (
+                    <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <Text style={mutedTextStyle}>
+                      {customerCountryConfig.name}
+                    </Text>
+                  )}
+                  {invoice.customerPhone && (
+                    <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
+                  )}
+                  {invoice.customerTaxId && (
+                    <Text style={mutedTextStyle}>
+                      {customerCountryConfig.taxId.label}
+                      {invoice.locale === "fr-FR" ? " : " : ": "}
+                      {invoice.customerTaxId}
+                    </Text>
+                  )}
+                  {invoice.showCustomerRegistrationId &&
+                    invoice.customerRegistrationId &&
+                    customerCountryConfig.registrationId.available && (
+                      <Text style={mutedTextStyle}>
+                        {customerCountryConfig.registrationId.label}
+                        {invoice.locale === "fr-FR" ? " : " : ": "}
+                        {invoice.customerRegistrationId}
+                      </Text>
+                    )}
+
+                  {/* Shipping section */}
+                  <Text
+                    style={{
+                      ...labelStyle,
+                      fontSize: 7,
+                      marginTop: 6,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {t.shipping}
+                  </Text>
+                  {invoice.shippingName && (
+                    <Text style={mutedTextStyle}>{invoice.shippingName}</Text>
+                  )}
+                  {invoice.shippingSubtitle && (
+                    <Text style={mutedTextStyle}>
+                      {invoice.shippingSubtitle}
+                    </Text>
+                  )}
+                  {invoice.shippingAddress && (
+                    <Text style={mutedTextStyle}>
+                      {invoice.shippingAddress}
+                    </Text>
+                  )}
+                  {invoice.shippingCity && (
+                    <Text style={mutedTextStyle}>{invoice.shippingCity}</Text>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <Text style={mutedTextStyle}>
+                      {customerCountryConfig.name}
+                    </Text>
+                  )}
+                  {invoice.shippingPhone && (
+                    <Text style={mutedTextStyle}>{invoice.shippingPhone}</Text>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* No separate shipping - show all info inline */}
+                  {invoice.customerAddress && (
+                    <Text style={mutedTextStyle}>
+                      {invoice.customerAddress}
+                    </Text>
+                  )}
+                  {invoice.customerCity && (
+                    <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
+                  )}
+                  {invoice.showCustomerCountry && (
+                    <Text style={mutedTextStyle}>
+                      {customerCountryConfig.name}
+                    </Text>
+                  )}
+                  {invoice.customerPhone && (
+                    <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
+                  )}
+                  {invoice.customerTaxId && (
+                    <Text style={mutedTextStyle}>
+                      {customerCountryConfig.taxId.label}
+                      {invoice.locale === "fr-FR" ? " : " : ": "}
+                      {invoice.customerTaxId}
+                    </Text>
+                  )}
+                  {invoice.showCustomerRegistrationId &&
+                    invoice.customerRegistrationId &&
+                    customerCountryConfig.registrationId.available && (
+                      <Text style={mutedTextStyle}>
+                        {customerCountryConfig.registrationId.label}
+                        {invoice.locale === "fr-FR" ? " : " : ": "}
+                        {invoice.customerRegistrationId}
+                      </Text>
+                    )}
+                </>
               )}
             </View>
-          )}
-
-          {/* Client Name */}
-          <View style={{ marginBottom: 8 }}>
-            <Text
-              style={{
-                ...headingStyle,
-                fontSize: getAdaptiveFontSize(18, invoice.customerName),
-              }}
-            >
-              {invoice.customerName || "-"}
-            </Text>
-            {invoice.customerSubtitle && (
-              <Text style={{ ...mutedTextStyle, opacity: 0.8 }}>
-                {invoice.customerSubtitle}
-              </Text>
-            )}
           </View>
-
-          {/* Contact Details */}
-          {invoice.customerEmail && (
-            <Text style={textStyle}>{invoice.customerEmail}</Text>
-          )}
-
-          {/* Address section - with optional billing/shipping labels */}
-          {invoice.hasSeparateShippingAddress ? (
-            <>
-              {/* Billing section - all billing info grouped together */}
-              <Text
-                style={{
-                  ...labelStyle,
-                  fontSize: 7,
-                  marginTop: 6,
-                  marginBottom: 2,
-                }}
-              >
-                {t.billing}
-              </Text>
-              {invoice.customerAddress && (
-                <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
-              )}
-              {invoice.customerCity && (
-                <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
-              )}
-              {invoice.showCustomerCountry && (
-                <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
-              )}
-              {invoice.customerPhone && (
-                <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
-              )}
-              {invoice.customerTaxId && (
-                <Text style={mutedTextStyle}>
-                  {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
-                </Text>
-              )}
-              {invoice.showCustomerRegistrationId &&
-                invoice.customerRegistrationId &&
-                customerCountryConfig.registrationId.available && (
-                  <Text style={mutedTextStyle}>
-                    {customerCountryConfig.registrationId.label}:{" "}
-                    {invoice.customerRegistrationId}
-                  </Text>
-                )}
-
-              {/* Shipping section */}
-              <Text
-                style={{
-                  ...labelStyle,
-                  fontSize: 7,
-                  marginTop: 6,
-                  marginBottom: 2,
-                }}
-              >
-                {t.shipping}
-              </Text>
-              {invoice.shippingName && (
-                <Text style={mutedTextStyle}>{invoice.shippingName}</Text>
-              )}
-              {invoice.shippingSubtitle && (
-                <Text style={mutedTextStyle}>{invoice.shippingSubtitle}</Text>
-              )}
-              {invoice.shippingAddress && (
-                <Text style={mutedTextStyle}>{invoice.shippingAddress}</Text>
-              )}
-              {invoice.shippingCity && (
-                <Text style={mutedTextStyle}>{invoice.shippingCity}</Text>
-              )}
-              {invoice.showCustomerCountry && (
-                <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
-              )}
-              {invoice.shippingPhone && (
-                <Text style={mutedTextStyle}>{invoice.shippingPhone}</Text>
-              )}
-            </>
-          ) : (
-            <>
-              {/* No separate shipping - show all info inline */}
-              {invoice.customerAddress && (
-                <Text style={mutedTextStyle}>{invoice.customerAddress}</Text>
-              )}
-              {invoice.customerCity && (
-                <Text style={mutedTextStyle}>{invoice.customerCity}</Text>
-              )}
-              {invoice.showCustomerCountry && (
-                <Text style={mutedTextStyle}>{customerCountryConfig.name}</Text>
-              )}
-              {invoice.customerPhone && (
-                <Text style={mutedTextStyle}>{invoice.customerPhone}</Text>
-              )}
-              {invoice.customerTaxId && (
-                <Text style={mutedTextStyle}>
-                  {customerCountryConfig.taxId.label}: {invoice.customerTaxId}
-                </Text>
-              )}
-              {invoice.showCustomerRegistrationId &&
-                invoice.customerRegistrationId &&
-                customerCountryConfig.registrationId.available && (
-                  <Text style={mutedTextStyle}>
-                    {customerCountryConfig.registrationId.label}:{" "}
-                    {invoice.customerRegistrationId}
-                  </Text>
-                )}
-            </>
-          )}
-        </View>
+        </Section>
       </View>
 
-      {/* Invoice Details - Line Items */}
-      <View style={{ padding: spacing.page, paddingTop: 24, flex: 1 }}>
-        {/* Header */}
-        <View style={{ flexDirection: "row", marginBottom: 4 }}>
+      {/* Line Items Table (Step 2: Invoice details) */}
+      <Section
+        stepIndex={2}
+        stepLabel="Invoice details"
+        currentStep={currentStep}
+        onStepClick={onStepClick}
+        style={{ flex: 1 }}
+      >
+        {/* Table Header */}
+        <View
+          style={{
+            flexDirection: "row",
+            backgroundColor: colors.avatarBg,
+            paddingVertical: 10,
+            paddingHorizontal: sectionPadding,
+          }}
+        >
           <View style={{ flex: 1 }}>
-            <Text style={labelStyle}>{t.description}</Text>
-          </View>
-          <View style={{ flexDirection: "row", paddingLeft: 16, width: 200 }}>
-            <Text style={{ ...labelStyle, width: 50 }}>{t.qty}</Text>
-            <Text style={{ ...labelStyle, flex: 1 }}>{t.price}</Text>
-            <Text style={{ ...labelStyle, flex: 1, textAlign: "right" }}>
-              {t.amount}
+            <Text style={{ ...labelStyle, color: colors.primary }}>
+              {t.description}
             </Text>
           </View>
+          <View style={{ width: COLUMN_GAP }} />
+          <Text
+            style={{
+              ...labelStyle,
+              color: colors.primary,
+              width: QTY_WIDTH,
+              textAlign: "left",
+            }}
+          >
+            {t.qty}
+          </Text>
+          <Text
+            style={{
+              ...labelStyle,
+              color: colors.primary,
+              width: PRICE_WIDTH,
+              textAlign: "right",
+            }}
+          >
+            {t.price}
+          </Text>
+          <Text
+            style={{
+              ...labelStyle,
+              color: colors.primary,
+              width: AMOUNT_WIDTH,
+              textAlign: "right",
+            }}
+          >
+            {t.amount}
+          </Text>
         </View>
 
         {/* Line Items */}
-        {invoice.lineItems.map((item, index) => (
-          <View
-            key={item.id || index}
-            style={{
-              flexDirection: "row",
-              borderBottomWidth: 1,
-              borderBottomColor: colors.border,
-              paddingVertical: 12,
-              minHeight: 40,
-              alignItems: "center",
-            }}
-          >
-            <View style={{ flex: 1 }}>
+        {invoice.lineItems.map((item, index) => {
+          const itemTextStyle: Style = {
+            fontSize: 10,
+            fontWeight: 400,
+            color: colors.primary,
+            fontFamily: fonts.body,
+            lineHeight: 1.25,
+          };
+
+          return (
+            <View
+              key={item.id || index}
+              style={{
+                flexDirection: "row",
+                paddingVertical: 12,
+                paddingHorizontal: sectionPadding,
+                borderBottomWidth: 1,
+                borderBottomColor: colors.border,
+                alignItems: "flex-start",
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                {item.name ? (
+                  lexicalToPdf(parseLexicalState(item.name), itemTextStyle)
+                ) : (
+                  <Text style={itemTextStyle}>-</Text>
+                )}
+              </View>
+              <View style={{ width: COLUMN_GAP }} />
               <Text
-                style={{ fontSize: 10, fontWeight: 500, color: colors.primary }}
+                style={{
+                  ...numberStyle,
+                  width: QTY_WIDTH,
+                  textAlign: "left",
+                }}
               >
-                {item.name
-                  ? lexicalToPlainText(parseLexicalState(item.name))
-                  : "-"}
+                {item.quantity}
               </Text>
-            </View>
-            <View style={{ flexDirection: "row", paddingLeft: 16, width: 200 }}>
-              <Text style={{ ...numberStyle, width: 50 }}>{item.quantity}</Text>
-              <Text style={{ ...numberStyle, flex: 1 }}>
+              <Text
+                style={{
+                  ...numberStyle,
+                  width: PRICE_WIDTH,
+                  textAlign: "right",
+                }}
+              >
                 {formatCurrency(
                   item.price,
                   invoice.currency,
                   invoice.numberLocale,
                 )}
               </Text>
-              <Text style={{ ...numberStyle, flex: 1, textAlign: "right" }}>
+              <Text
+                style={{
+                  ...numberStyle,
+                  width: AMOUNT_WIDTH,
+                  textAlign: "right",
+                }}
+              >
                 {formatCurrency(
                   calculateLineItemTotal({
                     price: item.price,
@@ -456,47 +672,49 @@ export function ClassicLayout({
                 )}
               </Text>
             </View>
-          </View>
-        ))}
+          );
+        })}
 
-        {/* Note + Totals */}
-        <View style={{ flexDirection: "row", paddingTop: 12 }}>
-          {/* Note */}
-          <View style={{ flex: 1, paddingRight: 24 }}>
-            <View
-              style={{
-                minHeight: 40,
-                justifyContent: "center",
-                paddingVertical: 8,
-              }}
-            >
+        {/* Note + Totals Row */}
+        <View
+          style={{
+            flexDirection: "row",
+            paddingTop: 12,
+            paddingHorizontal: sectionPadding,
+            alignItems: "flex-start",
+          }}
+        >
+          {/* Note - left column */}
+          <View style={{ flex: 1 }}>
+            {/* Label row aligned with Subtotal */}
+            <View style={{ height: 24, justifyContent: "center" }}>
               <Text style={labelStyle}>{t.note}</Text>
             </View>
             <Text
               style={{
-                fontSize: 8,
-                fontWeight: 500,
+                fontSize: 9,
                 color: colors.muted,
+                fontFamily: fonts.body,
+                lineHeight: 1.4,
               }}
             >
               {invoice.notes || "-"}
             </Text>
           </View>
 
-          {/* Totals */}
-          <View style={{ width: 200, paddingLeft: 32 }}>
-            {/* Subtotal */}
+          {/* Totals - aligned with Qty column start */}
+          <View style={{ width: COLUMN_GAP }} />
+          <View style={{ width: QTY_WIDTH + PRICE_WIDTH + AMOUNT_WIDTH }}>
+            {/* Subtotal row */}
             <View
               style={{
                 flexDirection: "row",
-                borderBottomWidth: 1,
-                borderBottomColor: colors.border,
-                minHeight: 40,
+                justifyContent: "space-between",
+                height: 24,
                 alignItems: "center",
-                paddingVertical: 8,
               }}
             >
-              <Text style={{ ...textStyle, flex: 1, color: colors.muted }}>
+              <Text style={{ ...textStyle, color: colors.muted }}>
                 {t.subtotal}
               </Text>
               <Text style={{ ...numberStyle, textAlign: "right" }}>
@@ -508,19 +726,17 @@ export function ClassicLayout({
               </Text>
             </View>
 
-            {/* Discount */}
+            {/* Discount row */}
             {invoice.includeDiscount && invoice.discount > 0 && (
               <View
                 style={{
                   flexDirection: "row",
-                  borderBottomWidth: 1,
-                  borderBottomColor: colors.border,
-                  minHeight: 40,
+                  justifyContent: "space-between",
+                  height: 24,
                   alignItems: "center",
-                  paddingVertical: 8,
                 }}
               >
-                <Text style={{ ...textStyle, flex: 1, color: colors.muted }}>
+                <Text style={{ ...textStyle, color: colors.muted }}>
                   {t.discount}
                 </Text>
                 <Text style={{ ...numberStyle, textAlign: "right" }}>
@@ -534,20 +750,18 @@ export function ClassicLayout({
               </View>
             )}
 
-            {/* Tax */}
+            {/* Tax row */}
             {(invoice.showTaxIfZero ||
               (invoice.includeTax && invoice.taxRate > 0)) && (
               <View
                 style={{
                   flexDirection: "row",
-                  borderBottomWidth: 1,
-                  borderBottomColor: colors.border,
-                  minHeight: 40,
+                  justifyContent: "space-between",
+                  height: 24,
                   alignItems: "center",
-                  paddingVertical: 8,
                 }}
               >
-                <Text style={{ ...textStyle, flex: 1, color: colors.muted }}>
+                <Text style={{ ...textStyle, color: colors.muted }}>
                   {t.tax} ({invoice.taxRate}%)
                 </Text>
                 <Text style={{ ...numberStyle, textAlign: "right" }}>
@@ -560,24 +774,37 @@ export function ClassicLayout({
               </View>
             )}
 
-            {/* Total */}
+            {/* Total row */}
             <View
               style={{
                 flexDirection: "row",
-                minHeight: 40,
+                justifyContent: "space-between",
+                height: 32,
                 alignItems: "center",
-                paddingVertical: 8,
+                borderTopWidth: 1,
+                borderTopColor: colors.border,
+                marginTop: 4,
               }}
             >
-              <Text style={{ ...textStyle, flex: 1, color: colors.muted }}>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: colors.primary,
+                  fontFamily: fonts.body,
+                  textTransform: "uppercase",
+                }}
+              >
                 {t.total}
               </Text>
               <Text
                 style={{
-                  fontSize: 14,
-                  fontWeight: 500,
+                  fontSize: 16,
+                  fontWeight: 600,
                   color: colors.accent,
-                  fontFamily: fonts.mono,
+                  fontFamily: style.fontStyle.monoNumbers
+                    ? fonts.mono
+                    : fonts.heading,
                   textAlign: "right",
                 }}
               >
@@ -590,35 +817,43 @@ export function ClassicLayout({
             </View>
           </View>
         </View>
-      </View>
+      </Section>
 
-      {/* Payment Details - Bottom (only shown if there are payment details) */}
+      {/* Payment Details Footer (Step 3: Payment details) */}
       {(invoice.paymentDetails || invoice.paymentDetailsSecondary) && (
-        <View
+        <Section
+          stepIndex={3}
+          stepLabel="Payment details"
+          currentStep={currentStep}
+          onStepClick={onStepClick}
           style={{
+            paddingTop: 20,
+            paddingHorizontal: sectionPadding,
+            paddingBottom: sectionPadding,
             borderTopWidth: 1,
             borderTopColor: colors.border,
-            padding: spacing.page,
-            paddingTop: 24,
-            paddingBottom: 24,
             flexDirection: "row",
           }}
         >
-          <View style={{ flex: 1, paddingRight: 24 }}>
-            <Text style={labelStyle}>{t.paymentDetails}</Text>
-            <Text style={{ ...textStyle, marginTop: 4, fontSize: 9 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ ...labelStyle, marginBottom: 8 }}>
+              {t.paymentDetails}
+            </Text>
+            <Text style={{ ...textStyle, fontSize: 9 }}>
               {invoice.paymentDetails || "-"}
             </Text>
           </View>
           {invoice.paymentDetailsSecondary && (
-            <View style={{ width: 200, paddingLeft: 32 }}>
-              <Text style={{ ...labelStyle, opacity: 0 }}>&nbsp;</Text>
-              <Text style={{ ...textStyle, marginTop: 4, fontSize: 9 }}>
+            <View style={{ flex: 1, paddingLeft: 24 }}>
+              <Text style={{ ...labelStyle, marginBottom: 8, opacity: 0 }}>
+                &nbsp;
+              </Text>
+              <Text style={{ ...textStyle, fontSize: 9 }}>
                 {invoice.paymentDetailsSecondary}
               </Text>
             </View>
           )}
-        </View>
+        </Section>
       )}
     </Page>
   );
