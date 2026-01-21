@@ -368,7 +368,10 @@ export function ClassicLayout({
             paddingVertical: 24,
           }}
         >
-          <Text style={{ ...labelStyle, marginBottom: 12 }}>{t.to}</Text>
+          {/* Show "To" only when same address, otherwise show "Bill to" as header */}
+          <Text style={{ ...labelStyle, marginBottom: 12 }}>
+            {invoice.hasSeparateShippingAddress ? t.billing : t.to}
+          </Text>
 
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
             {/* Logo/Avatar */}
@@ -426,17 +429,6 @@ export function ClassicLayout({
               {/* Address section - with optional billing/shipping labels */}
               {invoice.hasSeparateShippingAddress ? (
                 <>
-                  {/* Billing section - all billing info grouped together */}
-                  <Text
-                    style={{
-                      ...labelStyle,
-                      fontSize: 7,
-                      marginTop: 6,
-                      marginBottom: 2,
-                    }}
-                  >
-                    {t.billing}
-                  </Text>
                   {invoice.customerAddress && (
                     <Text style={mutedTextStyle}>
                       {invoice.customerAddress}
@@ -474,9 +466,8 @@ export function ClassicLayout({
                   <Text
                     style={{
                       ...labelStyle,
-                      fontSize: 7,
-                      marginTop: 6,
-                      marginBottom: 2,
+                      marginTop: 12,
+                      marginBottom: 4,
                     }}
                   >
                     {t.shipping}

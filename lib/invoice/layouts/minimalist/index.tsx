@@ -449,8 +449,11 @@ export function MinimalistLayout({
               paddingVertical: LAYOUT.sectionVerticalPadding,
             }}
           >
+            {/* Show "To" only when same address, otherwise show "Bill to" as header */}
             <Text style={{ ...styles.label, marginBottom: 8 }}>
-              {translations.to}
+              {invoice.hasSeparateShippingAddress
+                ? translations.billing
+                : translations.to}
             </Text>
 
             {invoice.showCustomerLogo && (
@@ -492,16 +495,6 @@ export function MinimalistLayout({
 
             {invoice.hasSeparateShippingAddress ? (
               <>
-                <Text
-                  style={{
-                    ...styles.label,
-                    fontSize: 7,
-                    marginTop: 6,
-                    marginBottom: 2,
-                  }}
-                >
-                  {translations.billing}
-                </Text>
                 {invoice.customerAddress && (
                   <Text style={styles.mutedText}>
                     {invoice.customerAddress}
@@ -538,9 +531,8 @@ export function MinimalistLayout({
                 <Text
                   style={{
                     ...styles.label,
-                    fontSize: 7,
-                    marginTop: 6,
-                    marginBottom: 2,
+                    marginTop: 12,
+                    marginBottom: 4,
                   }}
                 >
                   {translations.shipping}
