@@ -46,6 +46,7 @@ export const demoInvoiceData: InvoiceFormState = {
   shippingCity: "",
   shippingPhone: "",
   invoiceNumber: "INV-2026-0001",
+  purchaseOrderNumber: "",
   issueDate: "2026-01-01",
   dueDate: "2026-01-31",
   lineItems: [

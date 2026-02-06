@@ -9,14 +9,16 @@ export {
   CURRENT_SCHEMA_VERSION,
   type InvoiceV1,
   type InvoiceV2,
+  type InvoiceV3,
   type LineItemV1,
   type LineItemV2,
+  type LineItemV3,
 } from "../schemas";
 
 /**
  * Type for any valid invoice schema (for detection)
  */
-export type AnyInvoiceSchema = InvoiceV1 | InvoiceV2;
+export type AnyInvoiceSchema = InvoiceV1 | InvoiceV2 | InvoiceV3;
 
 /**
  * Type guard to check if an invoice has a schema version
@@ -33,4 +35,4 @@ export function hasSchemaVersion(
 }
 
 // Import types for the type guard
-import type { InvoiceV1, InvoiceV2 } from "../schemas";
+import type { InvoiceV1, InvoiceV2, InvoiceV3 } from "../schemas";

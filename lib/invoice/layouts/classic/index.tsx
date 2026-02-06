@@ -218,6 +218,22 @@ export function ClassicLayout({
               {invoice.invoiceNumber || "-"}
             </Text>
           </View>
+          {/* PO Number - conditional */}
+          {invoice.purchaseOrderNumber && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 2,
+              }}
+            >
+              <Text style={mutedTextStyle}>
+                {t.purchaseOrderNumber}
+                {invoice.locale === "fr-FR" ? " : " : ": "}
+              </Text>
+              <Text style={mutedTextStyle}>{invoice.purchaseOrderNumber}</Text>
+            </View>
+          )}
           {/* Dates */}
           <View
             style={{

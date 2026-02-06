@@ -22,10 +22,17 @@ import {
   hasSchemaVersion,
   type InvoiceV1,
   type InvoiceV2,
+  type InvoiceV3,
 } from "./types";
 import { migrateV1ToV2 } from "./v1-to-v2";
+import { migrateV2ToV3 } from "./v2-to-v3";
 
-export type { AnyInvoiceSchema, InvoiceV1, InvoiceV2 } from "./types";
+export type {
+  AnyInvoiceSchema,
+  InvoiceV1,
+  InvoiceV2,
+  InvoiceV3,
+} from "./types";
 export { CURRENT_SCHEMA_VERSION } from "./types";
 
 /**
@@ -110,7 +117,7 @@ export function needsMigration(data: unknown): boolean {
  */
 export interface MigrationResult {
   /** Migrated data - compatible with InvoiceFormState after merge with defaults */
-  data: InvoiceV2;
+  data: InvoiceV3;
   fromVersion: number;
   toVersion: number;
   migrationPath: string[];
@@ -138,10 +145,9 @@ export function migrate(data: unknown): MigrationResult {
         currentData = migrateV1ToV2(currentData as InvoiceV1);
         break;
 
-      // Future migrations:
-      // case 2:
-      //   currentData = migrateV2ToV3(currentData as InvoiceV2);
-      //   break;
+      case 2:
+        currentData = migrateV2ToV3(currentData as InvoiceV2);
+        break;
 
       default:
         throw new Error(`No migration path from v${currentVersion}`);
@@ -152,7 +158,7 @@ export function migrate(data: unknown): MigrationResult {
   }
 
   return {
-    data: currentData as InvoiceV2,
+    data: currentData as InvoiceV3,
     fromVersion: detection.version,
     toVersion: CURRENT_SCHEMA_VERSION,
     migrationPath,
@@ -202,6 +208,13 @@ export function getMigrationSummary(data: unknown): string[] {
       `  • Shipping address fields (disabled by default)`,
       `  • Registration ID fields (empty by default)`,
       `  • Country visibility toggles`,
+    );
+  }
+
+  if (detection.version <= 2) {
+    changes.push(
+      `Add new fields with defaults:`,
+      `  • Purchase order number (empty by default)`,
     );
   }
 

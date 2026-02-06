@@ -194,6 +194,7 @@ export const NUMBER_FORMATS: NumberFormatOption[] = [
 
 export interface InvoiceTranslations {
   invoiceNo: string;
+  purchaseOrderNumber: string;
   issued: string;
   dueDate: string;
   from: string;
@@ -217,6 +218,7 @@ export interface InvoiceTranslations {
 export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   "en-US": {
     invoiceNo: "Invoice No",
+    purchaseOrderNumber: "PO Number",
     issued: "Issued",
     dueDate: "Due date",
     from: "From",
@@ -236,6 +238,7 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   },
   "en-AU": {
     invoiceNo: "Invoice No",
+    purchaseOrderNumber: "PO Number",
     issued: "Issued",
     dueDate: "Due date",
     from: "From",
@@ -255,6 +258,7 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   },
   "fr-FR": {
     invoiceNo: "Facture N°",
+    purchaseOrderNumber: "N° Commande",
     issued: "Date",
     dueDate: "Échéance",
     from: "De",
@@ -274,6 +278,7 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   },
   "es-ES": {
     invoiceNo: "Factura N°",
+    purchaseOrderNumber: "N° Pedido",
     issued: "Fecha",
     dueDate: "Vencimiento",
     from: "De",
@@ -293,6 +298,7 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   },
   "en-GB": {
     invoiceNo: "Invoice No",
+    purchaseOrderNumber: "PO Number",
     issued: "Issued",
     dueDate: "Due date",
     from: "From",
@@ -312,6 +318,7 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   },
   "de-DE": {
     invoiceNo: "Rechnung Nr.",
+    purchaseOrderNumber: "Bestellnummer",
     issued: "Datum",
     dueDate: "Fällig am",
     from: "Von",
@@ -331,6 +338,7 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   },
   "de-CH": {
     invoiceNo: "Rechnung Nr.",
+    purchaseOrderNumber: "Bestellnummer",
     issued: "Datum",
     dueDate: "Fällig am",
     from: "Von",
@@ -350,6 +358,7 @@ export const translations: Record<InvoiceLocale, InvoiceTranslations> = {
   },
   "pt-PT": {
     invoiceNo: "Fatura N°",
+    purchaseOrderNumber: "N° Encomenda",
     issued: "Data",
     dueDate: "Vencimento",
     from: "De",

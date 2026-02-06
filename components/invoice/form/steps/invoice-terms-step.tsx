@@ -2,6 +2,7 @@
 
 import { InlineDatePicker } from "@/components/ui/date-picker";
 import { InlineField } from "@/components/ui/inline-field";
+import { getTranslations } from "@/lib/invoice/translations";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
 interface InvoiceTermsStepProps {
@@ -10,6 +11,8 @@ interface InvoiceTermsStepProps {
 }
 
 export function InvoiceTermsStep({ state, setField }: InvoiceTermsStepProps) {
+  const t = getTranslations(state.locale);
+
   return (
     <div>
       <h2 className="pb-3 text-2xl font-semibold">Invoice terms</h2>
@@ -19,6 +22,13 @@ export function InvoiceTermsStep({ state, setField }: InvoiceTermsStepProps) {
         value={state.invoiceNumber}
         onChange={(value) => setField("invoiceNumber", value)}
         placeholder="INV-001"
+      />
+
+      <InlineField
+        label={t.purchaseOrderNumber}
+        value={state.purchaseOrderNumber}
+        onChange={(value) => setField("purchaseOrderNumber", value)}
+        placeholder=""
       />
 
       <InlineDatePicker

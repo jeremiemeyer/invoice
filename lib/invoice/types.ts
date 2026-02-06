@@ -12,6 +12,7 @@ export {
   type InvoiceFormState,
   type InvoiceV1,
   type InvoiceV2,
+  type InvoiceV3,
   type LineItem,
   type PageMargin,
 } from "./schemas";

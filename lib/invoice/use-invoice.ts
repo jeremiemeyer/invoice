@@ -53,6 +53,8 @@ export function useInvoice() {
       // Migrate pageMargin: old boolean or missing value -> "none"
       const pageMargin =
         typeof prev.pageMargin === "string" ? prev.pageMargin : "none";
+      // Migrate purchaseOrderNumber: missing field -> ""
+      const purchaseOrderNumber = prev.purchaseOrderNumber ?? "";
       return {
         ...prev,
         invoiceNumber: prev.invoiceNumber || defaults.invoiceNumber,
@@ -60,6 +62,7 @@ export function useInvoice() {
         dueDate: prev.dueDate || defaults.dueDate,
         lineItems,
         pageMargin,
+        purchaseOrderNumber,
       };
     });
     // eslint-disable-next-line react-hooks/set-state-in-effect

@@ -309,6 +309,19 @@ export function CompactLayout({
           >
             {invoice.invoiceNumber || "-"}
           </Text>
+          {invoice.purchaseOrderNumber && (
+            <Text
+              style={{
+                ...mutedTextStyle,
+                textAlign: "right",
+                marginBottom: 4,
+              }}
+            >
+              {t.purchaseOrderNumber}
+              {invoice.locale === "fr-FR" ? " : " : ": "}
+              {invoice.purchaseOrderNumber}
+            </Text>
+          )}
           <View style={{ alignItems: "flex-end" }}>
             <View style={{ flexDirection: "row", alignItems: "baseline" }}>
               <Text style={{ ...labelStyle, marginRight: 4 }}>{t.issued}</Text>

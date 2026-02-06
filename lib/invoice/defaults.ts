@@ -126,6 +126,7 @@ export const defaultInvoiceState: InvoiceFormState = {
   shippingPhone: "",
 
   invoiceNumber: "",
+  purchaseOrderNumber: "",
   issueDate: "",
   dueDate: "",
 

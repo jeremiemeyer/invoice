@@ -14,28 +14,29 @@
 // Re-export all schema versions
 export type { InvoiceV1, LineItemV1 } from "./v1";
 export type { InvoiceV2, LineItemV2 } from "./v2";
+export type { InvoiceV3, LineItemV3 } from "./v3";
 
 // Current version
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3;
 
 // =============================================================================
 // InvoiceFormState - The "live" type used throughout the app
 // =============================================================================
 
-import type { InvoiceV2, LineItemV2 } from "./v2";
+import type { InvoiceV3, LineItemV3 } from "./v3";
 
 /**
  * LineItem type used in the app (= current schema version)
  */
-export type LineItem = LineItemV2;
+export type LineItem = LineItemV3;
 
 /**
  * InvoiceFormState - The main invoice type used throughout the app
  *
- * This is derived from the current schema version (V2).
+ * This is derived from the current schema version (V3).
  * schemaVersion is optional at runtime but required when saving.
  */
-export type InvoiceFormState = Omit<InvoiceV2, "schemaVersion"> & {
+export type InvoiceFormState = Omit<InvoiceV3, "schemaVersion"> & {
   schemaVersion?: number;
 };
 
