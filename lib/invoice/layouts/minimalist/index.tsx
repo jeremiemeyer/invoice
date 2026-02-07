@@ -340,7 +340,7 @@ export function MinimalistLayout({
                 {formatDate(invoice.dueDate, dateLocale)}
               </Text>
             </View>
-            <View style={{ flex: 2 }}>
+            <View style={{ flex: 1 }}>
               {invoice.purchaseOrderNumber ? (
                 <>
                   <Text style={{ ...styles.label, textAlign: "right" }}>
