@@ -1,12 +1,13 @@
 "use client";
 
 import {
-  ArrowLeft02Icon,
-  ArrowRight02Icon,
-  Download04Icon,
-  Loading03Icon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+  ArrowLeft,
+  ArrowRight,
+  CaretLeft,
+  CaretRight,
+  CircleNotch,
+  DownloadSimple,
+} from "@phosphor-icons/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { downloadInvoicePdf } from "@/lib/invoice/pdf/generate-pdf";
@@ -143,21 +144,12 @@ export function InvoiceWizard({
           >
             {isGenerating ? (
               <>
-                <HugeiconsIcon
-                  icon={Loading03Icon}
-                  size={16}
-                  strokeWidth={2}
-                  className="animate-spin"
-                />
+                <CircleNotch size={16} className="animate-spin" />
                 Generating...
               </>
             ) : (
               <>
-                <HugeiconsIcon
-                  icon={Download04Icon}
-                  size={16}
-                  strokeWidth={2}
-                />
+                <DownloadSimple size={16} />
                 Download PDF
               </>
             )}
@@ -204,14 +196,19 @@ export function InvoiceWizard({
                   type="button"
                   variant="ghost"
                   onClick={goToPreviousStep}
-                  className="h-auto flex-col items-start gap-0.5 px-4 py-2 w-full"
+                  className="group/prev h-auto flex-col items-start gap-0.5 px-4 py-2 w-full"
                 >
                   <span className="flex items-center text-xs gap-1.5 text-muted-foreground">
-                    <HugeiconsIcon
-                      icon={ArrowLeft02Icon}
-                      size={16}
-                      strokeWidth={2}
-                    />
+                    <span className="relative size-4">
+                      <CaretLeft
+                        size={16}
+                        className="absolute inset-0 transition-opacity duration-150 group-hover/prev:opacity-0"
+                      />
+                      <ArrowLeft
+                        size={16}
+                        className="absolute inset-0 opacity-0 transition-opacity duration-150 group-hover/prev:opacity-100"
+                      />
+                    </span>
                     Previous
                   </span>
                   <span className="text-sm font-medium">
@@ -227,15 +224,20 @@ export function InvoiceWizard({
                   type="button"
                   variant="ghost"
                   onClick={goToNextStep}
-                  className="h-auto flex-col items-end gap-0.5 px-4 py-2 w-full"
+                  className="group/next h-auto flex-col items-end gap-0.5 px-4 py-2 w-full"
                 >
                   <span className="flex items-center text-xs gap-1.5 text-muted-foreground">
                     Next
-                    <HugeiconsIcon
-                      icon={ArrowRight02Icon}
-                      size={16}
-                      strokeWidth={2}
-                    />
+                    <span className="relative size-4">
+                      <CaretRight
+                        size={16}
+                        className="absolute inset-0 transition-opacity duration-150 group-hover/next:opacity-0"
+                      />
+                      <ArrowRight
+                        size={16}
+                        className="absolute inset-0 opacity-0 transition-opacity duration-150 group-hover/next:opacity-100"
+                      />
+                    </span>
                   </span>
                   <span className="text-sm font-medium">{nextStepLabel}</span>
                 </Button>

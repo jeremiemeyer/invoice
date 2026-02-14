@@ -1,8 +1,9 @@
 "use client";
 
+import { ToggleableField } from "@/components/invoice/form/toggleable-field";
 import { InlineCountryField } from "@/components/ui/inline-country-field";
-import { InlineField } from "@/components/ui/inline-field";
 import { InlineImageField } from "@/components/ui/inline-image-field";
+import { InlineInput } from "@/components/ui/inline-input";
 import { getCountryConfig } from "@/lib/invoice/countries";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
@@ -19,7 +20,7 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
     <div>
       <h2 className="pb-3 text-2xl font-semibold">Your company</h2>
 
-      <InlineField
+      <InlineInput
         label="Company name"
         value={state.fromName}
         onChange={(value) => setField("fromName", value)}
@@ -27,22 +28,25 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         autoComplete="organization"
       />
 
-      <InlineField
+      <InlineInput
         label="Contact / Dept"
         value={state.fromSubtitle}
         onChange={(value) => setField("fromSubtitle", value)}
         placeholder="Contact name or department"
       />
 
-      <InlineImageField
-        label="Logo"
-        value={state.fromLogoUrl}
-        onChange={(value) => setField("fromLogoUrl", value)}
+      <ToggleableField
         isVisible={state.showFromLogo}
         onToggleVisibility={() => setField("showFromLogo", !state.showFromLogo)}
-      />
+      >
+        <InlineImageField
+          label="Logo"
+          value={state.fromLogoUrl}
+          onChange={(value) => setField("fromLogoUrl", value)}
+        />
+      </ToggleableField>
 
-      <InlineField
+      <InlineInput
         label="Email"
         type="email"
         value={state.fromEmail}
@@ -51,7 +55,7 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         autoComplete="email"
       />
 
-      <InlineField
+      <InlineInput
         label="Address"
         value={state.fromAddress}
         onChange={(value) => setField("fromAddress", value)}
@@ -59,7 +63,7 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         autoComplete="street-address"
       />
 
-      <InlineField
+      <InlineInput
         label="City"
         value={state.fromCity}
         onChange={(value) => setField("fromCity", value)}
@@ -67,17 +71,20 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         autoComplete="address-level2"
       />
 
-      <InlineCountryField
-        label="Country"
-        value={state.fromCountryCode}
-        onChange={(code) => setField("fromCountryCode", code)}
+      <ToggleableField
         isVisible={state.showFromCountry}
         onToggleVisibility={() =>
           setField("showFromCountry", !state.showFromCountry)
         }
-      />
+      >
+        <InlineCountryField
+          label="Country"
+          value={state.fromCountryCode}
+          onChange={(code) => setField("fromCountryCode", code)}
+        />
+      </ToggleableField>
 
-      <InlineField
+      <InlineInput
         label="Phone"
         type="tel"
         value={state.fromPhone}
@@ -86,7 +93,7 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         autoComplete="tel"
       />
 
-      <InlineField
+      <InlineInput
         label={countryConfig.taxId.label}
         value={state.fromTaxId}
         onChange={(value) => setField("fromTaxId", value)}
@@ -94,16 +101,19 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
       />
 
       {countryConfig.registrationId.available && (
-        <InlineField
-          label={countryConfig.registrationId.label}
-          value={state.fromRegistrationId}
-          onChange={(value) => setField("fromRegistrationId", value)}
-          placeholder={countryConfig.registrationId.placeholder}
+        <ToggleableField
           isVisible={state.showFromRegistrationId}
           onToggleVisibility={() =>
             setField("showFromRegistrationId", !state.showFromRegistrationId)
           }
-        />
+        >
+          <InlineInput
+            label={countryConfig.registrationId.label}
+            value={state.fromRegistrationId}
+            onChange={(value) => setField("fromRegistrationId", value)}
+            placeholder={countryConfig.registrationId.placeholder}
+          />
+        </ToggleableField>
       )}
     </div>
   );

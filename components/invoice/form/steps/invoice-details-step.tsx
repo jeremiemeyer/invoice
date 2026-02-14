@@ -1,7 +1,6 @@
 "use client";
 
-import { Add01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { CaretDown, Plus } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -9,7 +8,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { InlineField, LabelAboveTextarea } from "@/components/ui/inline-field";
+import { InlineInput, InlineTextarea } from "@/components/ui/inline-input";
 import { createLineItem } from "@/lib/invoice/defaults";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 import { LineItemRow } from "../line-item-row";
@@ -80,12 +79,7 @@ export function InvoiceDetailsStep({
           onClick={handleAddItem}
           className="flex h-12 w-full items-center border-b border-black/10 py-2 text-start text-sm font-medium text-blue-600 outline-none transition-all hover:border-black/20 focus:border-blue-600"
         >
-          <HugeiconsIcon
-            icon={Add01Icon}
-            size={12}
-            strokeWidth={2}
-            className="mr-2"
-          />
+          <Plus size={12} className="mr-2" />
           <span>Add item</span>
         </button>
       </div>
@@ -94,15 +88,13 @@ export function InvoiceDetailsStep({
       <Collapsible open={moreOptionsOpen} onOpenChange={setMoreOptionsOpen}>
         <CollapsibleTrigger className="group -mx-6 flex h-12 w-[calc(100%+3rem)] items-center justify-between px-6 text-sm font-medium text-black/50 transition-colors hover:bg-accent hover:text-black/80">
           <span>More options</span>
-          <HugeiconsIcon
-            icon={ArrowDown01Icon}
+          <CaretDown
             size={16}
-            strokeWidth={2}
             className="transition-transform duration-200 group-data-panel-open:rotate-180"
           />
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <InlineField
+          <InlineInput
             label="Discount"
             value={state.discount > 0 ? String(state.discount) : ""}
             onChange={(value) => {
@@ -113,7 +105,7 @@ export function InvoiceDetailsStep({
             placeholder="0.00"
           />
 
-          <InlineField
+          <InlineInput
             label="Taxes"
             value={state.taxRate > 0 ? String(state.taxRate) : ""}
             onChange={(value) => {
@@ -142,7 +134,7 @@ export function InvoiceDetailsStep({
 
       {/* Note */}
       <div className="mt-8">
-        <LabelAboveTextarea
+        <InlineTextarea
           label="Note"
           value={state.notes}
           onChange={(value) => setField("notes", value)}

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Download04Icon,
-  FolderOpenIcon,
-  Menu01Icon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { DownloadSimple, FolderOpen, List } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
 import {
   AlertDialog,
@@ -196,15 +191,15 @@ export function FileMenu({ state, onLoadState, isBlank }: FileMenuProps) {
           className="inline-flex items-center justify-center size-8 rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           aria-label="File menu"
         >
-          <HugeiconsIcon icon={Menu01Icon} size={18} strokeWidth={2} />
+          <List size={18} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-48">
           <DropdownMenuItem onClick={handleOpenClick}>
-            <HugeiconsIcon icon={FolderOpenIcon} size={16} strokeWidth={2} />
+            <FolderOpen size={16} />
             Open...
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleSave}>
-            <HugeiconsIcon icon={Download04Icon} size={16} strokeWidth={2} />
+            <DownloadSimple size={16} />
             Save to...
           </DropdownMenuItem>
         </DropdownMenuContent>

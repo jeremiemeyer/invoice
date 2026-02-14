@@ -1,7 +1,7 @@
 "use client";
 
 import { InlineDatePicker } from "@/components/ui/date-picker";
-import { InlineField } from "@/components/ui/inline-field";
+import { InlineInput } from "@/components/ui/inline-input";
 import { getTranslations } from "@/lib/invoice/translations";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
@@ -17,14 +17,14 @@ export function InvoiceTermsStep({ state, setField }: InvoiceTermsStepProps) {
     <div>
       <h2 className="pb-3 text-2xl font-semibold">Invoice terms</h2>
 
-      <InlineField
+      <InlineInput
         label="Invoice number"
         value={state.invoiceNumber}
         onChange={(value) => setField("invoiceNumber", value)}
         placeholder="INV-001"
       />
 
-      <InlineField
+      <InlineInput
         label={t.purchaseOrderNumber}
         value={state.purchaseOrderNumber}
         onChange={(value) => setField("purchaseOrderNumber", value)}

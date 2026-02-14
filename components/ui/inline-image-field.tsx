@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Add01Icon,
-  Cancel01Icon,
-  ViewIcon,
-  ViewOffSlashIcon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { Plus, X } from "@phosphor-icons/react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 
@@ -16,8 +10,8 @@ interface InlineImageFieldProps {
   onChange: (value: string) => void;
   className?: string;
   maxSize?: number;
-  isVisible?: boolean;
-  onToggleVisibility?: () => void;
+  required?: boolean;
+  invalid?: boolean;
 }
 
 async function resizeImage(
@@ -81,8 +75,6 @@ export function InlineImageField({
   onChange,
   className,
   maxSize = 200,
-  isVisible = true,
-  onToggleVisibility,
 }: InlineImageFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -113,29 +105,11 @@ export function InlineImageField({
   return (
     <div
       className={cn(
-        "group relative flex h-[54px] items-center justify-between border-b border-black/10 transition-colors",
+        "group/image-field relative flex h-[54px] items-center justify-between border-b border-black/10 transition-colors",
         "hover:border-black/20",
-        !isVisible && "opacity-40",
         className,
       )}
     >
-      {/* Visibility toggle - controls whether logo/avatar area shows in invoice */}
-      {onToggleVisibility && (
-        <button
-          type="button"
-          onClick={onToggleVisibility}
-          className="absolute -left-10 flex h-8 w-8 items-center justify-center rounded opacity-0 transition-all hover:bg-accent group-hover:opacity-100"
-          title={isVisible ? "Hide in invoice" : "Show in invoice"}
-        >
-          <HugeiconsIcon
-            icon={isVisible ? ViewIcon : ViewOffSlashIcon}
-            size={16}
-            strokeWidth={1.5}
-            className="text-muted-foreground"
-          />
-        </button>
-      )}
-
       <span className="mr-3 shrink-0 whitespace-nowrap text-sm font-medium">
         {label}
       </span>
@@ -161,9 +135,9 @@ export function InlineImageField({
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white/90 text-black/50 opacity-0 shadow-sm ring-1 ring-black/10 backdrop-blur-sm transition-all hover:bg-white hover:text-black/70 hover:ring-black/15 group-hover:opacity-100"
+            className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white/90 text-black/50 opacity-0 shadow-sm ring-1 ring-black/10 backdrop-blur-sm transition-all hover:bg-white hover:text-black/70 hover:ring-black/15 group-hover/image-field:opacity-100"
           >
-            <HugeiconsIcon icon={Cancel01Icon} size={12} strokeWidth={2.5} />
+            <X size={12} weight="bold" />
           </button>
         </div>
       ) : (
@@ -172,7 +146,7 @@ export function InlineImageField({
           onClick={handleClick}
           className="flex h-8 w-8 items-center justify-center rounded-md border border-dashed border-black/20 text-black/40 transition-colors hover:border-black/40 hover:text-black/60"
         >
-          <HugeiconsIcon icon={Add01Icon} size={16} strokeWidth={2} />
+          <Plus size={16} />
         </button>
       )}
     </div>

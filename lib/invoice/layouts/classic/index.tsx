@@ -235,30 +235,37 @@ export function ClassicLayout({
             </View>
           )}
           {/* Dates */}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 2,
-            }}
-          >
-            <Text style={mutedTextStyle}>
-              {t.issued}
-              {invoice.locale === "fr-FR" ? " : " : ": "}
-            </Text>
-            <Text style={mutedTextStyle}>
-              {formatDate(invoice.issueDate, dateLocale)}
-            </Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={mutedTextStyle}>
-              {docLabels.dateLabel}
-              {invoice.locale === "fr-FR" ? " : " : ": "}
-            </Text>
-            <Text style={mutedTextStyle}>
-              {formatDate(invoice.dueDate, dateLocale)}
-            </Text>
-          </View>
+          {[
+            {
+              label: t.issued,
+              value: formatDate(invoice.issueDate, dateLocale),
+            },
+            {
+              label: docLabels.dateLabel,
+              value: formatDate(invoice.dueDate, dateLocale),
+            },
+          ].map((row, i) => (
+            <View
+              key={i}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: i === 0 ? 2 : 0,
+              }}
+            >
+              <Text
+                style={{
+                  ...mutedTextStyle,
+                  width: 70,
+                  textAlign: "right",
+                }}
+              >
+                {row.label}
+                {invoice.locale === "fr-FR" ? " : " : ": "}
+              </Text>
+              <Text style={mutedTextStyle}>{row.value}</Text>
+            </View>
+          ))}
         </View>
       </Section>
 
@@ -613,7 +620,7 @@ export function ClassicLayout({
         {/* Line Items */}
         {invoice.lineItems.map((item, index) => {
           const itemTextStyle: Style = {
-            fontSize: 10,
+            fontSize: 9,
             fontWeight: 400,
             color: colors.primary,
             fontFamily: fonts.body,

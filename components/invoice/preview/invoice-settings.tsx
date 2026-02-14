@@ -1,7 +1,6 @@
 "use client";
 
-import { PencilEdit01Icon, Settings02Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { GearSix, PencilSimple } from "@phosphor-icons/react";
 import { CircleFlag } from "react-circle-flags";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -123,38 +122,6 @@ function SettingsContent({
           </DropdownMenu>
         </div>
 
-        {/* Page Margin */}
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs text-muted-foreground">Page Margin</Label>
-          <DropdownMenu>
-            <DropdownMenuTrigger className={dropdownTriggerClasses}>
-              <span>
-                {invoice.pageMargin === "none"
-                  ? "None"
-                  : invoice.pageMargin === "small"
-                    ? "Some"
-                    : "Plenty"}
-              </span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuRadioGroup
-                value={invoice.pageMargin || "none"}
-                onValueChange={(value) =>
-                  onPageMarginChange(value as PageMargin)
-                }
-              >
-                <DropdownMenuRadioItem value="none">None</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="small">
-                  Some
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="normal">
-                  Plenty
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
         {/* Style */}
         <div className="flex flex-col gap-1">
           <Label className="text-xs text-muted-foreground">Style</Label>
@@ -215,7 +182,7 @@ function SettingsContent({
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={1} />
+                  <PencilSimple weight="thin" />
                   <span className="text-muted-foreground">Custom</span>
                 </>
               )}
@@ -249,7 +216,7 @@ function SettingsContent({
                 ))}
                 {!currentPreset && (
                   <DropdownMenuRadioItem value="custom" disabled>
-                    <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} />
+                    <PencilSimple />
                     <span className="text-muted-foreground">Custom</span>
                   </DropdownMenuRadioItem>
                 )}
@@ -443,7 +410,7 @@ export function InvoiceSettings({
             className,
           )}
         >
-          <HugeiconsIcon icon={Settings02Icon} size={18} strokeWidth={2} />
+          <GearSix size={18} />
           <span className="sr-only">Settings</span>
         </PopoverTrigger>
         <PopoverContent align="end" className="w-auto p-4">

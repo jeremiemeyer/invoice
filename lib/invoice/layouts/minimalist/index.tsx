@@ -9,7 +9,8 @@ import {
 } from "@jeremiemeyer/react-pdf-html";
 import { Text as PdfText } from "@react-pdf/renderer";
 import type { Style } from "@react-pdf/types";
-import type { ReactNode } from "react";
+import { motion, useAnimate } from "motion/react";
+import { type ReactNode, useEffect } from "react";
 import { calculateLineItemTotal } from "../../calculate";
 import { getCountryConfig } from "../../countries";
 import { formatCurrency } from "../../format-currency";
@@ -111,13 +112,90 @@ function createStyles(style: InvoiceStyle) {
       fontFamily: fonts.heading,
     } as Style,
     itemText: {
-      fontSize: 10,
+      fontSize: 9,
       fontWeight: 400,
       color: colors.primary,
       fontFamily: fonts.body,
       lineHeight: 1.25,
     } as Style,
   };
+}
+
+const d = 2;
+const focusD = 14;
+
+const corners = [
+  {
+    className: "top-0 -left-px border-l-2 border-t-2",
+    x: -d,
+    y: -d,
+    fx: -focusD,
+    fy: -focusD,
+  },
+  {
+    className: "top-0 -right-px border-r-2 border-t-2",
+    x: d,
+    y: -d,
+    fx: focusD,
+    fy: -focusD,
+  },
+  {
+    className: "bottom-0 -left-px border-b-2 border-l-2",
+    x: -d,
+    y: d,
+    fx: -focusD,
+    fy: focusD,
+  },
+  {
+    className: "bottom-0 -right-px border-b-2 border-r-2",
+    x: d,
+    y: d,
+    fx: focusD,
+    fy: focusD,
+  },
+];
+
+function CornerBracket({ corner }: { corner: (typeof corners)[number] }) {
+  const [scope, animate] = useAnimate<HTMLDivElement>();
+
+  useEffect(() => {
+    async function sequence() {
+      await animate(
+        scope.current,
+        { x: 0, y: 0, opacity: 1 },
+        { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+      );
+      animate(
+        scope.current,
+        { x: [0, corner.x], y: [0, corner.y] },
+        {
+          duration: 1.6,
+          ease: [0.4, 0, 0.2, 1],
+          repeat: Infinity,
+          repeatType: "mirror",
+        },
+      );
+    }
+    sequence();
+  }, [animate, scope, corner]);
+
+  return (
+    <motion.div
+      ref={scope}
+      className={`absolute h-2 w-2 border-[#0094FF] ${corner.className}`}
+      initial={{ x: corner.fx, y: corner.fy, opacity: 0 }}
+    />
+  );
+}
+
+function CornerBrackets() {
+  return (
+    <div className="pointer-events-none absolute inset-2 z-20">
+      {corners.map((corner) => (
+        <CornerBracket key={corner.className} corner={corner} />
+      ))}
+    </div>
+  );
 }
 
 /**
@@ -156,14 +234,7 @@ function InteractiveOverlay({
         </div>
       </div>
 
-      {isActive && (
-        <div className="pointer-events-none absolute inset-2 z-20">
-          <div className="absolute -left-px top-0 h-2 w-2 animate-pulse border-l-2 border-t-2 border-[#0094FF]" />
-          <div className="absolute -right-px top-0 h-2 w-2 animate-pulse border-r-2 border-t-2 border-[#0094FF]" />
-          <div className="absolute -left-px bottom-0 h-2 w-2 animate-pulse border-b-2 border-l-2 border-[#0094FF]" />
-          <div className="absolute -right-px bottom-0 h-2 w-2 animate-pulse border-b-2 border-r-2 border-[#0094FF]" />
-        </div>
-      )}
+      {isActive && <CornerBrackets />}
     </>
   );
 }

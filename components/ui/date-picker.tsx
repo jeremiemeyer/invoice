@@ -1,7 +1,6 @@
 "use client";
 
-import { ArrowDown01Icon, Calendar03Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { CalendarBlank, CaretDown } from "@phosphor-icons/react";
 import { addDays, addMonths, format, parseISO } from "date-fns";
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
@@ -88,12 +87,7 @@ export function DatePicker({
             <span className="text-black/30">{placeholder}</span>
           )}
         </span>
-        <HugeiconsIcon
-          icon={Calendar03Icon}
-          size={16}
-          strokeWidth={2}
-          className="text-black/40"
-        />
+        <CalendarBlank size={16} className="text-black/40" />
       </PopoverTrigger>
       <PopoverContent align="start" className="w-auto p-0">
         {presets && presets.length > 0 && (
@@ -180,10 +174,8 @@ export function InlineDatePicker({
           ) : (
             <span className="text-black/30">{placeholder}</span>
           )}
-          <HugeiconsIcon
-            icon={ArrowDown01Icon}
+          <CaretDown
             size={16}
-            strokeWidth={2}
             className="text-black/40 group-data-popup-open:rotate-180 transition-transform duration-100"
           />
         </span>

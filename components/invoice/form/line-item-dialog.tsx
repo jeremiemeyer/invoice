@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { InlineField, LabelAboveTextarea } from "@/components/ui/inline-field";
+import { InlineInput, InlineTextarea } from "@/components/ui/inline-input";
 import type { LineItem } from "@/lib/invoice/types";
 
 interface LineItemDialogProps {
@@ -62,14 +62,14 @@ export function LineItemDialog({
         </DialogHeader>
 
         <div>
-          <InlineField
+          <InlineInput
             label="Name"
             value={name}
             onChange={setName}
             placeholder="Item name"
           />
 
-          <LabelAboveTextarea
+          <InlineTextarea
             label="Description"
             value={description}
             onChange={setDescription}
@@ -77,7 +77,7 @@ export function LineItemDialog({
             className="pt-4"
           />
 
-          <InlineField
+          <InlineInput
             label="Quantity"
             value={quantity}
             onChange={setQuantity}
@@ -85,7 +85,7 @@ export function LineItemDialog({
             type="text"
           />
 
-          <InlineField
+          <InlineInput
             label="Price"
             value={price}
             onChange={setPrice}

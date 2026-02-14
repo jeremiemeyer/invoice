@@ -1,7 +1,6 @@
 "use client";
 
-import { Loading03Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { CircleNotch } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import useLocalStorage from "@/hooks/use-local-storage";
 import { calculateTotal } from "@/lib/invoice/calculate";
@@ -9,6 +8,7 @@ import { demoInvoiceData } from "@/lib/invoice/demo-data";
 import { useInvoice } from "@/lib/invoice/use-invoice";
 import { InvoiceWizard } from "./form/invoice-wizard";
 import { MobileInvoiceLayout } from "./mobile-invoice-layout";
+import { GridBackground } from "./preview/grid-background";
 import { InvoiceSettings } from "./preview/invoice-settings";
 import { PdfPreview } from "./preview/pdf-preview";
 
@@ -68,12 +68,7 @@ export function InvoicePage() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-muted-foreground text-sm">
-          <HugeiconsIcon
-            icon={Loading03Icon}
-            size={32}
-            strokeWidth={2}
-            className="animate-spin"
-          />
+          <CircleNotch size={32} className="animate-spin" />
         </div>
       </div>
     );
@@ -103,6 +98,8 @@ export function InvoicePage() {
 
         {/* Preview Panel */}
         <main className="relative flex-1 overflow-hidden">
+          <GridBackground />
+
           {/* Fixed settings */}
           <InvoiceSettings
             invoice={state}

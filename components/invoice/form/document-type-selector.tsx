@@ -1,7 +1,6 @@
 "use client";
 
-import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { CaretDown } from "@phosphor-icons/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,12 +28,7 @@ export function DocumentTypeSelector({
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center gap-1.5 text-xl font-semibold hover:opacity-80 transition-opacity outline-none">
         <span>{DOCUMENT_TYPE_LABELS[documentType]}</span>
-        <HugeiconsIcon
-          icon={ArrowDown01Icon}
-          size={16}
-          strokeWidth={2}
-          className="text-muted-foreground"
-        />
+        <CaretDown size={16} className="text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-48">
         <DropdownMenuRadioGroup

@@ -1,9 +1,10 @@
 "use client";
 
+import { ToggleableField } from "@/components/invoice/form/toggleable-field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InlineCountryField } from "@/components/ui/inline-country-field";
-import { InlineField } from "@/components/ui/inline-field";
 import { InlineImageField } from "@/components/ui/inline-image-field";
+import { InlineInput } from "@/components/ui/inline-input";
 import { getCountryConfig } from "@/lib/invoice/countries";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
@@ -20,7 +21,7 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
     <div>
       <h2 className="pb-3 text-2xl font-semibold">Your client</h2>
 
-      <InlineField
+      <InlineInput
         label="Client name"
         value={state.customerName}
         onChange={(value) => setField("customerName", value)}
@@ -28,24 +29,27 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         autoComplete="section-customer organization"
       />
 
-      <InlineField
+      <InlineInput
         label="Contact / Dept"
         value={state.customerSubtitle}
         onChange={(value) => setField("customerSubtitle", value)}
         placeholder="Contact name or department"
       />
 
-      <InlineImageField
-        label="Logo"
-        value={state.customerLogoUrl}
-        onChange={(value) => setField("customerLogoUrl", value)}
+      <ToggleableField
         isVisible={state.showCustomerLogo}
         onToggleVisibility={() =>
           setField("showCustomerLogo", !state.showCustomerLogo)
         }
-      />
+      >
+        <InlineImageField
+          label="Logo"
+          value={state.customerLogoUrl}
+          onChange={(value) => setField("customerLogoUrl", value)}
+        />
+      </ToggleableField>
 
-      <InlineField
+      <InlineInput
         label="Email"
         type="email"
         value={state.customerEmail}
@@ -54,7 +58,7 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         autoComplete="section-customer email"
       />
 
-      <InlineField
+      <InlineInput
         label="Address"
         value={state.customerAddress}
         onChange={(value) => setField("customerAddress", value)}
@@ -62,7 +66,7 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         autoComplete="section-customer street-address"
       />
 
-      <InlineField
+      <InlineInput
         label="City"
         value={state.customerCity}
         onChange={(value) => setField("customerCity", value)}
@@ -70,17 +74,20 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         autoComplete="section-customer address-level2"
       />
 
-      <InlineCountryField
-        label="Country"
-        value={state.customerCountryCode}
-        onChange={(code) => setField("customerCountryCode", code)}
+      <ToggleableField
         isVisible={state.showCustomerCountry}
         onToggleVisibility={() =>
           setField("showCustomerCountry", !state.showCustomerCountry)
         }
-      />
+      >
+        <InlineCountryField
+          label="Country"
+          value={state.customerCountryCode}
+          onChange={(code) => setField("customerCountryCode", code)}
+        />
+      </ToggleableField>
 
-      <InlineField
+      <InlineInput
         label="Phone"
         type="tel"
         value={state.customerPhone}
@@ -89,7 +96,7 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         autoComplete="section-customer tel"
       />
 
-      <InlineField
+      <InlineInput
         label={countryConfig.taxId.label}
         value={state.customerTaxId}
         onChange={(value) => setField("customerTaxId", value)}
@@ -97,11 +104,7 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
       />
 
       {countryConfig.registrationId.available && (
-        <InlineField
-          label={countryConfig.registrationId.label}
-          value={state.customerRegistrationId}
-          onChange={(value) => setField("customerRegistrationId", value)}
-          placeholder={countryConfig.registrationId.placeholder}
+        <ToggleableField
           isVisible={state.showCustomerRegistrationId}
           onToggleVisibility={() =>
             setField(
@@ -109,7 +112,14 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
               !state.showCustomerRegistrationId,
             )
           }
-        />
+        >
+          <InlineInput
+            label={countryConfig.registrationId.label}
+            value={state.customerRegistrationId}
+            onChange={(value) => setField("customerRegistrationId", value)}
+            placeholder={countryConfig.registrationId.placeholder}
+          />
+        </ToggleableField>
       )}
 
       {/* Separate shipping address toggle */}
@@ -132,35 +142,35 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
             </p>
           </div>
 
-          <InlineField
+          <InlineInput
             label="Name"
             value={state.shippingName}
             onChange={(value) => setField("shippingName", value)}
             placeholder="Contact name"
           />
 
-          <InlineField
+          <InlineInput
             label="Company / Dept"
             value={state.shippingSubtitle}
             onChange={(value) => setField("shippingSubtitle", value)}
             placeholder="Company or department"
           />
 
-          <InlineField
+          <InlineInput
             label="Address"
             value={state.shippingAddress}
             onChange={(value) => setField("shippingAddress", value)}
             placeholder="456 Warehouse Ave"
           />
 
-          <InlineField
+          <InlineInput
             label="City"
             value={state.shippingCity}
             onChange={(value) => setField("shippingCity", value)}
             placeholder="Los Angeles, CA 90001"
           />
 
-          <InlineField
+          <InlineInput
             label="Phone"
             type="tel"
             value={state.shippingPhone}

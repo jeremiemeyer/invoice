@@ -139,7 +139,7 @@ export function CompactLayout({
   };
 
   const itemTextStyle: Style = {
-    fontSize: 9,
+    fontSize: 8,
     fontWeight: 400,
     color: colors.primary,
     fontFamily: fonts.body,

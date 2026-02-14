@@ -1,17 +1,15 @@
 import {
-  Alert02Icon,
-  CancelCircleIcon,
-  IdeaIcon,
-  InformationCircleIcon,
-  Tick02Icon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+  Check,
+  Info,
+  Lightbulb,
+  Warning,
+  XCircle,
+} from "@phosphor-icons/react";
 import type { HTMLAttributes, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-const iconClass =
-  "size-5 -me-0.5 fill-[var(--callout-color)] text-background stroke-2";
+const iconClass = "size-5 -me-0.5";
 
 export type CalloutType =
   | "info"
@@ -72,14 +70,31 @@ export function CalloutContainer({
   const calloutColor = colorVarMap[type] || "var(--color-custom-muted)";
 
   const defaultIcons = {
-    info: <HugeiconsIcon icon={InformationCircleIcon} className={iconClass} />,
-    warning: <HugeiconsIcon icon={Alert02Icon} className={iconClass} />,
-    error: <HugeiconsIcon icon={CancelCircleIcon} className={iconClass} />,
-    success: <HugeiconsIcon icon={Tick02Icon} className={iconClass} />,
+    info: (
+      <Info weight="fill" color="var(--callout-color)" className={iconClass} />
+    ),
+    warning: (
+      <Warning
+        weight="fill"
+        color="var(--callout-color)"
+        className={iconClass}
+      />
+    ),
+    error: (
+      <XCircle
+        weight="fill"
+        color="var(--callout-color)"
+        className={iconClass}
+      />
+    ),
+    success: (
+      <Check weight="fill" color="var(--callout-color)" className={iconClass} />
+    ),
     idea: (
-      <HugeiconsIcon
-        icon={IdeaIcon}
-        className={cn(iconClass, "stroke-custom-idea")}
+      <Lightbulb
+        weight="fill"
+        color="var(--callout-color)"
+        className={iconClass}
       />
     ),
   };

@@ -1,12 +1,12 @@
 "use client";
 
-import type { SerializedEditorState } from "lexical";
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  MoreVerticalIcon,
-  Trash2Icon,
-} from "lucide-react";
+  ArrowDown,
+  ArrowUp,
+  DotsThreeVertical,
+  Trash,
+} from "@phosphor-icons/react";
+import type { SerializedEditorState } from "lexical";
 import { useEffect, useMemo, useState } from "react";
 import {
   DropdownMenu,
@@ -145,15 +145,15 @@ export function LineItemRow({
               hover:bg-accent/80
             "
           >
-            <MoreVerticalIcon className="h-4 w-4" />
+            <DotsThreeVertical className="size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" sideOffset={4}>
             <DropdownMenuItem onClick={onMoveUp} disabled={!canMoveUp}>
-              <ArrowUpIcon className="mr-2 h-4 w-4" />
+              <ArrowUp className="mr-2 size-4" />
               Move up
             </DropdownMenuItem>
             <DropdownMenuItem onClick={onMoveDown} disabled={!canMoveDown}>
-              <ArrowDownIcon className="mr-2 h-4 w-4" />
+              <ArrowDown className="mr-2 size-4" />
               Move down
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -161,7 +161,7 @@ export function LineItemRow({
               disabled={!canRemove}
               variant="destructive"
             >
-              <Trash2Icon className="mr-2 h-4 w-4" />
+              <Trash className="mr-2 size-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import { LabelAboveTextarea } from "@/components/ui/inline-field";
+import { InlineTextarea } from "@/components/ui/inline-input";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
 
 interface PaymentMethodStepProps {
@@ -14,7 +14,7 @@ export function PaymentMethodStep({ state, setField }: PaymentMethodStepProps) {
       <h2 className="pb-3 text-2xl font-semibold">Payment details</h2>
 
       <div className="flex flex-col gap-4">
-        <LabelAboveTextarea
+        <InlineTextarea
           label="Payment details"
           value={state.paymentDetails}
           onChange={(value) => setField("paymentDetails", value)}
@@ -22,7 +22,7 @@ export function PaymentMethodStep({ state, setField }: PaymentMethodStepProps) {
             "Bank: Example Bank\nAccount Name: Your Company\nAccount Number: 1234567890"
           }
         />
-        <LabelAboveTextarea
+        <InlineTextarea
           label="Additional details"
           value={state.paymentDetailsSecondary}
           onChange={(value) => setField("paymentDetailsSecondary", value)}

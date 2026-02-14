@@ -31,6 +31,16 @@ import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPl
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import {
+  Code,
+  ListBullets,
+  ListNumbers,
+  Sparkle,
+  TextB,
+  TextItalic,
+  TextStrikethrough,
+  TextUnderline,
+} from "@phosphor-icons/react";
 import type { EditorThemeClasses } from "lexical";
 import {
   $getRoot,
@@ -42,16 +52,6 @@ import {
   PASTE_COMMAND,
   type SerializedEditorState,
 } from "lexical";
-import {
-  BoldIcon,
-  CodeIcon,
-  ItalicIcon,
-  ListIcon,
-  ListOrderedIcon,
-  SparklesIcon,
-  StrikethroughIcon,
-  UnderlineIcon,
-} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { nodes } from "@/components/blocks/editor-00/nodes";
 import { editorTheme } from "@/components/editor/themes/editor-theme";
@@ -132,7 +132,7 @@ function MarkdownPastePlugin() {
         className="flex flex-row w-auto items-center gap-2 border-none bg-zinc-900 px-3 py-1.5 text-zinc-50 shadow-2xl shadow-black/50 rounded-full ring-0"
       >
         <div className="flex items-center gap-2 px-1">
-          <SparklesIcon className="h-3.5 w-3.5 text-amber-400 fill-amber-400/20" />
+          <Sparkle className="size-3.5 text-amber-400" weight="fill" />
           <span className="text-xs font-medium tracking-tight">
             Markdown detected
           </span>
@@ -257,7 +257,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("bold")}
         className="h-7 w-7 p-0"
       >
-        <BoldIcon className="h-3.5 w-3.5" />
+        <TextB className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -265,7 +265,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("italic")}
         className="h-7 w-7 p-0"
       >
-        <ItalicIcon className="h-3.5 w-3.5" />
+        <TextItalic className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -273,7 +273,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("underline")}
         className="h-7 w-7 p-0"
       >
-        <UnderlineIcon className="h-3.5 w-3.5" />
+        <TextUnderline className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -281,7 +281,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("strikethrough")}
         className="h-7 w-7 p-0"
       >
-        <StrikethroughIcon className="h-3.5 w-3.5" />
+        <TextStrikethrough className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -289,7 +289,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("code")}
         className="h-7 w-7 p-0"
       >
-        <CodeIcon className="h-3.5 w-3.5" />
+        <Code className="size-3.5" />
       </Toggle>
 
       <Separator orientation="vertical" className="mx-1 my-auto h-4" />
@@ -300,7 +300,7 @@ function CompactToolbar() {
         onPressedChange={() => formatList("bullet")}
         className="h-7 w-7 p-0"
       >
-        <ListIcon className="h-3.5 w-3.5" />
+        <ListBullets className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -308,7 +308,7 @@ function CompactToolbar() {
         onPressedChange={() => formatList("number")}
         className="h-7 w-7 p-0"
       >
-        <ListOrderedIcon className="h-3.5 w-3.5" />
+        <ListNumbers className="size-3.5" />
       </Toggle>
     </div>
   );
