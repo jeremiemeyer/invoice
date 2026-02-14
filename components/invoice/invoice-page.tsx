@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleNotch } from "@phosphor-icons/react";
+import { CircleNotch as CircleNotchIcon } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import useLocalStorage from "@/hooks/use-local-storage";
 import { calculateTotal } from "@/lib/invoice/calculate";
@@ -68,7 +68,7 @@ export function InvoicePage() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-muted-foreground text-sm">
-          <CircleNotch size={32} className="animate-spin" />
+          <CircleNotchIcon size={32} className="animate-spin" />
         </div>
       </div>
     );
@@ -111,7 +111,7 @@ export function InvoicePage() {
         </main>
 
         {/* Settings Panel */}
-        <aside className="w-60 shrink-0 border-l bg-background overflow-y-auto p-4">
+        <aside className="w-64 shrink-0 border-l bg-background overflow-y-auto p-4">
           <InvoiceSettings
             invoice={state}
             onLayoutChange={(layoutId) => setField("layoutId", layoutId)}

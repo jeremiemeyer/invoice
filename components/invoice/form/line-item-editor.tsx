@@ -32,14 +32,14 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import {
-  Code,
-  ListBullets,
-  ListNumbers,
-  Sparkle,
-  TextB,
-  TextItalic,
-  TextStrikethrough,
-  TextUnderline,
+  Code as CodeIcon,
+  ListBullets as ListBulletsIcon,
+  ListNumbers as ListNumbersIcon,
+  Sparkle as SparkleIcon,
+  TextB as TextBIcon,
+  TextItalic as TextItalicIcon,
+  TextStrikethrough as TextStrikethroughIcon,
+  TextUnderline as TextUnderlineIcon,
 } from "@phosphor-icons/react";
 import type { EditorThemeClasses } from "lexical";
 import {
@@ -65,7 +65,7 @@ import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 
 // Transformers used in the editor
-const MARKDOWN_TRANSFORMERS = [
+export const MARKDOWN_TRANSFORMERS = [
   BOLD_STAR,
   BOLD_UNDERSCORE,
   ITALIC_STAR,
@@ -78,7 +78,7 @@ const MARKDOWN_TRANSFORMERS = [
   ORDERED_LIST,
 ];
 
-function MarkdownPastePlugin() {
+export function MarkdownPastePlugin() {
   const [editor] = useLexicalComposerContext();
   const [showToast, setShowToast] = useState(false);
 
@@ -132,7 +132,7 @@ function MarkdownPastePlugin() {
         className="flex flex-row w-auto items-center gap-2 border-none bg-zinc-900 px-3 py-1.5 text-zinc-50 shadow-2xl shadow-black/50 rounded-full ring-0"
       >
         <div className="flex items-center gap-2 px-1">
-          <Sparkle className="size-3.5 text-amber-400" weight="fill" />
+          <SparkleIcon className="size-3.5 text-amber-400" weight="fill" />
           <span className="text-xs font-medium tracking-tight">
             Markdown detected
           </span>
@@ -161,7 +161,7 @@ function MarkdownPastePlugin() {
 }
 
 // Custom theme for line item editor - no margin between paragraphs
-const lineItemTheme: EditorThemeClasses = {
+export const lineItemTheme: EditorThemeClasses = {
   ...editorTheme,
   // Override paragraph to remove large margin
   paragraph: "leading-6",
@@ -183,7 +183,7 @@ interface LineItemEditorProps {
 }
 
 // Keyboard shortcuts plugin
-function KeyboardShortcutsPlugin({
+export function KeyboardShortcutsPlugin({
   onSave,
   onCancel,
 }: {
@@ -228,7 +228,7 @@ function KeyboardShortcutsPlugin({
 }
 
 // Compact toolbar
-function CompactToolbar() {
+export function CompactToolbar() {
   const [editor] = useLexicalComposerContext();
 
   const formatText = useCallback(
@@ -257,7 +257,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("bold")}
         className="h-7 w-7 p-0"
       >
-        <TextB className="size-3.5" />
+        <TextBIcon className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -265,7 +265,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("italic")}
         className="h-7 w-7 p-0"
       >
-        <TextItalic className="size-3.5" />
+        <TextItalicIcon className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -273,7 +273,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("underline")}
         className="h-7 w-7 p-0"
       >
-        <TextUnderline className="size-3.5" />
+        <TextUnderlineIcon className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -281,7 +281,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("strikethrough")}
         className="h-7 w-7 p-0"
       >
-        <TextStrikethrough className="size-3.5" />
+        <TextStrikethroughIcon className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -289,7 +289,7 @@ function CompactToolbar() {
         onPressedChange={() => formatText("code")}
         className="h-7 w-7 p-0"
       >
-        <Code className="size-3.5" />
+        <CodeIcon className="size-3.5" />
       </Toggle>
 
       <Separator orientation="vertical" className="mx-1 my-auto h-4" />
@@ -300,7 +300,7 @@ function CompactToolbar() {
         onPressedChange={() => formatList("bullet")}
         className="h-7 w-7 p-0"
       >
-        <ListBullets className="size-3.5" />
+        <ListBulletsIcon className="size-3.5" />
       </Toggle>
       <Toggle
         size="sm"
@@ -308,7 +308,7 @@ function CompactToolbar() {
         onPressedChange={() => formatList("number")}
         className="h-7 w-7 p-0"
       >
-        <ListNumbers className="size-3.5" />
+        <ListNumbersIcon className="size-3.5" />
       </Toggle>
     </div>
   );

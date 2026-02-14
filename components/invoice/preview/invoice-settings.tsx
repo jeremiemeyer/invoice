@@ -1,6 +1,9 @@
 "use client";
 
-import { GearSix, PencilSimple } from "@phosphor-icons/react";
+import {
+  GearSix as GearSixIcon,
+  PencilSimple as PencilSimpleIcon,
+} from "@phosphor-icons/react";
 import { CircleFlag } from "react-circle-flags";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -182,7 +185,7 @@ function SettingsContent({
                 </>
               ) : (
                 <>
-                  <PencilSimple weight="thin" />
+                  <PencilSimpleIcon weight="thin" />
                   <span className="text-muted-foreground">Custom</span>
                 </>
               )}
@@ -216,7 +219,7 @@ function SettingsContent({
                 ))}
                 {!currentPreset && (
                   <DropdownMenuRadioItem value="custom" disabled>
-                    <PencilSimple />
+                    <PencilSimpleIcon />
                     <span className="text-muted-foreground">Custom</span>
                   </DropdownMenuRadioItem>
                 )}
@@ -410,7 +413,7 @@ export function InvoiceSettings({
             className,
           )}
         >
-          <GearSix size={18} />
+          <GearSixIcon size={18} />
           <span className="sr-only">Settings</span>
         </PopoverTrigger>
         <PopoverContent align="end" className="w-auto p-4">

@@ -1,7 +1,10 @@
 "use client";
 
 import { Combobox as ComboboxPrimitive } from "@base-ui/react/combobox";
-import { CaretUpDown, X } from "@phosphor-icons/react";
+import {
+  CaretUpDown as CaretUpDownIcon,
+  X as XIcon,
+} from "@phosphor-icons/react";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -105,7 +108,7 @@ function ComboboxInput({
             sizeValue === "sm" ? "end-0" : "end-0.5",
           )}
         >
-          <CaretUpDown />
+          <CaretUpDownIcon />
         </ComboboxTrigger>
       )}
       {showClear && (
@@ -115,7 +118,7 @@ function ComboboxInput({
             sizeValue === "sm" ? "end-0" : "end-0.5",
           )}
         >
-          <X />
+          <XIcon />
         </ComboboxClear>
       )}
     </div>
@@ -389,7 +392,7 @@ function ComboboxChipRemove(props: ComboboxPrimitive.ChipRemove.Props) {
       data-slot="combobox-chip-remove"
       {...props}
     >
-      <X />
+      <XIcon />
     </ComboboxPrimitive.ChipRemove>
   );
 }

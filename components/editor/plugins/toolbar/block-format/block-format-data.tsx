@@ -1,13 +1,13 @@
 import {
-  Code,
-  ListBullets,
-  ListChecks,
-  ListNumbers,
-  Quotes,
-  TextAa,
-  TextHOne,
-  TextHThree,
-  TextHTwo,
+  Code as CodeIcon,
+  ListBullets as ListBulletsIcon,
+  ListChecks as ListChecksIcon,
+  ListNumbers as ListNumbersIcon,
+  Quotes as QuotesIcon,
+  TextAa as TextAaIcon,
+  TextHOne as TextHOneIcon,
+  TextHThree as TextHThreeIcon,
+  TextHTwo as TextHTwoIcon,
 } from "@phosphor-icons/react";
 
 export const blockTypeToBlockName: Record<
@@ -16,38 +16,38 @@ export const blockTypeToBlockName: Record<
 > = {
   paragraph: {
     label: "Paragraph",
-    icon: <TextAa className="size-4" />,
+    icon: <TextAaIcon className="size-4" />,
   },
   h1: {
     label: "Heading 1",
-    icon: <TextHOne className="size-4" />,
+    icon: <TextHOneIcon className="size-4" />,
   },
   h2: {
     label: "Heading 2",
-    icon: <TextHTwo className="size-4" />,
+    icon: <TextHTwoIcon className="size-4" />,
   },
   h3: {
     label: "Heading 3",
-    icon: <TextHThree className="size-4" />,
+    icon: <TextHThreeIcon className="size-4" />,
   },
   number: {
     label: "Numbered List",
-    icon: <ListNumbers className="size-4" />,
+    icon: <ListNumbersIcon className="size-4" />,
   },
   bullet: {
     label: "Bulleted List",
-    icon: <ListBullets className="size-4" />,
+    icon: <ListBulletsIcon className="size-4" />,
   },
   check: {
     label: "Check List",
-    icon: <ListChecks className="size-4" />,
+    icon: <ListChecksIcon className="size-4" />,
   },
   code: {
     label: "Code Block",
-    icon: <Code className="size-4" />,
+    icon: <CodeIcon className="size-4" />,
   },
   quote: {
     label: "Quote",
-    icon: <Quotes className="size-4" />,
+    icon: <QuotesIcon className="size-4" />,
   },
 };

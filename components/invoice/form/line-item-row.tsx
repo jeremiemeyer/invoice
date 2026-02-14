@@ -2,11 +2,26 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import {
+  type InitialConfigType,
+  LexicalComposer,
+} from "@lexical/react/LexicalComposer";
+import { ContentEditable as LexicalContentEditable } from "@lexical/react/LexicalContentEditable";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import { DotsSixVertical, Trash } from "@phosphor-icons/react";
 import type { SerializedEditorState } from "lexical";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { nodes } from "@/components/blocks/editor-00/nodes";
 import {
   Popover,
+  PopoverBackdrop,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
@@ -18,7 +33,14 @@ import {
 } from "@/lib/invoice/lexical-to-html";
 import type { LineItem } from "@/lib/invoice/types";
 import { cn } from "@/lib/utils";
-import { createEmptyEditorState, LineItemEditor } from "./line-item-editor";
+import {
+  CompactToolbar,
+  createEmptyEditorState,
+  KeyboardShortcutsPlugin,
+  lineItemTheme,
+  MARKDOWN_TRANSFORMERS,
+  MarkdownPastePlugin,
+} from "./line-item-editor";
 
 interface LineItemRowProps {
   item: LineItem;
@@ -76,7 +98,7 @@ export function LineItemRow({
     };
   }, []);
 
-  // Name popover state - initialize with autoOpen
+  // Popover open state
   const [namePopoverOpen, setNamePopoverOpen] = useState(autoOpen);
 
   // Detect Mac vs Windows for keyboard shortcut display
@@ -90,16 +112,20 @@ export function LineItemRow({
     return parseLexicalState(item.name);
   }, [item.name]);
 
-  // Always keep editingState initialized - prevents flash when opening popover
+  // Always keep editingState initialized
   const [editingState, setEditingState] = useState<SerializedEditorState>(
     () => currentState || createEmptyEditorState(),
   );
+
+  // Ref for latest editing state (avoids stale closure on close)
+  const editingStateRef = useRef(editingState);
 
   // Sync editingState when currentState changes and popover is closed
   useEffect(() => {
     if (!namePopoverOpen) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setEditingState(currentState || createEmptyEditorState());
+      editingStateRef.current = currentState || createEmptyEditorState();
     }
   }, [currentState, namePopoverOpen]);
 
@@ -119,14 +145,41 @@ export function LineItemRow({
     }
   }, [autoOpen, namePopoverOpen]);
 
+  // Save handler
+  const handleSave = useCallback(() => {
+    const newValue = JSON.stringify(editingStateRef.current);
+    if (newValue !== item.name) {
+      onUpdate("name", newValue);
+    }
+    setNamePopoverOpen(false);
+    onPopoverOpenChange?.(false);
+  }, [item.name, onUpdate, onPopoverOpenChange]);
+
+  // Cancel handler - revert to original state
+  const handleCancel = useCallback(() => {
+    setEditingState(currentState || createEmptyEditorState());
+    editingStateRef.current = currentState || createEmptyEditorState();
+    setNamePopoverOpen(false);
+    onPopoverOpenChange?.(false);
+  }, [currentState, onPopoverOpenChange]);
+
+  // Close editor when entering reorder mode
+  useEffect(() => {
+    if (reorderMode && namePopoverOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      handleSave();
+    }
+  }, [reorderMode, namePopoverOpen, handleSave]);
+
   // Handle popover open/close
   const handlePopoverChange = (open: boolean) => {
     if (open) {
-      // Re-sync with current state when opening (in case it changed while closed)
+      // Re-sync with current state when opening
       setEditingState(currentState || createEmptyEditorState());
+      editingStateRef.current = currentState || createEmptyEditorState();
     } else {
       // Save on close
-      const newValue = JSON.stringify(editingState);
+      const newValue = JSON.stringify(editingStateRef.current);
       if (newValue !== item.name) {
         onUpdate("name", newValue);
       }
@@ -135,17 +188,15 @@ export function LineItemRow({
     onPopoverOpenChange?.(open);
   };
 
-  // Save handler
-  const handleSave = () => {
-    const newValue = JSON.stringify(editingState);
-    onUpdate("name", newValue);
-    setNamePopoverOpen(false);
-  };
-
-  // Cancel handler - revert to original state
-  const handleCancel = () => {
-    setEditingState(currentState || createEmptyEditorState());
-    setNamePopoverOpen(false);
+  // Lexical editor config (remounts each time popover opens)
+  const editorConfig: InitialConfigType = {
+    namespace: "LineItemEditor",
+    theme: lineItemTheme,
+    nodes,
+    onError: (error: Error) => {
+      console.error(error);
+    },
+    ...(editingState ? { editorState: JSON.stringify(editingState) } : {}),
   };
 
   return (
@@ -157,35 +208,37 @@ export function LineItemRow({
         isDragging && "z-10 rounded-md bg-background shadow-md",
       )}
     >
-      {/* Drag handle */}
+      {/* Drag handle (visual only — whole row is the drag target in reorder mode) */}
       {reorderMode && (
         <div className="-ml-10 shrink-0">
-          <button
-            type="button"
-            className="flex h-8 w-8 cursor-grab items-center justify-center rounded text-muted-foreground transition-colors hover:bg-accent/80 active:cursor-grabbing touch-none"
-            {...attributes}
-            {...listeners}
-          >
+          <div className="flex h-8 w-8 items-center justify-center text-muted-foreground">
             <DotsSixVertical className="size-4" />
-          </button>
+          </div>
         </div>
       )}
 
       {/* Row content */}
       <div
         className={cn(
-          "flex w-full items-center",
+          "flex min-w-0 flex-1 items-center",
           reorderMode && !isDragging && "animate-pulse-subtle",
+          reorderMode &&
+            "cursor-grab touch-none select-none active:cursor-grabbing",
         )}
+        {...(reorderMode ? { ...attributes, ...listeners } : {})}
       >
         {/* Name cell with Popover - click to edit */}
         <Popover open={namePopoverOpen} onOpenChange={handlePopoverChange}>
+          <PopoverBackdrop />
           <PopoverTrigger
+            disabled={reorderMode}
             className={cn(
-              "flex h-12 min-w-0 flex-1 cursor-pointer items-center overflow-hidden border-b pr-3 text-left transition-colors",
-              namePopoverOpen
-                ? "border-blue-600"
-                : "border-black/10 hover:border-black/20",
+              "flex h-12 min-w-0 flex-1 items-center overflow-hidden border-b pr-3 text-left transition-colors",
+              reorderMode
+                ? "pointer-events-none border-black/10"
+                : namePopoverOpen
+                  ? "cursor-pointer border-blue-600"
+                  : "cursor-pointer border-black/10 hover:border-black/20",
             )}
           >
             {!isEmpty ? (
@@ -206,50 +259,96 @@ export function LineItemRow({
           <PopoverContent
             side="bottom"
             align="start"
-            sideOffset={4}
-            className="w-96 p-0"
+            alignOffset={-12}
+            sideOffset={-87}
+            collisionAvoidance={{ side: "none", align: "none" }}
+            className="w-[calc(var(--anchor-width)+24px)] min-w-80 gap-0 overflow-hidden p-0 !duration-0"
           >
-            <LineItemEditor
-              value={editingState}
-              onChange={setEditingState}
-              onSave={handleSave}
-              onCancel={handleCancel}
-            />
-            <div className="flex w-full items-center justify-between border-t border-black/10 px-3 py-2">
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="-mx-1.5 -my-1 flex items-center rounded-md px-1.5 py-1 transition-colors hover:bg-black/5"
-              >
-                <kbd className="rounded bg-black/5 px-1.5 py-0.5 text-xs text-muted-foreground">
-                  Esc
-                </kbd>
-                <span className="ml-1.5 text-xs text-muted-foreground">
-                  Cancel
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={handleSave}
-                className="-mx-1.5 -my-1 flex items-center rounded-md px-1.5 py-1 transition-colors hover:bg-black/5"
-              >
-                <kbd className="flex items-center gap-1 rounded bg-black/5 px-1.5 py-0.5 text-xs text-muted-foreground">
-                  {isMac ? "⌘" : "Ctrl"}
-                  <span>↵</span>
-                </kbd>
-                <span className="ml-1.5 text-xs text-muted-foreground">
-                  Save
-                </span>
-              </button>
-            </div>
+            <LexicalComposer initialConfig={editorConfig}>
+              {/* Toolbar on top */}
+              <CompactToolbar />
+
+              {/* Editor content — py-3.5 aligns text with trigger's flex h-12 items-center */}
+              <div className="relative">
+                <RichTextPlugin
+                  contentEditable={
+                    <LexicalContentEditable
+                      className="min-h-[80px] px-3 py-3.5 text-sm outline-none"
+                      aria-placeholder="Item description..."
+                      placeholder={
+                        <div className="pointer-events-none absolute left-3 top-3.5 select-none text-sm leading-6 text-muted-foreground">
+                          Item description...
+                        </div>
+                      }
+                    />
+                  }
+                  ErrorBoundary={LexicalErrorBoundary}
+                />
+                <MarkdownPastePlugin />
+              </div>
+
+              {/* Save/Cancel footer */}
+              <div className="flex w-full items-center justify-between border-t border-black/10 px-3 py-2">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="-mx-1.5 -my-1 flex items-center rounded-md px-1.5 py-1 transition-colors hover:bg-black/5"
+                >
+                  <kbd className="rounded bg-black/5 px-1.5 py-0.5 text-xs text-muted-foreground">
+                    Esc
+                  </kbd>
+                  <span className="ml-1.5 text-xs text-muted-foreground">
+                    Cancel
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  className="-mx-1.5 -my-1 flex items-center rounded-md px-1.5 py-1 transition-colors hover:bg-black/5"
+                >
+                  <kbd className="flex items-center gap-1 rounded bg-black/5 px-1.5 py-0.5 text-xs text-muted-foreground">
+                    {isMac ? "⌘" : "Ctrl"}
+                    <span>↵</span>
+                  </kbd>
+                  <span className="ml-1.5 text-xs text-muted-foreground">
+                    Save
+                  </span>
+                </button>
+              </div>
+
+              <ListPlugin />
+              <HistoryPlugin />
+              <TabIndentationPlugin />
+              <AutoFocusPlugin />
+              <MarkdownShortcutPlugin transformers={MARKDOWN_TRANSFORMERS} />
+              <KeyboardShortcutsPlugin
+                onSave={handleSave}
+                onCancel={handleCancel}
+              />
+              <OnChangePlugin
+                ignoreSelectionChange={true}
+                onChange={(editorState) => {
+                  const json = editorState.toJSON();
+                  editingStateRef.current = json;
+                  setEditingState(json);
+                }}
+              />
+            </LexicalComposer>
           </PopoverContent>
         </Popover>
 
-        {/* Quantity - inline input with bottom border style */}
-        <label className="flex h-12 w-16 shrink-0 items-center justify-center border-b border-black/10 transition-colors focus-within:border-blue-600 [&:hover:not(:focus-within)]:border-black/20">
+        {/* Quantity */}
+        <label
+          className={cn(
+            "flex h-12 w-16 shrink-0 items-center justify-center border-b border-black/10 transition-colors focus-within:border-blue-600 [&:hover:not(:focus-within)]:border-black/20",
+            reorderMode && "pointer-events-none",
+          )}
+        >
           <input
             type="text"
             inputMode="numeric"
+            readOnly={reorderMode}
+            tabIndex={reorderMode ? -1 : undefined}
             value={item.quantity || ""}
             onChange={(e) => {
               const val = e.target.value;
@@ -257,16 +356,23 @@ export function LineItemRow({
                 onUpdate("quantity", val === "" ? 0 : Number(val));
               }
             }}
-            className="h-full w-full bg-transparent text-center text-sm caret-blue-600 outline-none placeholder:text-black/30"
+            className="h-full w-full bg-transparent text-center text-base md:text-sm caret-blue-600 outline-none placeholder:text-black/30"
             placeholder="Qty"
           />
         </label>
 
-        {/* Price - inline input with bottom border style */}
-        <label className="flex h-12 w-24 shrink-0 items-center justify-end border-b border-black/10 transition-colors focus-within:border-blue-600 [&:hover:not(:focus-within)]:border-black/20">
+        {/* Price */}
+        <label
+          className={cn(
+            "flex h-12 w-24 shrink-0 items-center justify-end border-b border-black/10 transition-colors focus-within:border-blue-600 [&:hover:not(:focus-within)]:border-black/20",
+            reorderMode && "pointer-events-none",
+          )}
+        >
           <input
             type="text"
             inputMode="decimal"
+            readOnly={reorderMode}
+            tabIndex={reorderMode ? -1 : undefined}
             value={item.price || ""}
             onChange={(e) => {
               const val = e.target.value;
@@ -274,13 +380,13 @@ export function LineItemRow({
                 onUpdate("price", val === "" ? 0 : Number(val));
               }
             }}
-            className="h-full w-full bg-transparent text-right text-sm caret-blue-600 outline-none placeholder:text-black/30"
+            className="h-full w-full bg-transparent text-right text-base md:text-sm caret-blue-600 outline-none placeholder:text-black/30"
             placeholder="Price"
           />
         </label>
       </div>
 
-      {/* Inline delete — wrapper stays in flow at icon size, button goes absolute when confirming */}
+      {/* Inline delete */}
       {reorderMode && (
         <div className="relative shrink-0 w-8">
           <button

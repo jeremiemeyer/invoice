@@ -19,11 +19,12 @@ function PopoverContent({
   alignOffset = 0,
   side = "bottom",
   sideOffset = 4,
+  collisionAvoidance,
   ...props
 }: PopoverPrimitive.Popup.Props &
   Pick<
     PopoverPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset"
+    "align" | "alignOffset" | "side" | "sideOffset" | "collisionAvoidance"
   >) {
   // Determine transform origin based on side and alignment
   const originMap: Record<string, Record<string, string>> = {
@@ -59,6 +60,7 @@ function PopoverContent({
         alignOffset={alignOffset}
         side={side}
         sideOffset={sideOffset}
+        collisionAvoidance={collisionAvoidance}
         className="isolate z-50"
       >
         <PopoverPrimitive.Popup
@@ -72,6 +74,22 @@ function PopoverContent({
         />
       </PopoverPrimitive.Positioner>
     </PopoverPrimitive.Portal>
+  );
+}
+
+function PopoverBackdrop({
+  className,
+  ...props
+}: PopoverPrimitive.Backdrop.Props) {
+  return (
+    <PopoverPrimitive.Backdrop
+      data-slot="popover-backdrop"
+      className={cn(
+        "fixed inset-0 z-40 bg-black/15 data-open:animate-in data-closed:animate-out data-open:fade-in-0 data-closed:fade-out-0 duration-150",
+        className,
+      )}
+      {...props}
+    />
   );
 }
 
@@ -110,6 +128,7 @@ function PopoverDescription({
 
 export {
   Popover,
+  PopoverBackdrop,
   PopoverContent,
   PopoverDescription,
   PopoverHeader,

@@ -1,6 +1,10 @@
 "use client";
 
-import { DownloadSimple, FolderOpen, List } from "@phosphor-icons/react";
+import {
+  DownloadSimple as DownloadSimpleIcon,
+  FolderOpen as FolderOpenIcon,
+  List as ListIcon,
+} from "@phosphor-icons/react";
 import { useRef, useState } from "react";
 import {
   AlertDialog,
@@ -191,15 +195,15 @@ export function FileMenu({ state, onLoadState, isBlank }: FileMenuProps) {
           className="inline-flex items-center justify-center size-8 rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           aria-label="File menu"
         >
-          <List size={18} />
+          <ListIcon size={18} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-48">
           <DropdownMenuItem onClick={handleOpenClick}>
-            <FolderOpen size={16} />
+            <FolderOpenIcon size={16} />
             Open...
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleSave}>
-            <DownloadSimple size={16} />
+            <DownloadSimpleIcon size={16} />
             Save to...
           </DropdownMenuItem>
         </DropdownMenuContent>

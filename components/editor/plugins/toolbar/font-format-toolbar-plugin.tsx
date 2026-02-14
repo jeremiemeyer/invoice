@@ -2,10 +2,10 @@
 
 import { $isTableSelection } from "@lexical/table";
 import {
-  TextB,
-  TextItalic,
-  TextStrikethrough,
-  TextUnderline,
+  TextB as TextBIcon,
+  TextItalic as TextItalicIcon,
+  TextStrikethrough as TextStrikethroughIcon,
+  TextUnderline as TextUnderlineIcon,
 } from "@phosphor-icons/react";
 import {
   $isRangeSelection,
@@ -20,10 +20,14 @@ import { useUpdateToolbarHandler } from "@/components/editor/editor-hooks/use-up
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const FORMATS = [
-  { format: "bold", icon: TextB, label: "Bold" },
-  { format: "italic", icon: TextItalic, label: "Italic" },
-  { format: "underline", icon: TextUnderline, label: "Underline" },
-  { format: "strikethrough", icon: TextStrikethrough, label: "Strikethrough" },
+  { format: "bold", icon: TextBIcon, label: "Bold" },
+  { format: "italic", icon: TextItalicIcon, label: "Italic" },
+  { format: "underline", icon: TextUnderlineIcon, label: "Underline" },
+  {
+    format: "strikethrough",
+    icon: TextStrikethroughIcon,
+    label: "Strikethrough",
+  },
 ] as const;
 
 export function FontFormatToolbarPlugin() {

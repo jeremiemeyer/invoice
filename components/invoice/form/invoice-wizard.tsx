@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  ArrowLeft,
-  ArrowRight,
-  CaretLeft,
-  CaretRight,
-  CircleNotch,
-  DownloadSimple,
+  ArrowLeft as ArrowLeftIcon,
+  ArrowRight as ArrowRightIcon,
+  CaretLeft as CaretLeftIcon,
+  CaretRight as CaretRightIcon,
+  CircleNotch as CircleNotchIcon,
+  DownloadSimple as DownloadSimpleIcon,
 } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -155,12 +155,12 @@ export function InvoiceWizard({
           >
             {isGenerating ? (
               <>
-                <CircleNotch size={16} className="animate-spin" />
+                <CircleNotchIcon size={16} className="animate-spin" />
                 Generating...
               </>
             ) : (
               <>
-                <DownloadSimple size={16} />
+                <DownloadSimpleIcon size={16} />
                 Download PDF
               </>
             )}
@@ -256,11 +256,11 @@ export function InvoiceWizard({
                 >
                   <span className="flex items-center text-xs gap-1.5 text-muted-foreground">
                     <span className="relative size-4">
-                      <CaretLeft
+                      <CaretLeftIcon
                         size={16}
                         className="absolute inset-0 transition-opacity duration-150 group-hover/prev:opacity-0"
                       />
-                      <ArrowLeft
+                      <ArrowLeftIcon
                         size={16}
                         className="absolute inset-0 opacity-0 transition-opacity duration-150 group-hover/prev:opacity-100"
                       />
@@ -285,11 +285,11 @@ export function InvoiceWizard({
                   <span className="flex items-center text-xs gap-1.5 text-muted-foreground">
                     Next
                     <span className="relative size-4">
-                      <CaretRight
+                      <CaretRightIcon
                         size={16}
                         className="absolute inset-0 transition-opacity duration-150 group-hover/next:opacity-0"
                       />
-                      <ArrowRight
+                      <ArrowRightIcon
                         size={16}
                         className="absolute inset-0 opacity-0 transition-opacity duration-150 group-hover/next:opacity-100"
                       />

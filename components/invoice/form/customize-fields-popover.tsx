@@ -1,6 +1,6 @@
 "use client";
 
-import { Faders } from "@phosphor-icons/react";
+import { Faders as FadersIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -28,7 +28,7 @@ export function CustomizeFieldsPopover({
   return (
     <Popover>
       <PopoverTrigger render={<Button variant="outline" size="sm" />}>
-        <Faders size={14} />
+        <FadersIcon size={14} />
         Customize
       </PopoverTrigger>
       <PopoverContent align="end" className="w-56 gap-0 p-1">

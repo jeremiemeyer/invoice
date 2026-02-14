@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, X } from "@phosphor-icons/react";
+import { Plus as PlusIcon, X as XIcon } from "@phosphor-icons/react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 
@@ -127,7 +127,7 @@ export function InlineImageField({
           <button
             type="button"
             onClick={handleClick}
-            className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-md border border-black/10 transition-all hover:border-black/20"
+            className="flex size-7 items-center justify-center overflow-hidden rounded-md border border-black/10 transition-all hover:border-black/20"
           >
             {/* biome-ignore lint: Using native img for data URLs */}
             <img src={value} alt="" className="h-full w-full object-cover" />
@@ -137,16 +137,16 @@ export function InlineImageField({
             onClick={handleRemove}
             className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white/90 text-black/50 opacity-0 shadow-sm ring-1 ring-black/10 backdrop-blur-sm transition-all hover:bg-white hover:text-black/70 hover:ring-black/15 group-hover/image-field:opacity-100"
           >
-            <X size={12} weight="bold" />
+            <XIcon size={12} weight="bold" />
           </button>
         </div>
       ) : (
         <button
           type="button"
           onClick={handleClick}
-          className="flex h-8 w-8 items-center justify-center rounded-md border border-dashed border-black/20 text-black/40 transition-colors hover:border-black/40 hover:text-black/60"
+          className="flex size-7 items-center justify-center rounded-md border border-dashed border-black/20 text-black/40 transition-colors hover:border-black/40 hover:text-black/60"
         >
-          <Plus size={16} />
+          <PlusIcon size={12} />
         </button>
       )}
     </div>

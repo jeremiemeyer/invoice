@@ -68,13 +68,24 @@ export function MobileInvoiceLayout({
 
   useEffect(() => {
     const calculateScale = () => {
-      const padding = 32;
-      setPreviewScale((window.innerWidth - padding) / previewWidth);
+      const hPadding = 32;
+      const scaleX = (window.innerWidth - hPadding) / previewWidth;
+
+      // Available height: viewport minus drawer (100px) minus top safe area (~16px) minus some breathing room
+      const drawerHeight = 100;
+      const topInset = 16;
+      const vPadding = 16;
+      const availableHeight =
+        window.innerHeight - drawerHeight - topInset - vPadding;
+      const scaleY = availableHeight / previewHeight;
+
+       
+      setPreviewScale(Math.min(scaleX, scaleY));
     };
     calculateScale();
     window.addEventListener("resize", calculateScale);
     return () => window.removeEventListener("resize", calculateScale);
-  }, [previewWidth]);
+  }, [previewWidth, previewHeight]);
 
   return (
     <div className="h-dvh overflow-hidden">

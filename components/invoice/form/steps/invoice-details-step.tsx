@@ -14,7 +14,11 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CaretDown, DotsSixVertical, Plus } from "@phosphor-icons/react";
+import {
+  CaretDown as CaretDownIcon,
+  DotsSixVertical as DotsSixVerticalIcon,
+  Plus as PlusIcon,
+} from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -112,7 +116,7 @@ export function InvoiceDetailsStep({
                 "border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-50 hover:text-blue-600",
             )}
           >
-            <DotsSixVertical size={12} />
+            <DotsSixVerticalIcon size={12} />
             {reorderMode ? "Done" : "Reorder"}
           </Button>
         </div>
@@ -153,7 +157,7 @@ export function InvoiceDetailsStep({
               onClick={handleAddItem}
               className="flex h-12 w-full items-center border-b border-black/10 py-2 text-start text-sm font-medium text-blue-600 outline-none transition-all hover:border-black/20 focus:border-blue-600"
             >
-              <Plus size={12} className="mr-2" />
+              <PlusIcon size={12} className="mr-2" />
               <span>Add item</span>
             </button>
           </SortableContext>
@@ -164,7 +168,7 @@ export function InvoiceDetailsStep({
       <Collapsible open={moreOptionsOpen} onOpenChange={setMoreOptionsOpen}>
         <CollapsibleTrigger className="group -mx-4 invoice:-mx-6 flex h-12 w-[calc(100%+2rem)] invoice:w-[calc(100%+3rem)] items-center justify-between px-4 invoice:px-6 text-sm font-medium text-black/50 transition-colors hover:bg-accent hover:text-black/80">
           <span>More options</span>
-          <CaretDown
+          <CaretDownIcon
             size={16}
             className="transition-transform duration-200 group-data-panel-open:rotate-180"
           />

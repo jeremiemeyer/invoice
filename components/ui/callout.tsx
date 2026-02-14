@@ -1,9 +1,9 @@
 import {
-  Check,
-  Info,
-  Lightbulb,
-  Warning,
-  XCircle,
+  Check as CheckIcon,
+  Info as InfoIcon,
+  Lightbulb as LightbulbIcon,
+  Warning as WarningIcon,
+  XCircle as XCircleIcon,
 } from "@phosphor-icons/react";
 import type { HTMLAttributes, ReactNode } from "react";
 
@@ -71,27 +71,35 @@ export function CalloutContainer({
 
   const defaultIcons = {
     info: (
-      <Info weight="fill" color="var(--callout-color)" className={iconClass} />
+      <InfoIcon
+        weight="fill"
+        color="var(--callout-color)"
+        className={iconClass}
+      />
     ),
     warning: (
-      <Warning
+      <WarningIcon
         weight="fill"
         color="var(--callout-color)"
         className={iconClass}
       />
     ),
     error: (
-      <XCircle
+      <XCircleIcon
         weight="fill"
         color="var(--callout-color)"
         className={iconClass}
       />
     ),
     success: (
-      <Check weight="fill" color="var(--callout-color)" className={iconClass} />
+      <CheckIcon
+        weight="fill"
+        color="var(--callout-color)"
+        className={iconClass}
+      />
     ),
     idea: (
-      <Lightbulb
+      <LightbulbIcon
         weight="fill"
         color="var(--callout-color)"
         className={iconClass}
