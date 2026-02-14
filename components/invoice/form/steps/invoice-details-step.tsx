@@ -131,7 +131,7 @@ export function InvoiceDetailsStep({
             items={state.lineItems.map((i) => i.id)}
             strategy={verticalListSortingStrategy}
           >
-            <div className={cn(reorderMode && "pl-10")}>
+            <div>
               <div className="space-y-0">
                 {state.lineItems.map((item) => (
                   <LineItemRow

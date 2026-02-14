@@ -204,16 +204,18 @@ export function LineItemRow({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group relative flex w-full items-center gap-2",
+        "group relative flex w-full items-center",
         isDragging && "z-10 rounded-md bg-background shadow-md",
       )}
     >
-      {/* Drag handle (visual only — whole row is the drag target in reorder mode) */}
+      {/* Drag handle — flush left to align with PlusIcon in "Add item" below */}
       {reorderMode && (
-        <div className="-ml-10 shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center text-muted-foreground">
-            <DotsSixVertical className="size-4" />
-          </div>
+        <div
+          className="flex h-12 shrink-0 cursor-grab items-center mr-2 text-muted-foreground touch-none active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <DotsSixVertical size={16} />
         </div>
       )}
 
