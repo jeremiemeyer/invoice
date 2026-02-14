@@ -1,6 +1,9 @@
 "use client";
 
-import { Document, usePDFComponentsAreHTML } from "@invoice-jm/react-pdf-html";
+import {
+  Document,
+  usePDFComponentsAreHTML,
+} from "@jeremiemeyer/react-pdf-html";
 import { useEffect } from "react";
 import { getLayout } from "../layouts";
 import { getStyle } from "../styles";

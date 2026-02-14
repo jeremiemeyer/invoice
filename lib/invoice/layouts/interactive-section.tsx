@@ -4,7 +4,7 @@
  * Only renders interactive overlays in HTML preview mode.
  */
 
-import { getIsHtmlMode, View } from "@invoice-jm/react-pdf-html";
+import { getIsHtmlMode, View } from "@jeremiemeyer/react-pdf-html";
 import type { Style } from "@react-pdf/types";
 import type { ReactNode } from "react";
 

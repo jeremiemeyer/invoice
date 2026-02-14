@@ -1,6 +1,6 @@
 "use client";
 
-import { setIsHtmlMode } from "@invoice-jm/react-pdf-html";
+import { setIsHtmlMode } from "@jeremiemeyer/react-pdf-html";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   InvoicePdfDocument,

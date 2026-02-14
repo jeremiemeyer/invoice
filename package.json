@@ -11,7 +11,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "!(packages/**/dist/**)*.{js,jsx,ts,tsx}": [
+    "*.{js,jsx,ts,tsx}": [
       "biome check --write",
       "eslint --fix"
     ],
@@ -31,7 +31,7 @@
     "@lexical/selection": "^0.39.0",
     "@lexical/table": "^0.39.0",
     "@lexical/utils": "^0.39.0",
-    "@invoice-jm/react-pdf-html": "workspace:*",
+    "@jeremiemeyer/react-pdf-html": "github:jeremiemeyer/react-pdf-html",
     "@react-pdf/renderer": "^4.3.2",
     "@react-pdf/types": "^2.7.0",
     "class-variance-authority": "^0.7.1",

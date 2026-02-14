@@ -5,7 +5,7 @@
  * - When isHtml=false: renders as PDF (for download)
  */
 
-import { Document } from "@invoice-jm/react-pdf-html";
+import { Document } from "@jeremiemeyer/react-pdf-html";
 import { getLayout } from "../layouts";
 import { getStyle } from "../styles";
 import {

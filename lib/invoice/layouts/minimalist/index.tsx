@@ -6,7 +6,7 @@ import {
   Page,
   Text,
   View,
-} from "@invoice-jm/react-pdf-html";
+} from "@jeremiemeyer/react-pdf-html";
 import { Text as PdfText } from "@react-pdf/renderer";
 import type { Style } from "@react-pdf/types";
 import type { ReactNode } from "react";

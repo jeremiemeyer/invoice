@@ -1,4 +1,4 @@
-import { setIsHtmlMode } from "@invoice-jm/react-pdf-html";
+import { setIsHtmlMode } from "@jeremiemeyer/react-pdf-html";
 import { pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import type { InvoiceFormState, InvoiceTotals } from "../types";
