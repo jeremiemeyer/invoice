@@ -11,7 +11,9 @@ interface PaymentMethodStepProps {
 export function PaymentMethodStep({ state, setField }: PaymentMethodStepProps) {
   return (
     <div>
-      <h2 className="pb-3 text-2xl font-semibold">Payment details</h2>
+      <h2 className="pb-3 text-lg invoice:text-2xl font-semibold">
+        Payment details
+      </h2>
 
       <div className="flex flex-col gap-4">
         <InlineTextarea

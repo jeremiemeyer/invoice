@@ -16,8 +16,8 @@ interface DocumentTypeSelectorProps {
 }
 
 const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
-  invoice: "New Invoice",
-  quote: "New Quote",
+  invoice: "Invoice",
+  quote: "Quote",
 };
 
 export function DocumentTypeSelector({
@@ -26,7 +26,7 @@ export function DocumentTypeSelector({
 }: DocumentTypeSelectorProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-1.5 text-xl font-semibold hover:opacity-80 transition-opacity outline-none">
+      <DropdownMenuTrigger className="flex items-center gap-1.5 text-lg invoice:text-xl font-semibold hover:opacity-80 transition-opacity outline-none">
         <span>{DOCUMENT_TYPE_LABELS[documentType]}</span>
         <CaretDown size={16} className="text-muted-foreground" />
       </DropdownMenuTrigger>

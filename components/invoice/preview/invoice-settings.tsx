@@ -94,7 +94,7 @@ function SettingsContent({
       {/* ═══════════════════════════════════════════════════════════════════ */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2">
-          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+          <Label className="text-2xs uppercase tracking-wide text-muted-foreground">
             Appearance
           </Label>
           <Separator />
@@ -158,7 +158,7 @@ function SettingsContent({
       {/* ═══════════════════════════════════════════════════════════════════ */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2">
-          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+          <Label className="text-2xs uppercase tracking-wide text-muted-foreground">
             Region Formatting
           </Label>
           <Separator />

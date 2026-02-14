@@ -81,7 +81,7 @@ export function InlineCountryField({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className={cn(
-              "h-full w-full bg-transparent text-right text-sm caret-blue-600 outline-none placeholder:text-muted-foreground",
+              "h-full w-full bg-transparent text-right text-base md:text-sm caret-blue-600 outline-none placeholder:text-muted-foreground",
               !isFocused && "text-transparent",
             )}
           />

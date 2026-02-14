@@ -20,7 +20,7 @@ export function ToggleableField({
   return (
     <div
       className={cn(
-        "group/toggleable relative",
+        "group/toggleable relative flex items-center gap-2",
         !isVisible && "opacity-40",
         className,
       )}
@@ -30,7 +30,7 @@ export function ToggleableField({
         onClick={onToggleVisibility}
         aria-pressed={!isVisible}
         aria-label={isVisible ? "Hide in invoice" : "Show in invoice"}
-        className="absolute -left-10 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded opacity-0 transition-all hover:bg-accent group-hover/toggleable:opacity-100"
+        className="shrink-0 -ml-10 flex h-8 w-8 items-center justify-center rounded transition-all hover:bg-accent"
       >
         {isVisible ? (
           <Eye size={16} weight="light" className="text-muted-foreground" />
@@ -42,7 +42,7 @@ export function ToggleableField({
           />
         )}
       </button>
-      {children}
+      <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
 }

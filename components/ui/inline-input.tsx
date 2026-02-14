@@ -50,7 +50,7 @@ export function InlineInput({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className="h-full w-full bg-transparent text-right text-sm caret-blue-600 outline-none placeholder:text-black/30"
+            className="h-full w-full bg-transparent text-right text-base md:text-sm caret-blue-600 outline-none placeholder:text-black/30"
             autoComplete={autoComplete}
             aria-required={required}
             aria-invalid={invalid}
@@ -116,7 +116,7 @@ export function InlineTextarea({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={1}
-          className="w-full resize-none bg-transparent text-sm caret-blue-600 outline-none placeholder:text-black/30 whitespace-pre-wrap"
+          className="w-full resize-none bg-transparent text-base md:text-sm caret-blue-600 outline-none placeholder:text-black/30 whitespace-pre-wrap"
           aria-required={required}
           aria-invalid={invalid}
         />

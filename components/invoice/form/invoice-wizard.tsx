@@ -10,6 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { downloadInvoicePdf } from "@/lib/invoice/pdf/generate-pdf";
 import type { InvoiceFormState } from "@/lib/invoice/types";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
@@ -41,6 +42,7 @@ interface InvoiceWizardProps {
   isBlank: boolean;
   loadState: (state: InvoiceFormState) => void;
   compact?: boolean;
+  fixedFooter?: boolean;
   previewMode?: boolean;
   onExitPreviewMode?: () => void;
 }
@@ -57,6 +59,7 @@ export function InvoiceWizard({
   isBlank,
   loadState,
   compact = false,
+  fixedFooter = compact,
   previewMode = false,
   onExitPreviewMode,
 }: InvoiceWizardProps) {
@@ -128,7 +131,7 @@ export function InvoiceWizard({
       )}
 
       {/* Header */}
-      <header className={`border-b px-6 py-4 ${compact ? "" : "pl-20"}`}>
+      <header className="border-b px-4 invoice:px-6 py-4">
         <div className={`flex items-center justify-between ${contentWrapper}`}>
           <div className="flex items-center gap-2">
             <FileMenu state={state} onLoadState={loadState} isBlank={isBlank} />
@@ -159,34 +162,40 @@ export function InvoiceWizard({
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Step content */}
-        <div className={`flex-1 overflow-y-auto p-6 ${compact ? "" : "pl-20"}`}>
-          <div className={contentWrapper}>
-            {currentStep === 0 && (
-              <YourCompanyStep state={state} setField={setField} />
-            )}
-            {currentStep === 1 && (
-              <YourClientStep state={state} setField={setField} />
-            )}
-            {currentStep === 2 && (
-              <InvoiceDetailsStep
-                state={state}
-                setField={setField}
-                updateLineItem={updateLineItem}
-                removeLineItem={removeLineItem}
-                reorderLineItems={reorderLineItems}
-              />
-            )}
-            {currentStep === 3 && (
-              <PaymentMethodStep state={state} setField={setField} />
-            )}
-            {currentStep === 4 && (
-              <InvoiceTermsStep state={state} setField={setField} />
-            )}
+        <ScrollArea className="flex-1 overflow-x-hidden">
+          <div
+            className={`${fixedFooter ? "pb-20" : ""} py-4 px-6 pl-12 invoice:py-6`}
+          >
+            <div className={contentWrapper}>
+              {currentStep === 0 && (
+                <YourCompanyStep state={state} setField={setField} />
+              )}
+              {currentStep === 1 && (
+                <YourClientStep state={state} setField={setField} />
+              )}
+              {currentStep === 2 && (
+                <InvoiceDetailsStep
+                  state={state}
+                  setField={setField}
+                  updateLineItem={updateLineItem}
+                  removeLineItem={removeLineItem}
+                  reorderLineItems={reorderLineItems}
+                />
+              )}
+              {currentStep === 3 && (
+                <PaymentMethodStep state={state} setField={setField} />
+              )}
+              {currentStep === 4 && (
+                <InvoiceTermsStep state={state} setField={setField} />
+              )}
+            </div>
           </div>
-        </div>
+        </ScrollArea>
 
         {/* Navigation buttons */}
-        <footer className={`border-t px-6 py-4 ${compact ? "" : "pl-20"}`}>
+        <footer
+          className={`border-t px-4 invoice:px-6 py-2 invoice:py-4 ${fixedFooter ? "fixed bottom-0 inset-x-0 z-30 bg-background" : ""}`}
+        >
           <div
             className={`flex items-center justify-between ${contentWrapper}`}
           >

@@ -127,18 +127,17 @@ export function LineItemRow({
   };
 
   return (
-    <div className="group relative flex w-full items-center">
+    <div className="group relative flex w-full items-center gap-2">
       {/* Actions dropdown menu */}
-      <div className="absolute -left-10 top-1/2 -translate-y-1/2">
+      <div className="shrink-0 -ml-10">
         <DropdownMenu>
           <DropdownMenuTrigger
             className="
               flex h-8 w-8 items-center justify-center rounded
               transition-[opacity,background-color]
 
-              opacity-0 group-hover:opacity-100
+              text-muted-foreground
 
-              aria-expanded:opacity-100
               aria-expanded:bg-accent
               aria-expanded:text-accent-foreground
 

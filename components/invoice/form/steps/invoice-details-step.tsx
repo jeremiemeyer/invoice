@@ -48,7 +48,9 @@ export function InvoiceDetailsStep({
 
   return (
     <div>
-      <h2 className="pb-3 text-2xl font-semibold">Invoice details</h2>
+      <h2 className="pb-3 text-lg invoice:text-2xl font-semibold">
+        Invoice details
+      </h2>
 
       {/* Line Items */}
       <div className="mb-7">

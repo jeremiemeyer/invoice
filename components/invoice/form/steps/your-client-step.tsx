@@ -19,7 +19,9 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
 
   return (
     <div>
-      <h2 className="pb-3 text-2xl font-semibold">Your client</h2>
+      <h2 className="pb-3 text-lg invoice:text-2xl font-semibold">
+        Your client
+      </h2>
 
       <InlineInput
         label="Client name"

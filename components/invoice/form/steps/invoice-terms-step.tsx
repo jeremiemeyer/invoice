@@ -15,7 +15,9 @@ export function InvoiceTermsStep({ state, setField }: InvoiceTermsStepProps) {
 
   return (
     <div>
-      <h2 className="pb-3 text-2xl font-semibold">Invoice terms</h2>
+      <h2 className="pb-3 text-lg invoice:text-2xl font-semibold">
+        Invoice terms
+      </h2>
 
       <InlineInput
         label="Invoice number"
