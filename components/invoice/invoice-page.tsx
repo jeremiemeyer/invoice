@@ -100,7 +100,18 @@ export function InvoicePage() {
         <main className="relative flex-1 overflow-hidden">
           <GridBackground />
 
-          {/* Fixed settings */}
+          <PdfPreview
+            invoice={previewState}
+            totals={previewTotals}
+            layoutId={state.layoutId || "classic"}
+            styleId={state.styleId || "classic"}
+            currentStep={currentStep}
+            onStepClick={setCurrentStep}
+          />
+        </main>
+
+        {/* Settings Panel */}
+        <aside className="w-60 shrink-0 border-l bg-background overflow-y-auto p-4">
           <InvoiceSettings
             invoice={state}
             onLayoutChange={(layoutId) => setField("layoutId", layoutId)}
@@ -119,18 +130,8 @@ export function InvoicePage() {
             }
             previewMode={previewMode}
             onPreviewModeChange={setPreviewMode}
-            className="fixed top-4 right-4 z-10"
           />
-
-          <PdfPreview
-            invoice={previewState}
-            totals={previewTotals}
-            layoutId={state.layoutId || "classic"}
-            styleId={state.styleId || "classic"}
-            currentStep={currentStep}
-            onStepClick={setCurrentStep}
-          />
-        </main>
+        </aside>
       </div>
 
       {/* Mobile: Scroll-based drawer layout */}

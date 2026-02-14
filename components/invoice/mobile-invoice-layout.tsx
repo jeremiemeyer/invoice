@@ -45,9 +45,9 @@ export function MobileInvoiceLayout({
 }: MobileInvoiceLayoutProps) {
   const [previewScale, setPreviewScale] = useState(0.5);
   const [snap, setSnap] = useState<number | string | null>("100px");
-  const [isMobile, setIsMobile] = useState(
-    () => typeof window !== "undefined" && window.innerWidth < 1165,
-  );
+  // Default to true so the drawer renders on first paint (no flash on mobile).
+  // The matchMedia listener immediately sets false on desktop to unmount the portal.
+  const [isMobile, setIsMobile] = useState(true);
 
   const pageSizeConfig = getPageSizeConfig(state.pageSize);
   const previewWidth = pageSizeConfig.previewWidth;
@@ -58,7 +58,9 @@ export function MobileInvoiceLayout({
   }, []);
 
   useEffect(() => {
-    const mql = window.matchMedia("(max-width: 1164px)");
+    const mql = window.matchMedia("(max-width: 1439px)");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMobile(mql.matches);
     const onChange = () => setIsMobile(mql.matches);
     mql.addEventListener("change", onChange);
     return () => mql.removeEventListener("change", onChange);
@@ -78,7 +80,10 @@ export function MobileInvoiceLayout({
     <div className="h-dvh overflow-hidden">
       <GridBackground />
 
-      <div className="flex justify-center pt-4">
+      <div
+        className="flex justify-center"
+        style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
+      >
         <div
           style={{
             transform: `scale(${previewScale})`,
@@ -101,25 +106,31 @@ export function MobileInvoiceLayout({
         </div>
       </div>
 
-      <InvoiceSettings
-        invoice={state}
-        onLayoutChange={(layoutId) => setField("layoutId", layoutId)}
-        onStyleChange={(styleId) => setField("styleId", styleId)}
-        onLocaleChange={(locale) => setField("locale", locale)}
-        onNumberLocaleChange={(numberLocale) =>
-          setField("numberLocale", numberLocale)
-        }
-        onCurrencyChange={(currency) => setField("currency", currency)}
-        onPageSizeChange={(pageSize) => setField("pageSize", pageSize)}
-        onPageMarginChange={(pageMargin) => setField("pageMargin", pageMargin)}
-        onFromCountryCodeChange={(countryCode) =>
-          setField("fromCountryCode", countryCode)
-        }
-        previewMode={previewMode}
-        onPreviewModeChange={onPreviewModeChange}
-        collapsed
-        className="fixed top-4 right-4 z-30"
-      />
+      <div
+        className="fixed right-4 z-30"
+        style={{ top: "max(1rem, env(safe-area-inset-top))" }}
+      >
+        <InvoiceSettings
+          invoice={state}
+          onLayoutChange={(layoutId) => setField("layoutId", layoutId)}
+          onStyleChange={(styleId) => setField("styleId", styleId)}
+          onLocaleChange={(locale) => setField("locale", locale)}
+          onNumberLocaleChange={(numberLocale) =>
+            setField("numberLocale", numberLocale)
+          }
+          onCurrencyChange={(currency) => setField("currency", currency)}
+          onPageSizeChange={(pageSize) => setField("pageSize", pageSize)}
+          onPageMarginChange={(pageMargin) =>
+            setField("pageMargin", pageMargin)
+          }
+          onFromCountryCodeChange={(countryCode) =>
+            setField("fromCountryCode", countryCode)
+          }
+          previewMode={previewMode}
+          onPreviewModeChange={onPreviewModeChange}
+          collapsed
+        />
+      </div>
 
       {isMobile && (
         <Drawer

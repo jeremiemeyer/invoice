@@ -1,19 +1,10 @@
 "use client";
 
-import {
-  ArrowDown,
-  ArrowUp,
-  DotsThreeVertical,
-  Trash,
-} from "@phosphor-icons/react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { DotsSixVertical, Trash } from "@phosphor-icons/react";
 import type { SerializedEditorState } from "lexical";
-import { useEffect, useMemo, useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -33,11 +24,8 @@ interface LineItemRowProps {
   item: LineItem;
   onRemove: () => void;
   onUpdate: (field: keyof LineItem, value: unknown) => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
   canRemove: boolean;
-  canMoveUp: boolean;
-  canMoveDown: boolean;
+  reorderMode: boolean;
   autoOpen?: boolean;
   onPopoverOpenChange?: (isOpen: boolean) => void;
 }
@@ -46,14 +34,48 @@ export function LineItemRow({
   item,
   onRemove,
   onUpdate,
-  onMoveUp,
-  onMoveDown,
   canRemove,
-  canMoveUp,
-  canMoveDown,
+  reorderMode,
   autoOpen = false,
   onPopoverOpenChange,
 }: LineItemRowProps) {
+  // Sortable
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  // Inline delete state
+  const [confirming, setConfirming] = useState(false);
+  const confirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleDeleteClick = () => {
+    if (!canRemove) return;
+    if (confirming) {
+      onRemove();
+      setConfirming(false);
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+    } else {
+      setConfirming(true);
+      confirmTimerRef.current = setTimeout(() => setConfirming(false), 2000);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+    };
+  }, []);
+
   // Name popover state - initialize with autoOpen
   const [namePopoverOpen, setNamePopoverOpen] = useState(autoOpen);
 
@@ -127,48 +149,35 @@ export function LineItemRow({
   };
 
   return (
-    <div className="group relative flex w-full items-center gap-2">
-      {/* Actions dropdown menu */}
-      <div className="shrink-0 -ml-10">
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            className="
-              flex h-8 w-8 items-center justify-center rounded
-              transition-[opacity,background-color]
-
-              text-muted-foreground
-
-              aria-expanded:bg-accent
-              aria-expanded:text-accent-foreground
-
-              hover:bg-accent/80
-            "
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "group relative flex w-full items-center gap-2",
+        isDragging && "z-10 rounded-md bg-background shadow-md",
+      )}
+    >
+      {/* Drag handle */}
+      {reorderMode && (
+        <div className="-ml-10 shrink-0">
+          <button
+            type="button"
+            className="flex h-8 w-8 cursor-grab items-center justify-center rounded text-muted-foreground transition-colors hover:bg-accent/80 active:cursor-grabbing touch-none"
+            {...attributes}
+            {...listeners}
           >
-            <DotsThreeVertical className="size-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" sideOffset={4}>
-            <DropdownMenuItem onClick={onMoveUp} disabled={!canMoveUp}>
-              <ArrowUp className="mr-2 size-4" />
-              Move up
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onMoveDown} disabled={!canMoveDown}>
-              <ArrowDown className="mr-2 size-4" />
-              Move down
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={onRemove}
-              disabled={!canRemove}
-              variant="destructive"
-            >
-              <Trash className="mr-2 size-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+            <DotsSixVertical className="size-4" />
+          </button>
+        </div>
+      )}
 
       {/* Row content */}
-      <div className="flex w-full items-center">
+      <div
+        className={cn(
+          "flex w-full items-center",
+          reorderMode && !isDragging && "animate-pulse-subtle",
+        )}
+      >
         {/* Name cell with Popover - click to edit */}
         <Popover open={namePopoverOpen} onOpenChange={handlePopoverChange}>
           <PopoverTrigger
@@ -210,7 +219,7 @@ export function LineItemRow({
               <button
                 type="button"
                 onClick={handleCancel}
-                className="flex items-center rounded-md px-1.5 py-1 -mx-1.5 -my-1 transition-colors hover:bg-black/5"
+                className="-mx-1.5 -my-1 flex items-center rounded-md px-1.5 py-1 transition-colors hover:bg-black/5"
               >
                 <kbd className="rounded bg-black/5 px-1.5 py-0.5 text-xs text-muted-foreground">
                   Esc
@@ -222,7 +231,7 @@ export function LineItemRow({
               <button
                 type="button"
                 onClick={handleSave}
-                className="flex items-center rounded-md px-1.5 py-1 -mx-1.5 -my-1 transition-colors hover:bg-black/5"
+                className="-mx-1.5 -my-1 flex items-center rounded-md px-1.5 py-1 transition-colors hover:bg-black/5"
               >
                 <kbd className="flex items-center gap-1 rounded bg-black/5 px-1.5 py-0.5 text-xs text-muted-foreground">
                   {isMac ? "⌘" : "Ctrl"}
@@ -270,6 +279,30 @@ export function LineItemRow({
           />
         </label>
       </div>
+
+      {/* Inline delete — wrapper stays in flow at icon size, button goes absolute when confirming */}
+      {reorderMode && (
+        <div className="relative shrink-0 w-8">
+          <button
+            type="button"
+            onClick={handleDeleteClick}
+            disabled={!canRemove}
+            className={cn(
+              "flex items-center gap-1 rounded-md py-1.5 text-xs transition-colors",
+              !canRemove && "pointer-events-none opacity-30",
+              confirming
+                ? "absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-(--destructive-bg) px-2 text-destructive"
+                : "w-full justify-center text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <Trash
+              className="size-3.5"
+              weight={confirming ? "fill" : "regular"}
+            />
+            {confirming && <span className="font-medium">Delete?</span>}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

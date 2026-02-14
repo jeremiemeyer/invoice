@@ -88,7 +88,7 @@ function SettingsContent({
   );
 
   return (
-    <div className="flex w-52 flex-col gap-4 md:gap-8">
+    <div className="flex flex-col gap-4 md:gap-8">
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {/* APPEARANCE SECTION */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
@@ -107,7 +107,7 @@ function SettingsContent({
             <DropdownMenuTrigger className={dropdownTriggerClasses}>
               <span>{currentLayout.name}</span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end">
               <DropdownMenuRadioGroup
                 value={invoice.layoutId || "classic"}
                 onValueChange={onLayoutChange}
@@ -133,7 +133,7 @@ function SettingsContent({
               />
               <span>{currentStyle.name}</span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end">
               <DropdownMenuRadioGroup
                 value={invoice.styleId || "classic"}
                 onValueChange={onStyleChange}
@@ -187,7 +187,7 @@ function SettingsContent({
                 </>
               )}
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end">
               <DropdownMenuRadioGroup
                 value={currentPreset?.id ?? "custom"}
                 onValueChange={(presetId) => {
@@ -239,7 +239,7 @@ function SettingsContent({
               )}
               <span>{invoice.currency}</span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end">
               <DropdownMenuRadioGroup
                 value={invoice.currency}
                 onValueChange={onCurrencyChange}
@@ -279,7 +279,7 @@ function SettingsContent({
               )}
               <span>{currentLanguage?.label ?? invoice.locale}</span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end">
               <DropdownMenuRadioGroup
                 value={invoice.locale}
                 onValueChange={(value) =>
@@ -311,7 +311,7 @@ function SettingsContent({
                 {currentPaperSize?.dimensions}
               </span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end">
               <DropdownMenuRadioGroup
                 value={invoice.pageSize}
                 onValueChange={(value) => onPageSizeChange(value as PageSize)}
@@ -339,7 +339,7 @@ function SettingsContent({
                 {currentNumberFormat?.example}
               </span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end">
               <DropdownMenuRadioGroup
                 value={invoice.numberLocale}
                 onValueChange={(value) =>

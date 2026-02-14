@@ -1,6 +1,6 @@
 "use client";
 
-import { ToggleableField } from "@/components/invoice/form/toggleable-field";
+import { CustomizeFieldsPopover } from "@/components/invoice/form/customize-fields-popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InlineCountryField } from "@/components/ui/inline-country-field";
 import { InlineImageField } from "@/components/ui/inline-image-field";
@@ -17,11 +17,38 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
   // Get country-specific ID labels based on client's country
   const countryConfig = getCountryConfig(state.customerCountryCode);
 
+  const customizeFields = [
+    {
+      key: "showCustomerLogo",
+      label: "Logo",
+      checked: state.showCustomerLogo,
+      onChange: (checked: boolean) => setField("showCustomerLogo", checked),
+    },
+    {
+      key: "showCustomerCountry",
+      label: "Country",
+      checked: state.showCustomerCountry,
+      onChange: (checked: boolean) => setField("showCustomerCountry", checked),
+    },
+    ...(countryConfig.registrationId.available
+      ? [
+          {
+            key: "showCustomerRegistrationId",
+            label: countryConfig.registrationId.label,
+            checked: state.showCustomerRegistrationId,
+            onChange: (checked: boolean) =>
+              setField("showCustomerRegistrationId", checked),
+          },
+        ]
+      : []),
+  ];
+
   return (
     <div>
-      <h2 className="pb-3 text-lg invoice:text-2xl font-semibold">
-        Your client
-      </h2>
+      <div className="flex items-center justify-between pb-3">
+        <h2 className="text-lg invoice:text-2xl font-semibold">Your client</h2>
+        <CustomizeFieldsPopover fields={customizeFields} />
+      </div>
 
       <InlineInput
         label="Client name"
@@ -38,18 +65,13 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         placeholder="Contact name or department"
       />
 
-      <ToggleableField
-        isVisible={state.showCustomerLogo}
-        onToggleVisibility={() =>
-          setField("showCustomerLogo", !state.showCustomerLogo)
-        }
-      >
+      {state.showCustomerLogo && (
         <InlineImageField
           label="Logo"
           value={state.customerLogoUrl}
           onChange={(value) => setField("customerLogoUrl", value)}
         />
-      </ToggleableField>
+      )}
 
       <InlineInput
         label="Email"
@@ -76,18 +98,13 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         autoComplete="section-customer address-level2"
       />
 
-      <ToggleableField
-        isVisible={state.showCustomerCountry}
-        onToggleVisibility={() =>
-          setField("showCustomerCountry", !state.showCustomerCountry)
-        }
-      >
+      {state.showCustomerCountry && (
         <InlineCountryField
           label="Country"
           value={state.customerCountryCode}
           onChange={(code) => setField("customerCountryCode", code)}
         />
-      </ToggleableField>
+      )}
 
       <InlineInput
         label="Phone"
@@ -105,24 +122,15 @@ export function YourClientStep({ state, setField }: YourClientStepProps) {
         placeholder={countryConfig.taxId.placeholder}
       />
 
-      {countryConfig.registrationId.available && (
-        <ToggleableField
-          isVisible={state.showCustomerRegistrationId}
-          onToggleVisibility={() =>
-            setField(
-              "showCustomerRegistrationId",
-              !state.showCustomerRegistrationId,
-            )
-          }
-        >
+      {countryConfig.registrationId.available &&
+        state.showCustomerRegistrationId && (
           <InlineInput
             label={countryConfig.registrationId.label}
             value={state.customerRegistrationId}
             onChange={(value) => setField("customerRegistrationId", value)}
             placeholder={countryConfig.registrationId.placeholder}
           />
-        </ToggleableField>
-      )}
+        )}
 
       {/* Separate shipping address toggle */}
       <label className="flex h-[54px] cursor-pointer items-center justify-between border-b border-black/10 transition-colors hover:border-black/20">

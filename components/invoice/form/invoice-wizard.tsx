@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { downloadInvoicePdf } from "@/lib/invoice/pdf/generate-pdf";
 import type { InvoiceFormState } from "@/lib/invoice/types";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
+import { cn } from "@/lib/utils";
 import { DocumentTypeSelector } from "./document-type-selector";
 import { FileMenu } from "./file-menu";
 import { InvoiceDetailsStep } from "./steps/invoice-details-step";
@@ -133,7 +134,12 @@ export function InvoiceWizard({
       )}
 
       {/* Header */}
-      <header className="border-b px-4 invoice:px-6 py-4">
+      <header
+        className={cn(
+          "border-b px-4 invoice:px-6 py-4",
+          compact && "sticky top-0 z-20 bg-background",
+        )}
+      >
         <div className={`flex items-center justify-between ${contentWrapper}`}>
           <div className="flex items-center gap-2">
             <FileMenu state={state} onLoadState={loadState} isBlank={isBlank} />
@@ -167,9 +173,9 @@ export function InvoiceWizard({
       >
         {/* Step content */}
         {compact ? (
-          <div>
+          <div className="flex-1">
             <div
-              className={`${fixedFooter ? "pb-20" : ""} py-4 px-6 pl-12 invoice:py-6`}
+              className={`${fixedFooter ? "pb-20" : ""} py-4 px-4 invoice:px-6 invoice:py-6`}
             >
               <div className={contentWrapper}>
                 {currentStep === 0 && (
@@ -199,7 +205,7 @@ export function InvoiceWizard({
         ) : (
           <ScrollArea className="flex-1 overflow-x-hidden">
             <div
-              className={`${fixedFooter ? "pb-20" : ""} py-4 px-6 pl-12 invoice:py-6`}
+              className={`${fixedFooter ? "pb-20" : ""} py-4 px-4 invoice:px-6 invoice:py-6`}
             >
               <div className={contentWrapper}>
                 {currentStep === 0 && (
@@ -230,7 +236,11 @@ export function InvoiceWizard({
 
         {/* Navigation buttons */}
         <footer
-          className={`border-t px-4 invoice:px-6 py-2 invoice:py-4 ${fixedFooter ? "fixed bottom-0 inset-x-0 z-30 bg-background" : ""}`}
+          className={cn(
+            "border-t px-4 invoice:px-6 py-2 invoice:py-4",
+            fixedFooter && "fixed bottom-0 inset-x-0 z-30 bg-background",
+            !fixedFooter && compact && "sticky bottom-0 z-20 bg-background",
+          )}
         >
           <div
             className={`flex items-center justify-between ${contentWrapper}`}

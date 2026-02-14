@@ -1,6 +1,6 @@
 "use client";
 
-import { ToggleableField } from "@/components/invoice/form/toggleable-field";
+import { CustomizeFieldsPopover } from "@/components/invoice/form/customize-fields-popover";
 import { InlineCountryField } from "@/components/ui/inline-country-field";
 import { InlineImageField } from "@/components/ui/inline-image-field";
 import { InlineInput } from "@/components/ui/inline-input";
@@ -16,11 +16,38 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
   // Get country-specific ID labels based on business country
   const countryConfig = getCountryConfig(state.fromCountryCode);
 
+  const customizeFields = [
+    {
+      key: "showFromLogo",
+      label: "Logo",
+      checked: state.showFromLogo,
+      onChange: (checked: boolean) => setField("showFromLogo", checked),
+    },
+    {
+      key: "showFromCountry",
+      label: "Country",
+      checked: state.showFromCountry,
+      onChange: (checked: boolean) => setField("showFromCountry", checked),
+    },
+    ...(countryConfig.registrationId.available
+      ? [
+          {
+            key: "showFromRegistrationId",
+            label: countryConfig.registrationId.label,
+            checked: state.showFromRegistrationId,
+            onChange: (checked: boolean) =>
+              setField("showFromRegistrationId", checked),
+          },
+        ]
+      : []),
+  ];
+
   return (
     <div>
-      <h2 className="pb-3 text-lg invoice:text-2xl font-semibold">
-        Your company
-      </h2>
+      <div className="flex items-center justify-between pb-3">
+        <h2 className="text-lg invoice:text-2xl font-semibold">Your company</h2>
+        <CustomizeFieldsPopover fields={customizeFields} />
+      </div>
 
       <InlineInput
         label="Company name"
@@ -37,16 +64,13 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         placeholder="Contact name or department"
       />
 
-      <ToggleableField
-        isVisible={state.showFromLogo}
-        onToggleVisibility={() => setField("showFromLogo", !state.showFromLogo)}
-      >
+      {state.showFromLogo && (
         <InlineImageField
           label="Logo"
           value={state.fromLogoUrl}
           onChange={(value) => setField("fromLogoUrl", value)}
         />
-      </ToggleableField>
+      )}
 
       <InlineInput
         label="Email"
@@ -73,18 +97,13 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         autoComplete="address-level2"
       />
 
-      <ToggleableField
-        isVisible={state.showFromCountry}
-        onToggleVisibility={() =>
-          setField("showFromCountry", !state.showFromCountry)
-        }
-      >
+      {state.showFromCountry && (
         <InlineCountryField
           label="Country"
           value={state.fromCountryCode}
           onChange={(code) => setField("fromCountryCode", code)}
         />
-      </ToggleableField>
+      )}
 
       <InlineInput
         label="Phone"
@@ -102,21 +121,15 @@ export function YourCompanyStep({ state, setField }: YourCompanyStepProps) {
         placeholder={countryConfig.taxId.placeholder}
       />
 
-      {countryConfig.registrationId.available && (
-        <ToggleableField
-          isVisible={state.showFromRegistrationId}
-          onToggleVisibility={() =>
-            setField("showFromRegistrationId", !state.showFromRegistrationId)
-          }
-        >
+      {countryConfig.registrationId.available &&
+        state.showFromRegistrationId && (
           <InlineInput
             label={countryConfig.registrationId.label}
             value={state.fromRegistrationId}
             onChange={(value) => setField("fromRegistrationId", value)}
             placeholder={countryConfig.registrationId.placeholder}
           />
-        </ToggleableField>
-      )}
+        )}
     </div>
   );
 }

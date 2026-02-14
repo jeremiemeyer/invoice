@@ -1,7 +1,22 @@
 "use client";
 
-import { CaretDown, Plus } from "@phosphor-icons/react";
-import { useState } from "react";
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CaretDown, DotsSixVertical, Plus } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,
@@ -11,6 +26,7 @@ import {
 import { InlineInput, InlineTextarea } from "@/components/ui/inline-input";
 import { createLineItem } from "@/lib/invoice/defaults";
 import type { UseInvoiceReturn } from "@/lib/invoice/use-invoice";
+import { cn } from "@/lib/utils";
 import { LineItemRow } from "../line-item-row";
 
 interface InvoiceDetailsStepProps {
@@ -32,8 +48,36 @@ export function InvoiceDetailsStep({
     state.includeTax || state.includeDiscount,
   );
   const [newlyAddedItemId, setNewlyAddedItemId] = useState<string | null>(null);
+  const [reorderMode, setReorderMode] = useState(false);
+
+  const canReorder = state.lineItems.length > 1;
+
+  // Auto-exit reorder mode when items drop below 2
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!canReorder) setReorderMode(false);
+  }, [canReorder]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 150, tolerance: 5 },
+    }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = state.lineItems.findIndex((i) => i.id === active.id);
+    const newIndex = state.lineItems.findIndex((i) => i.id === over.id);
+    if (oldIndex !== -1 && newIndex !== -1) {
+      reorderLineItems(oldIndex, newIndex);
+    }
+  };
 
   const handleAddItem = () => {
+    setReorderMode(false);
     const newItem = createLineItem();
     setNewlyAddedItemId(newItem.id);
     setField("lineItems", [...state.lineItems, newItem]);
@@ -48,42 +92,72 @@ export function InvoiceDetailsStep({
 
   return (
     <div>
-      <h2 className="pb-3 text-lg invoice:text-2xl font-semibold">
-        Invoice details
-      </h2>
+      <div className="flex items-center justify-between pb-3">
+        <h2 className="text-lg invoice:text-2xl font-semibold">
+          Invoice details
+        </h2>
+      </div>
 
       {/* Line Items */}
       <div className="mb-7">
-        <p className="block pb-2 text-sm font-medium text-black/60">Items</p>
-
-        <div className="space-y-0">
-          {state.lineItems.map((item, index) => (
-            <LineItemRow
-              key={item.id}
-              item={item}
-              onUpdate={(field, value) => updateLineItem(item.id, field, value)}
-              onRemove={() => removeLineItem(item.id)}
-              onMoveUp={() => reorderLineItems(index, index - 1)}
-              onMoveDown={() => reorderLineItems(index, index + 1)}
-              canRemove={state.lineItems.length > 1}
-              canMoveUp={index > 0}
-              canMoveDown={index < state.lineItems.length - 1}
-              autoOpen={item.id === newlyAddedItemId}
-              onPopoverOpenChange={(isOpen) =>
-                handlePopoverOpenChange(item.id, isOpen)
-              }
-            />
-          ))}
+        <div className="flex items-center justify-between pb-2">
+          <p className="block text-sm font-medium text-black/60">Items</p>
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={() => setReorderMode(!reorderMode)}
+            disabled={!canReorder}
+            className={cn(
+              reorderMode &&
+                "border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-50 hover:text-blue-600",
+            )}
+          >
+            <DotsSixVertical size={12} />
+            {reorderMode ? "Done" : "Reorder"}
+          </Button>
         </div>
 
-        <button
-          type="button"
-          onClick={handleAddItem}
-          className="flex h-12 w-full items-center border-b border-black/10 py-2 text-start text-sm font-medium text-blue-600 outline-none transition-all hover:border-black/20 focus:border-blue-600"
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          modifiers={[restrictToVerticalAxis]}
+          onDragEnd={handleDragEnd}
         >
-          <Plus size={12} className="mr-2" />
-          <span>Add item</span>
-        </button>
+          <SortableContext
+            items={state.lineItems.map((i) => i.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className={cn(reorderMode && "pl-10")}>
+              <div className="space-y-0">
+                {state.lineItems.map((item) => (
+                  <LineItemRow
+                    key={item.id}
+                    item={item}
+                    onUpdate={(field, value) =>
+                      updateLineItem(item.id, field, value)
+                    }
+                    onRemove={() => removeLineItem(item.id)}
+                    canRemove={state.lineItems.length > 1}
+                    reorderMode={reorderMode}
+                    autoOpen={item.id === newlyAddedItemId}
+                    onPopoverOpenChange={(isOpen) =>
+                      handlePopoverOpenChange(item.id, isOpen)
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddItem}
+              className="flex h-12 w-full items-center border-b border-black/10 py-2 text-start text-sm font-medium text-blue-600 outline-none transition-all hover:border-black/20 focus:border-blue-600"
+            >
+              <Plus size={12} className="mr-2" />
+              <span>Add item</span>
+            </button>
+          </SortableContext>
+        </DndContext>
       </div>
 
       {/* More Options (Discount & Tax) */}
