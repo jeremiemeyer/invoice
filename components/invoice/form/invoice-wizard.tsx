@@ -107,7 +107,9 @@ export function InvoiceWizard({
   const contentWrapper = compact ? "mx-auto max-w-sm" : "";
 
   return (
-    <div className="relative flex h-full flex-col">
+    <div
+      className={`relative flex flex-col ${compact ? "min-h-full" : "h-full"}`}
+    >
       {/* Preview mode overlay */}
       {previewMode && (
         <div
@@ -160,37 +162,71 @@ export function InvoiceWizard({
         </div>
       </header>
 
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div
+        className={`flex flex-col ${compact ? "flex-1" : "flex-1 overflow-hidden"}`}
+      >
         {/* Step content */}
-        <ScrollArea className="flex-1 overflow-x-hidden">
-          <div
-            className={`${fixedFooter ? "pb-20" : ""} py-4 px-6 pl-12 invoice:py-6`}
-          >
-            <div className={contentWrapper}>
-              {currentStep === 0 && (
-                <YourCompanyStep state={state} setField={setField} />
-              )}
-              {currentStep === 1 && (
-                <YourClientStep state={state} setField={setField} />
-              )}
-              {currentStep === 2 && (
-                <InvoiceDetailsStep
-                  state={state}
-                  setField={setField}
-                  updateLineItem={updateLineItem}
-                  removeLineItem={removeLineItem}
-                  reorderLineItems={reorderLineItems}
-                />
-              )}
-              {currentStep === 3 && (
-                <PaymentMethodStep state={state} setField={setField} />
-              )}
-              {currentStep === 4 && (
-                <InvoiceTermsStep state={state} setField={setField} />
-              )}
+        {compact ? (
+          <div>
+            <div
+              className={`${fixedFooter ? "pb-20" : ""} py-4 px-6 pl-12 invoice:py-6`}
+            >
+              <div className={contentWrapper}>
+                {currentStep === 0 && (
+                  <YourCompanyStep state={state} setField={setField} />
+                )}
+                {currentStep === 1 && (
+                  <YourClientStep state={state} setField={setField} />
+                )}
+                {currentStep === 2 && (
+                  <InvoiceDetailsStep
+                    state={state}
+                    setField={setField}
+                    updateLineItem={updateLineItem}
+                    removeLineItem={removeLineItem}
+                    reorderLineItems={reorderLineItems}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <PaymentMethodStep state={state} setField={setField} />
+                )}
+                {currentStep === 4 && (
+                  <InvoiceTermsStep state={state} setField={setField} />
+                )}
+              </div>
             </div>
           </div>
-        </ScrollArea>
+        ) : (
+          <ScrollArea className="flex-1 overflow-x-hidden">
+            <div
+              className={`${fixedFooter ? "pb-20" : ""} py-4 px-6 pl-12 invoice:py-6`}
+            >
+              <div className={contentWrapper}>
+                {currentStep === 0 && (
+                  <YourCompanyStep state={state} setField={setField} />
+                )}
+                {currentStep === 1 && (
+                  <YourClientStep state={state} setField={setField} />
+                )}
+                {currentStep === 2 && (
+                  <InvoiceDetailsStep
+                    state={state}
+                    setField={setField}
+                    updateLineItem={updateLineItem}
+                    removeLineItem={removeLineItem}
+                    reorderLineItems={reorderLineItems}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <PaymentMethodStep state={state} setField={setField} />
+                )}
+                {currentStep === 4 && (
+                  <InvoiceTermsStep state={state} setField={setField} />
+                )}
+              </div>
+            </div>
+          </ScrollArea>
+        )}
 
         {/* Navigation buttons */}
         <footer
