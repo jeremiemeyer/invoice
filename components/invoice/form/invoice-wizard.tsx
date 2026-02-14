@@ -105,7 +105,7 @@ export function InvoiceWizard({
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === STEPS.length - 1;
 
-  const contentWrapper = compact ? "mx-auto max-w-sm" : "";
+  const contentWrapper = compact ? "mx-auto max-w-lg" : "";
 
   return (
     <div

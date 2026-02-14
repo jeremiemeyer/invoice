@@ -162,7 +162,7 @@ export function InvoiceDetailsStep({
 
       {/* More Options (Discount & Tax) */}
       <Collapsible open={moreOptionsOpen} onOpenChange={setMoreOptionsOpen}>
-        <CollapsibleTrigger className="group -mx-6 flex h-12 w-[calc(100%+3rem)] items-center justify-between px-6 text-sm font-medium text-black/50 transition-colors hover:bg-accent hover:text-black/80">
+        <CollapsibleTrigger className="group -mx-4 invoice:-mx-6 flex h-12 w-[calc(100%+2rem)] invoice:w-[calc(100%+3rem)] items-center justify-between px-4 invoice:px-6 text-sm font-medium text-black/50 transition-colors hover:bg-accent hover:text-black/80">
           <span>More options</span>
           <CaretDown
             size={16}
