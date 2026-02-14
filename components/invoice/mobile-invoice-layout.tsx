@@ -145,7 +145,6 @@ export function MobileInvoiceLayout({
           <DrawerContent className="!max-h-none h-dvh">
             <DrawerTitle className="sr-only">Invoice Editor</DrawerTitle>
             <div
-              data-vaul-no-drag
               className={`min-h-0 flex-1 ${snap === 1 ? "overflow-y-auto" : "overflow-hidden"}`}
             >
               <InvoiceWizard

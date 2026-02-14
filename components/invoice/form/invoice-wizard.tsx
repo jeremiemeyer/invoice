@@ -173,7 +173,7 @@ export function InvoiceWizard({
       >
         {/* Step content */}
         {compact ? (
-          <div className="flex-1">
+          <div className="flex-1" data-vaul-no-drag>
             <div
               className={`${fixedFooter ? "pb-20" : ""} py-4 px-4 invoice:px-6 invoice:py-6`}
             >
@@ -236,6 +236,7 @@ export function InvoiceWizard({
 
         {/* Navigation buttons */}
         <footer
+          data-vaul-no-drag
           className={cn(
             "border-t px-4 invoice:px-6 py-2 invoice:py-4",
             fixedFooter && "fixed bottom-0 inset-x-0 z-30 bg-background",
